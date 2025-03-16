@@ -9,3 +9,4 @@ Funktsionaalsused:
 - Kogu asja saab teha veebilehel
 - Andmeid hoiame andmebaasis
 - Kasutajad saavad ise hindu lisada
+- Kasutajad saavad valida, millistes poodides neil kliendikaardid on
