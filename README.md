@@ -8,3 +8,4 @@ Funktsionaalsused:
 - Saab võrrelda enda otsukorvi hinda erinevates poodides
 - Kogu asja saab teha veebilehel
 - Andmeid hoiame andmebaasis
+- Kasutajad saavad ise hindu lisada
