@@ -1,13 +1,9 @@
-package org.example.oop_projekt;
+package org.example.oop_projekt.teenuskiht;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.List;
 
 /**
@@ -19,7 +15,7 @@ import java.util.List;
  * Hiiumaa eCOOPi koduleht:
  * https://hiiumaa.ecoop.ee/et
  */
-public class CoopScraper extends WebScraper{
+public class CoopScraper extends WebScraper {
     private String url;
 
     public CoopScraper() throws URISyntaxException {
@@ -49,7 +45,7 @@ public class CoopScraper extends WebScraper{
     }
 
     @Override
-    void scrape() {
+    public void scrape() {
         String lahtekood = hangiDynamicSource();
         List<String> lapsed = leiaLapsed(lahtekood, ".products-wrapper");
 

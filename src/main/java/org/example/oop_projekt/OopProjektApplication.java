@@ -1,5 +1,6 @@
 package org.example.oop_projekt;
 
+import org.example.oop_projekt.teenuskiht.CoopScraper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package org.example.oop_projekt;
+package org.example.oop_projekt.teenuskiht;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
