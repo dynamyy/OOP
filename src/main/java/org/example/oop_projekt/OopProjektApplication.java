@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.net.URISyntaxException;
+
 @SpringBootApplication
 public class OopProjektApplication {
 
@@ -12,8 +14,14 @@ public class OopProjektApplication {
         return "index.html";
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws URISyntaxException {
 
+        // COOPi webScraper
+        CoopScraper coop = new CoopScraper();
+        coop.scrape();
+
+
+        // Veebileht
         SpringApplication.run(OopProjektApplication.class, args);
     }
 
