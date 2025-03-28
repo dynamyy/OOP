@@ -4,13 +4,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -42,7 +47,7 @@ public abstract class WebScraper {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
 
-        chromedriver = new ChromeDriver(options);
+        chromedriver = new ChromeDriver();
     }
 
     /**
@@ -71,5 +76,32 @@ public abstract class WebScraper {
         Elements lapsed = doc.select(cssSelector).first().children();
 
         return lapsed.stream().map(Element::text).toList();
+    }
+
+    /**
+     * Scrollib kuni etteantud arv lapselemente on laetud
+     * @param oodatavLasteArv Kui palju elemente peaks laadima
+     * @param VanemaCss Viide elemendile, mis on laste vanem
+     * @param lapseCss Viide lapsele endale (üldine mitte mingile kindlale elemendile)
+     */
+    void scrolliLeheLoppu(int oodatavLasteArv, String VanemaCss, String lapseCss) {
+        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(5));
+        JavascriptExecutor js = (JavascriptExecutor) chromedriver;
+
+        int lasteArv = leiaLapsed(chromedriver.getPageSource(), VanemaCss).size();
+
+        // Scrollin nii kaua kuni kõik lapsed on laetud
+        while (lasteArv < oodatavLasteArv) {
+            // Scrollin lehe lõppu
+            js.executeScript("window.scrollBy(0,document.body.scrollHeight)");
+
+            // Ootan, et elemendid laeks
+            wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(
+                    By.cssSelector(lapseCss), lasteArv
+            ));
+
+            // Leian uue laste arvu
+            lasteArv = leiaLapsed(chromedriver.getPageSource(), VanemaCss).size();
+        }
     }
 }

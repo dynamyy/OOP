@@ -1,8 +1,13 @@
 package org.example.oop_projekt;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -28,6 +33,13 @@ public class CoopScraper extends WebScraper{
         String leheHTML;
         try {
             chromedriver.get(url);
+
+            // Vajutab nuppu "Ühel lehel", et
+            // kuvataks kõik tooted
+            chromedriver.findElement(By.cssSelector("span.option:nth-child(1)")).click();
+
+            scrolliLeheLoppu(100, ".products-wrapper", "app-product-card.item");
+
             leheHTML = chromedriver.getPageSource();
         } finally {
             chromedriver.quit();
