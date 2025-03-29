@@ -1,6 +1,6 @@
 # OOP
 
-Rühmaliikmed: Egert Heliste, Tõnis Lees, Kevin Markus Korrol
+Rühmaliikmed: Egert Heliste(dynamyy), Tõnis Lees, Kevin Markus Korrol
 
 Funktsionaalsused:
 - Saab koostada enda otsukorvi poetoodetest
