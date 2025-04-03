@@ -30,10 +30,21 @@ public class Toode {
     private String nimetus;
 
     @Column(
-            name = "tyki_hind",
-            nullable = false
+            name = "tyki_hind"
     )
     private double tukiHind;
+
+    @Column(
+            name = "hulga_hind",
+            nullable = false
+    )
+    private double hulgaHind;
+
+    @Column(
+            name = "yhik",
+            nullable = false
+    )
+    private String yhik;
 
     @Column(
             name = "pood",
@@ -42,5 +53,16 @@ public class Toode {
     )
     private String pood;
 
+    public Toode(long id, String nimetus, double tukiHind, double hulgaHind, String yhik, String pood) {
+        this.id = id;
+        this.nimetus = nimetus;
+        this.tukiHind = tukiHind;
+        this.hulgaHind = hulgaHind;
+        this.yhik = yhik;
+        this.pood = pood;
+    }
+
+    public Toode() {
+    }
 }
 

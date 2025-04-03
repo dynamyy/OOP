@@ -2,6 +2,7 @@ package org.example.oop_projekt.teenuskiht;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.springframework.stereotype.Service;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * Hiiumaa eCOOPi koduleht:
  * https://hiiumaa.ecoop.ee/et
  */
+@Service
 public class CoopScraper extends WebScraper {
     private String url;
 
