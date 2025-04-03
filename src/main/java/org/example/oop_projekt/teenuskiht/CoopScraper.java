@@ -13,6 +13,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -87,6 +89,7 @@ public class CoopScraper extends WebScraper {
         // tkHind ja uhikuHind on tavakliendi hind ehk ilma säästukaardita
         // Kui säästukaardiga erihinda pole (enamasti pole), siis tavakliendi hind == kliendi hind
         double tkHind, uhikuHind, tkHindKlient, uhikuHindKlient;
+        double pant, kogus;
         for (Element toode : lapsed) {
             tooteNimi = toode.select(".product-name").text();
 
@@ -105,11 +108,30 @@ public class CoopScraper extends WebScraper {
 
             // Kui tootel on säästukaardiga erinev hind, siis tavakliendi hind on märgitud lisa hinnasilti
             lisaHind = toode.select(".prices-info").text();
-            //if (!lisaHind.isEmpty()) {
-            //    lisaHindadeList = lisaHind.split(" ");
-            //    tkHind = Double.parseDouble(lisaHindadeList[2]);
-            //    uhikuHind = Double.parseDouble(lisaHindadeList[7]);
-            //}
+            if (!lisaHind.isEmpty()) {
+                lisaHindadeList = lisaHind.split(" ");
+
+                // Lisahinnasilti märgitakse ka pant, mille kokkuleppeliselt liidame hinnale
+                if (lisaHindadeList[1].equals("Pant")) {
+                    pant = Double.parseDouble(lisaHindadeList[2]);
+
+                    // Arvutan toote koguse, et korrektselt suurendada liitrihinda
+                    // Siin kliendihind ja tavakliendi hind on samad, seega ei pea korduvalt arvutama
+                    kogus = (tkHind / uhikuHind) / (pant / 0.1);
+
+                    tkHindKlient = tkHind += pant;
+                    // Kuna jagamistehe pant / kogus võib tekitada rohkem kui 2 komakohta, siis on vaja ümardada
+                    // Kasutan BidDecimal, et vältida kümnendmurdude ja ümardamisega seotud vigu
+                    // Tegelikult on siin arvutuses endiselt ümardamisvead, sest kogus pole juba täpne
+                    uhikuHindKlient = uhikuHind += (new BigDecimal(pant / kogus).setScale(2, RoundingMode.HALF_UP)).doubleValue();
+                }
+
+                // Kui panti pole, siis on tavakliendi hind
+                else {
+                    tkHind = Double.parseDouble(lisaHindadeList[2]);
+                    uhikuHind = Double.parseDouble(lisaHindadeList[7]);
+                }
+            }
 
             System.out.print(tooteNimi + " " + tkHind + "€ " + uhikuHind + "€/" + uhik);
             if (tkHind != tkHindKlient) System.out.println(" Säästukaardiga: " + tkHindKlient + "€ " + uhikuHindKlient + "€/" + uhik);
@@ -119,23 +141,6 @@ public class CoopScraper extends WebScraper {
             uusToode.lisaPood(poodRepository.findPoodByNimi("Coop"));
 
             tooted.add(uusToode);
-
-            /*
-            Kõik andmed on nüüd peaaegu korrektselt muutujates
-            Read 94-98 on välja kommenteeritud, sest see koht failib kui
-            lisahinnasilti pole märgitud mitte tavakliendi hind vaid pandihind,
-            ehk see case tuleks veel lahendada, muus osas töötab
-
-
-            Järgmisena tuleks luua klassi Toode objektid nende andmetega
-            ja lisada Listi: List<Toode>
-            Seejärel lihtsalt tagastada List<Toode>
-
-            ja peakski olema COOPi scraperiga kõik
-
-            (Praegu ei loo Tooted objekte, sest Tooted klass pole vist veel lõplik)
-
-             */
         }
 
         return tooted;
