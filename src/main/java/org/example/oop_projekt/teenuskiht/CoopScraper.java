@@ -9,9 +9,12 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +47,10 @@ public class CoopScraper extends WebScraper {
 
         try {
             chromedriver.get(url);
+
+            // Ootan kuni leht laeb, et ei tekiks vigu
+            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+            wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.option:nth-child(1)"))));
 
             // Vajutab nuppu "Ühel lehel", et
             // kuvataks kõik tooted
