@@ -8,13 +8,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 
-import java.util.List;
-
 @Configuration
 public class ToodeConf {
 
-    @Bean(name = "commandLineRunner")
-    @Order(1)
+    @Bean(name = "toodeCommandLineRunner")
+    @Order(2)
 
 
     CommandLineRunner commandLineRunner(ToodeRepository repo){

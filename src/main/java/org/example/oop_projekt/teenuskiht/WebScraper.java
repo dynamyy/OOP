@@ -1,6 +1,8 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
+import org.example.oop_projekt.andmepääsukiht.ToodeRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,6 +26,7 @@ import java.util.List;
  * Iga poe scraper peaks laiendama seda klassi.
  */
 public abstract class WebScraper {
+
     private WebDriver chromedriver;
 
     WebDriver getChromedriver() {

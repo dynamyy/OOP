@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity(name = "Toode")
 @Table(name = "tooted")
 @Getter
@@ -15,6 +17,10 @@ public class Toode {
             name = "toode_sequence",
             sequenceName = "toode_sequence",
             allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "toode_sequence"
     )
     @Column(
             name = "id",
@@ -42,27 +48,46 @@ public class Toode {
 
     @Column(
             name = "yhik",
-            nullable = false
+            nullable = false,
+            columnDefinition = "TEXT"
     )
     private String yhik;
 
     @Column(
-            name = "pood",
-            nullable = false,
-            columnDefinition = "TEXT"
+            name = "hind_kliendi"
     )
-    private String pood;
+    private double hindKliendi;
 
-    public Toode(long id, String nimetus, double tukiHind, double hulgaHind, String yhik, String pood) {
-        this.id = id;
+    @Column(
+            name = "hulga_hind_kliendi"
+    )
+    private double hulgaHindKliendi;
+
+    @ManyToMany(mappedBy = "tooted")
+    private Set<Pood> poed;
+
+    public Toode(String nimetus,
+                 String yhik,
+                 double hindKliendi,
+                 double hulgaHindKliendi,
+                 Set<Pood> poed,
+                 double hulgaHind,
+                 double tukiHind) {
         this.nimetus = nimetus;
-        this.tukiHind = tukiHind;
-        this.hulgaHind = hulgaHind;
         this.yhik = yhik;
-        this.pood = pood;
+        this.hindKliendi = hindKliendi;
+        this.hulgaHindKliendi = hulgaHindKliendi;
+        this.poed = poed;
+        this.hulgaHind = hulgaHind;
+        this.tukiHind = tukiHind;
     }
 
     public Toode() {
     }
+
+    public void lisaPood(Pood pood) {
+        this.poed.add(pood);
+    }
+
 }
 

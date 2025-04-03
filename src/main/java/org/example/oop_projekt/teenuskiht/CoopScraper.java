@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -25,11 +27,14 @@ import java.util.List;
  */
 @Service
 public class CoopScraper extends WebScraper {
+
+    private final PoodRepository poodRepository;
     private String url;
 
-    public CoopScraper() throws URISyntaxException {
+    public CoopScraper(PoodRepository poodRepository) throws URISyntaxException {
         super();
         url = "https://hiiumaa.ecoop.ee/et/tooted";
+        this.poodRepository = poodRepository;
     }
 
     @Override
@@ -102,6 +107,11 @@ public class CoopScraper extends WebScraper {
             System.out.print(tooteNimi + " " + tkHind + "€ " + uhikuHind + "€/" + uhik);
             if (tkHind != tkHindKlient) System.out.println(" Säästukaardiga: " + tkHindKlient + "€ " + uhikuHindKlient + "€/" + uhik);
             else System.out.println();
+
+            Toode uusToode = new Toode(tooteNimi, uhik, tkHindKlient, uhikuHindKlient, new HashSet<>(), uhikuHind, tkHind);
+            uusToode.lisaPood(poodRepository.findPoodByNimi("Coop"));
+
+            tooted.add(uusToode);
 
             /*
             Kõik andmed on nüüd peaaegu korrektselt muutujates
