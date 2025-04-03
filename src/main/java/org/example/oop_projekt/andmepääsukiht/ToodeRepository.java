@@ -1,4 +1,9 @@
 package org.example.oop_projekt.andmepääsukiht;
 
-public interface ToodeRepository {
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ToodeRepository extends JpaRepository<Toode, Long> {
 }

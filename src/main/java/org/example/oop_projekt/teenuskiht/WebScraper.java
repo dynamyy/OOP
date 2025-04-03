@@ -47,7 +47,7 @@ public abstract class WebScraper {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
 
-        chromedriver = new ChromeDriver();
+        chromedriver = new ChromeDriver(options);
     }
 
     /**
