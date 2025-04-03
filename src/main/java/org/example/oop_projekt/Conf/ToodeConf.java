@@ -19,7 +19,7 @@ public class ToodeConf {
 
     CommandLineRunner commandLineRunner(ToodeRepository repo){
         return args -> {
-
+            //Igalt lehelt saadud tooted salvestame siin funktsioonis andmebaasi
             //repo.saveAll();
         };
     }
