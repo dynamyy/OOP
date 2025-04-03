@@ -1,6 +1,9 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.andmepääsukiht.Toode;
+
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class SelverScraper extends WebScraper{
 
@@ -24,7 +27,7 @@ public class SelverScraper extends WebScraper{
     }
 
     @Override
-    public void scrape() {
-
+    public List<Toode> scrape() {
+        return null;
     }
 }

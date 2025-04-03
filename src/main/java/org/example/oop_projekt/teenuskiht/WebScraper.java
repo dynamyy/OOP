@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -60,7 +61,7 @@ public abstract class WebScraper {
     /**
      * Meetod scrape'imisloogika käivitamiseks
      */
-    abstract void scrape();
+    abstract List<Toode> scrape();
 
 
     /**
