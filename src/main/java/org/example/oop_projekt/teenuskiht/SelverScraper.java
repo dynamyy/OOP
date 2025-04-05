@@ -61,9 +61,6 @@ public class SelverScraper extends WebScraper{
         this.poodRepository = poodRepository;
     }
 
-    public static void main(String[] args) {
-    }
-
     static WebDriver chromedriver = getChromedriver();
     /*
     Leian esilehe HTML-i
@@ -84,6 +81,8 @@ public class SelverScraper extends WebScraper{
 
     }
 
+
+    //Vahelehtede html leidmind
     public static String html(String url) {
         WebDriver chromedriver = getChromedriver();
         try {

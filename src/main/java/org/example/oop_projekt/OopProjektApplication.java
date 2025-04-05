@@ -3,10 +3,7 @@ package org.example.oop_projekt;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.example.oop_projekt.andmepääsukiht.ToodeRepository;
-import org.example.oop_projekt.teenuskiht.CoopScraper;
-import org.example.oop_projekt.teenuskiht.PoodTeenus;
-import org.example.oop_projekt.teenuskiht.SelverScraper;
-import org.example.oop_projekt.teenuskiht.ToodeTeenus;
+import org.example.oop_projekt.teenuskiht.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -57,8 +54,12 @@ public class OopProjektApplication {
         //this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
         System.out.println("Kõik tooted lisatud!");
 
-        SelverScraper selver = new SelverScraper(this.poodRepository);
-        selver.scrape();
+        //SelverScraper selver = new SelverScraper(this.poodRepository);
+        //selver.scrape();
+
+        BarboraScraper barbora = new BarboraScraper(this.poodRepository);
+        barbora.kategooriaVahelehed();
+
 
     }
 
