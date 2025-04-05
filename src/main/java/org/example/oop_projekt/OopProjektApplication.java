@@ -14,6 +14,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -47,17 +48,18 @@ public class OopProjektApplication {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void initializeApp() throws URISyntaxException {
+    public void initializeApp() throws Exception {
 
-        // COOPi webScraper
-        CoopScraper coop = new CoopScraper(this.poodRepository);
-        List<Toode> coopTooted = coop.scrape();
-        System.out.println("Toodete andmebaasi lisamine");
-        this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
+        //COOPi webScraper
+        //CoopScraper coop = new CoopScraper(this.poodRepository);
+        //List<Toode> coopTooted = coop.scrape();
+        //System.out.println("Toodete andmebaasi lisamine");
+        //this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
         System.out.println("Kõik tooted lisatud!");
 
-        SelverScraper selver = new SelverScraper();
-        selver.scrape();
+        SelverScraper selver = new SelverScraper(this.poodRepository);
+        selver.URLiKirjed();
+
     }
 
 }
