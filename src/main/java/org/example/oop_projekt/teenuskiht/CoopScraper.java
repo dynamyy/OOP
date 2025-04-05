@@ -137,9 +137,13 @@ public class CoopScraper extends WebScraper {
             if (tkHind != tkHindKlient) System.out.println(" Säästukaardiga: " + tkHindKlient + "€ " + uhikuHindKlient + "€/" + uhik);
             else System.out.println();
 
-            Toode uusToode = new Toode(tooteNimi, uhik, tkHindKlient, uhikuHindKlient, new HashSet<>(), uhikuHind, tkHind);
-            uusToode.lisaPood(poodRepository.findPoodByNimi("Coop"));
-
+            Toode uusToode = new Toode(tooteNimi,
+                                    uhik,
+                                    tkHindKlient,
+                                    uhikuHindKlient,
+                                    poodRepository.findPoodByNimi("Coop"),
+                                    uhikuHind,
+                                    tkHind);
             tooted.add(uusToode);
         }
 

@@ -63,30 +63,27 @@ public class Toode {
     )
     private double hulgaHindKliendi;
 
-    @ManyToMany(mappedBy = "tooted")
-    private Set<Pood> poed;
+    @ManyToOne
+    @JoinColumn(name = "pood_id")
+    private Pood pood;
 
     public Toode(String nimetus,
                  String yhik,
                  double hindKliendi,
                  double hulgaHindKliendi,
-                 Set<Pood> poed,
+                 Pood pood,
                  double hulgaHind,
                  double tukiHind) {
         this.nimetus = nimetus;
         this.yhik = yhik;
         this.hindKliendi = hindKliendi;
         this.hulgaHindKliendi = hulgaHindKliendi;
-        this.poed = poed;
+        this.pood = pood;
         this.hulgaHind = hulgaHind;
         this.tukiHind = tukiHind;
     }
 
     public Toode() {
-    }
-
-    public void lisaPood(Pood pood) {
-        this.poed.add(pood);
     }
 
 }

@@ -32,24 +32,17 @@ public class ToodeTeenus {
     }
 
     /**
-     * Lisab toote andmebaasi, kui seda seal veel ei ole,
-     * kui on, siis muudab vajadusel selle andmeid.
-     * @param tooted
+     * Lisab toote andmebaasi, kui seda seal veel ei ole.
+     * @param tooted List toodetest, mis andmebaasi lisatakse.
      */
     public void lisaTootedAndmebaasi(List<Toode> tooted) {
         for (Toode toode : tooted) {
 
             Toode dbToode = toodeRepository.findToodeByNimetus(toode.getNimetus());
-            Pood pood = toode.getPoed().iterator().next();
+            Pood pood = toode.getPood();
             pood = poodTeenus.getPoodToodetega(pood.getId());
 
-            // Kui toode on olemas, siis lisab
-            if (dbToode != null) {
-                dbToode.lisaPood(pood);
-                pood.lisaToode(dbToode);
-                toodeRepository.save(dbToode);
-            } else { // Kui toodet pole, lisab selle.
-                toode.lisaPood(pood);
+            if (dbToode == null) {
                 pood.lisaToode(toode);
                 toodeRepository.save(toode);
             }
