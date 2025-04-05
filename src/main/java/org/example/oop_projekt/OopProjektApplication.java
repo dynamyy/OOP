@@ -58,7 +58,7 @@ public class OopProjektApplication {
         System.out.println("Kõik tooted lisatud!");
 
         SelverScraper selver = new SelverScraper(this.poodRepository);
-        selver.URLiKirjed();
+        selver.scrape();
 
     }
 

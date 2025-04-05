@@ -1,6 +1,5 @@
 package org.example.oop_projekt.teenuskiht;
 
-import org.example.oop_projekt.andmepääsukiht.Pood;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;
@@ -9,9 +8,6 @@ import org.openqa.selenium.WebDriver;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
@@ -68,12 +64,12 @@ public class SelverScraper extends WebScraper{
     public static void main(String[] args) {
     }
 
+    static WebDriver chromedriver = getChromedriver();
     /*
     Leian esilehe HTML-i
      */
     @Override
     String hangiDynamicSource() {
-        WebDriver chromedriver = getChromedriver();
         String leheHTML;
 
         try {
@@ -82,31 +78,25 @@ public class SelverScraper extends WebScraper{
             // Ootan kuni leht laeb, et ei tekiks vigu
             WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
 
-            leheHTML = chromedriver.getPageSource();
+            return chromedriver.getPageSource();
         } finally {
-            chromedriver.quit();
         }
 
-        return leheHTML;
     }
 
-    public static String html(String url){
+    public static String html(String url) {
         WebDriver chromedriver = getChromedriver();
-        String leheHTML;
-
         try {
             chromedriver.get(url);
 
-            // Ootan kuni leht laeb, et ei tekiks vigu
             WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+            wait.until(driver -> driver.findElements(By.cssSelector(".ProductCard__info")).size() > 0);
 
-            leheHTML = chromedriver.getPageSource();
+            return chromedriver.getPageSource();
         } finally {
-            chromedriver.quit();
         }
-
-        return leheHTML;
     }
+
 
 
     /*
@@ -127,7 +117,7 @@ public class SelverScraper extends WebScraper{
             long slashCount = href.chars().filter(ch -> ch == '/').count();
 
             if (slashCount <= 2) {
-                info.add("https://www.selver.ee/" + href + "?limit=10000");
+                info.add("https://www.selver.ee" + href + "?limit=10000");
             }
         }
         return info;
@@ -140,16 +130,35 @@ public class SelverScraper extends WebScraper{
     public List<Toode> scrape() throws IOException {
         List<Toode> tooted = new ArrayList<>();
         List<String> urlid = URLiKirjed();
+        int count = 0;
 
         for (String url : urlid){
             String html = html(url);
 
             Document doc = Jsoup.parse(html);
 
-            //Proov
+            Elements info = doc.select("div.ProductCard__info");
+
+            for(Element tooteInfo : info){
+                if (count == 10) return tooted;
+
+                Element elemendiNimi = tooteInfo.selectFirst("a.ProductCard__link");
+                String nimi = elemendiNimi.ownText().trim();
+
+                Element elemendiHind = tooteInfo.selectFirst("div.ProductPrice");
+                String hind = elemendiHind.ownText().trim();
+
+
+                Element elemendiTykiHind = tooteInfo.selectFirst("span.ProductPrice__unit-price");
+                String tykihind = elemendiTykiHind.text().trim();
+
+                System.out.println(nimi + " " + hind + " " + tykihind);
+
+                count++;
+                //tooted.add(new Toode(nimi, hind, tykihind);
+            }
         }
-
-
+        chromedriver.quit();
 
         return tooted;
     }
