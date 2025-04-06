@@ -89,7 +89,58 @@ public class BarboraScraper extends WebScraper{
     //Kuna kõiki vahelehti ei saanud kohe alguses kätte, tuleb siin kasutada for loopi, et leida vahelehed, kus üldse tooted on.
     //Kui juhtub, et tooteid ei ole lehel või toodet pole hetkel valikus, võime loopi lõpetada sest mittesaadaval olevad tooted on viimased
     @Override
-    List<Toode> scrape() throws IOException {
-        return List.of();
+    public List<Toode> scrape() throws IOException {
+        List<String> urlid = URLikirjed();
+        List<Toode> tooted = new ArrayList<>();
+
+
+        for (String url : urlid){
+            int i = 2;
+
+            while (true) {
+                String vaheleht = url;
+
+                String html = html(vaheleht);
+                Document doc = Jsoup.parse(html);
+
+                Elements kaardid = doc.select("li[data-testid^=product-card]");
+
+                if (kaardid.isEmpty()) {
+                    break;
+                }
+
+                for (Element kaart : kaardid) {
+                    Element hindElement = kaart.selectFirst("meta[itemprop=price]");
+                    if (hindElement == null) {
+                        System.out.println("Hinnainfo puudub. Katkestan selle lehe töötlemise.");
+                        break;
+                    }
+
+                    String hindStr = hindElement.attr("content").replace(",", ".");
+                    double hind = Double.parseDouble(hindStr);
+
+                    Element nimiElement = kaart.selectFirst("span.tw-block");
+                    String nimi = nimiElement.text();
+
+                    /**
+                     * Kilohinda ei saa hetkel millegipärast, kuigi peaks olema selline html:
+                     * <div class="tw-text-[10px] tw-leading-3 tw-text-neutral-500  md:tw-text-xs">31,92€/kg</div>
+                     */
+                    Element yksusElement = kaart.selectFirst("div.tw-text-[10px].tw-leading-3.tw-text-neutral-500");
+                    String yksus = yksusElement != null ? yksusElement.text() : "";
+
+                    // Lisa andmed uue tootena (oma Toode klassi järgi kohenda vajadusel)
+                    //Toode item = new Item();
+
+                    System.out.println("Leitud toode: " + nimi + " | " + hind + "€ | " + yksus);
+                }
+
+                vaheleht = url + "?page=" + i;
+                i++;
+            }
+            break;
+        }
+        chromedriver.quit();
+        return tooted;
     }
 }
