@@ -57,9 +57,18 @@ public class OopProjektApplication {
          */
 
         // COOPi webScraper
-        //CoopScraper coop = new CoopScraper(this.poodRepository);
-        //List<Toode> coopTooted = coop.scrape();
-        //this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
+        CoopScraper coop = new CoopScraper(this.poodRepository);
+        List<Toode> coopTooted = coop.scrape();
+        System.out.println("Toodete andmebaasi lisamine");
+        this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
+        System.out.println("Kõik tooted lisatud!");
+
+        // Prisma webScraper
+        PrismaScraper prisma = new PrismaScraper(this.poodRepository);
+        List<Toode> prismaTooted = prisma.scrape();
+        System.out.println("Toodete andmebaasi lisamine");
+        this.toodeTeenus.lisaTootedAndmebaasi(prismaTooted);
+        System.out.println("Kõik tooted lisatud!");
 
         // Selveri webScraper
         SelverScraper selver = new SelverScraper(this.poodRepository);

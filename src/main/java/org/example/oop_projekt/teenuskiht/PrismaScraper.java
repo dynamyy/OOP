@@ -13,12 +13,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -29,7 +26,7 @@ public class PrismaScraper extends WebScraper {
 
     public PrismaScraper(PoodRepository poodRepository) throws URISyntaxException {
         super();
-        url = "https://www.prismamarket.ee/otsingutulemus?queryString=jaffa";
+        url = "https://www.prismamarket.ee/tooted/";
         this.poodRepository = poodRepository;
     }
 
@@ -42,15 +39,15 @@ public class PrismaScraper extends WebScraper {
             chromedriver.get(url);
 
             // Ootan kuni leht laeb, et ei tekiks vigu
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(15));
             wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-test-id='product-list'] > div"))));
 
             // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
             WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector("[data-test-id='product-result-total']"));
             // Üleliigne tekst eemaldatakse split meetodiga
-            //int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
+            int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-            scrolliLeheLoppu(5, "[data-test-id='product-list'] > div", "[data-test-id='product-list-item']");
+            scrolliLeheLoppu(200, "[data-test-id='product-list'] > div", "[data-test-id='product-list-item']");
             leheHTML = chromedriver.getPageSource();
         } finally {
             chromedriver.quit();
@@ -69,79 +66,55 @@ public class PrismaScraper extends WebScraper {
         Elements lapsed = doc.select("[data-test-id='product-list'] > div").first().children();
 
         // Ühik määrab, mis ühikutes peaks hiljem ühikuhinda kuvama (l / kg)
-        String tooteNimi, uhik;
-        String[] hindadeList, lisaHindadeList;
-        // Kliendihind on Coopi puhul hind säästukaardiga
+        String tooteNimi, uhik = "tk";
+
+        // Kliendihind on Prisma puhul hind säästukaardiga
         // tkHind ja uhikuHind on tavakliendi hind ehk ilma säästukaardita
         // Kui säästukaardiga erihinda pole (enamasti pole), siis tavakliendi hind == kliendi hind
-        double tkHind, uhikuHind, tkHindKlient, uhikuHindKlient;
-        double pant, kogus;
+        double tkHind, uhikuHind = 0, tkHindKlient = 0, uhikuHindKlient = 0;
         for (Element toode : lapsed) {
             tooteNimi = toode.select("[data-test-id='product-card__productName'] span").text();
-            System.out.println(tooteNimi);
 
             // Elements tooted sisaldab mõningaid üleliigseid ridu, skipin need
             if (tooteNimi.isEmpty()) continue;
 
-            // Saan toote tükihinna ja ühikuhinna
-            // See hind kehtib kindlasti säästukaardi omanikele.
-            // Kui säästukaardiga pole sätestatud erihinda (enamasti pole),
-            // siis tavakliendi hind == kliendi hind
-            hindadeList = toode.select("[data-test-id='product-card__productPrice']").text().split(" ");
-            System.out.println(Arrays.toString(hindadeList));
-            switch (hindadeList.length) {
-                case 4:
-                    tkHindKlient = tkHind = Double.parseDouble(hindadeList[0].replace(",", "."));
-                    uhikuHindKlient = uhikuHind = Double.parseDouble(hindadeList[2].replace(",", "."));
-                case 6:
-                    tkHindKlient = Double.parseDouble(hindadeList[0].replace(",", "."));
-                    tkHind = Double.parseDouble(hindadeList[2].replace(",", "."));
-                    uhik = hindadeList[hindadeList.length - 1].split("/")[1];
-                    uhikuHindKlient = Double.parseDouble(hindadeList[hindadeList.length - 2].replace(",", "."));
-                    uhikuHind = uhikuHindKlient / tkHindKlient * tkHind;
+            // Võtan hinnainfo konteineri, kust saan css-selectorite abil kõik vajaliku info kätte.
+            Elements hinnaInfo = toode.select("[data-test-id='product-card__productPrice']");
+
+            tkHind = tkHindKlient = Double.parseDouble(hinnaInfo.select("[data-test-id='product-price__unitPrice']")
+                    .text().split(" ")[0]
+                    .replace("~", "")
+                    .replace(",", "."));
+
+            Elements uhikuHindElement = hinnaInfo.select("[data-test-id='product-card__productPrice__comparisonPrice']");
+            if (!uhikuHindElement.isEmpty()) {
+                String[] uhikuHinnaInfo = uhikuHindElement.text().split(" ");
+                uhikuHind = uhikuHindKlient = Double.parseDouble(uhikuHinnaInfo[0].replace(",", "."));
+                uhik = uhikuHinnaInfo[1].split("/")[1];
             }
 
+            Elements soodukaTavahindElement = hinnaInfo.select("[data-test-id='product-price__lowest30DayPrice']");
+            if (!soodukaTavahindElement.isEmpty()) {
+                tkHindKlient = tkHind;
+                tkHind = Double.parseDouble(soodukaTavahindElement
+                        .text().split(" ")[0]
+                        .replace(",", "."));
+                if (uhikuHind != 0) uhikuHind = uhikuHindKlient / tkHindKlient * tkHind;
+            }
 
-            // Kui tootel on säästukaardiga erinev hind, siis tavakliendi hind on märgitud lisa hinnasilti
-//            if (lisaHindadeList.length > 4) {
-//
-//                System.out.println(Arrays.toString(lisaHindadeList));
-//
-//                // Lisahinnasilti märgitakse ka pant, mille kokkuleppeliselt liidame hinnale
-//                if (lisaHindadeList[1].equals("Pant")) {
-//                    pant = Double.parseDouble(lisaHindadeList[2]);
-//
-//                    // Arvutan toote koguse, et korrektselt suurendada liitrihinda
-//                    // Siin kliendihind ja tavakliendi hind on samad, seega ei pea korduvalt arvutama
-//                    kogus = (tkHind / uhikuHind) / (pant / 0.1);
-//
-//                    tkHindKlient = tkHind += pant;
-//                    // Kuna jagamistehe pant / kogus võib tekitada rohkem kui 2 komakohta, siis on vaja ümardada
-//                    // Kasutan BidDecimal, et vältida kümnendmurdude ja ümardamisega seotud vigu
-//                    // Tegelikult on siin arvutuses endiselt ümardamisvead, sest kogus pole juba täpne
-//                    uhikuHindKlient = uhikuHind += (new BigDecimal(pant / kogus).setScale(2, RoundingMode.HALF_UP)).doubleValue();
-//                }
-//
-//                // Kui panti pole, siis on tavakliendi hind
-//                else {
-//                    tkHind = Double.parseDouble(lisaHindadeList[2]);
-//                    uhikuHind = Double.parseDouble(lisaHindadeList[7]);
-//                }
-//            }
-//
-//            System.out.print(tooteNimi + " " + tkHind + "€ " + uhikuHind + "€/" + uhik);
-//            if (tkHind != tkHindKlient) System.out.println(" Säästukaardiga: " + tkHindKlient + "€ " + uhikuHindKlient + "€/" + uhik);
-//            else System.out.println();
-//
-//            Toode uusToode = new Toode(tooteNimi,
-//                    uhik,
-//                    tkHindKlient,
-//                    uhikuHindKlient,
-//                    poodRepository.findPoodByNimi("Coop"),
-//                    uhikuHind,
-//                    tkHind);
-//            tooted.add(uusToode);
-//        }
+            System.out.print(tooteNimi + " " + tkHind + "€ " + uhikuHind + "€/" + uhik);
+            if (tkHind != tkHindKlient) System.out.println(" Säästukaardiga: " + tkHindKlient + "€ " + uhikuHindKlient + "€/" + uhik);
+            else System.out.println();
+
+            Toode uusToode = new Toode(tooteNimi,
+                    uhik,
+                    tkHindKlient,
+                    uhikuHindKlient,
+                    poodRepository.findPoodByNimi("Prisma"),
+                    uhikuHind,
+                    tkHind);
+            tooted.add(uusToode);
+            System.out.println();
         }
         return tooted;
     }

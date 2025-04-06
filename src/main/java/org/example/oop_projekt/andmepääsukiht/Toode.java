@@ -41,8 +41,7 @@ public class Toode {
     private double tukiHind;
 
     @Column(
-            name = "hulga_hind",
-            nullable = false
+            name = "hulga_hind"
     )
     private double hulgaHind;
 
