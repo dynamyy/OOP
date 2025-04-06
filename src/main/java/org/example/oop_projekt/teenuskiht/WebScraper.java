@@ -15,6 +15,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -27,9 +28,9 @@ import java.util.List;
  */
 public abstract class WebScraper {
 
-    private WebDriver chromedriver;
+    private static WebDriver chromedriver;
 
-    WebDriver getChromedriver() {
+    public static WebDriver getChromedriver() {
         return chromedriver;
     }
 
@@ -64,7 +65,7 @@ public abstract class WebScraper {
     /**
      * Meetod scrape'imisloogika käivitamiseks
      */
-    abstract List<Toode> scrape();
+    abstract List<Toode> scrape() throws IOException;
 
 
     /**
