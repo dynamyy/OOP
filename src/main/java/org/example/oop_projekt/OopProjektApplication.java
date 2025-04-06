@@ -58,7 +58,7 @@ public class OopProjektApplication {
         //selver.scrape();
 
         BarboraScraper barbora = new BarboraScraper(this.poodRepository);
-        barbora.kategooriaVahelehed();
+        barbora.scrape();
 
 
     }
