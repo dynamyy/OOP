@@ -47,18 +47,27 @@ public class OopProjektApplication {
     @EventListener(ApplicationReadyEvent.class)
     public void initializeApp() throws Exception {
 
-        //COOPi webScraper
+        /*
+        Praegu Iga scraper klass paneb peale scrape'imist webdriveri kinni,
+        mis tekitab errorit kui kutsuda mitu scraperit järjest
+        Tuleb luua klass, mis tegelebki ainult scrape'imisloogikaga
+        (millal ja kui tihti ja milliseid poode scrape'ida)
+        See klass peaks ise looma ja lõpus sulgema chromedriveri,
+        siis ei teki mitut sulgemist ja avamist
+         */
+
+        // COOPi webScraper
         //CoopScraper coop = new CoopScraper(this.poodRepository);
         //List<Toode> coopTooted = coop.scrape();
-        //System.out.println("Toodete andmebaasi lisamine");
         //this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
-        System.out.println("Kõik tooted lisatud!");
 
-        //SelverScraper selver = new SelverScraper(this.poodRepository);
-        //selver.scrape();
+        // Selveri webScraper
+        SelverScraper selver = new SelverScraper(this.poodRepository);
+        selver.scrape();
 
+        // Barbora (maxima) webScraper
         BarboraScraper barbora = new BarboraScraper(this.poodRepository);
-        barbora.kategooriaVahelehed();
+        //barbora.kategooriaVahelehed();
 
 
     }
