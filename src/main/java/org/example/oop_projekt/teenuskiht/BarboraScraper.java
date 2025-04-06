@@ -85,7 +85,7 @@ public class BarboraScraper extends WebScraper{
 
 
     //Kasutan kõiki URL-e, et leida igal vahelele olevad tooted
-    //Barbora lehtedele tuleb lisada ?page=nr, kus nr tähendab vahelehte(alates teisest)
+    //Barbora lehtedele tuleb lisada ?page=nr, kus nr tähendab vahelehte(alates 2)
     //Kuna kõiki vahelehti ei saanud kohe alguses kätte, tuleb siin kasutada for loopi, et leida vahelehed, kus üldse tooted on.
     //Kui juhtub, et tooteid ei ole lehel või toodet pole hetkel valikus, võime loopi lõpetada sest mittesaadaval olevad tooted on viimased
     @Override
