@@ -47,7 +47,7 @@ public class PrismaScraper extends WebScraper {
             // Üleliigne tekst eemaldatakse split meetodiga
             int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-            scrolliLeheLoppu(200, "[data-test-id='product-list'] > div", "[data-test-id='product-list-item']");
+            scrolliLeheLoppu(100, "[data-test-id='product-list'] > div", "[data-test-id='product-list-item']");
             leheHTML = chromedriver.getPageSource();
         } finally {
             chromedriver.quit();
@@ -87,7 +87,7 @@ public class PrismaScraper extends WebScraper {
                     .replace(",", "."));
 
             Elements uhikuHindElement = hinnaInfo.select("[data-test-id='product-card__productPrice__comparisonPrice']");
-            if (!uhikuHindElement.isEmpty()) {
+            if (!uhikuHindElement.isEmpty() && uhikuHindElement.text().split(" ")[1].split("/").length > 1) {
                 String[] uhikuHinnaInfo = uhikuHindElement.text().split(" ");
                 uhikuHind = uhikuHindKlient = Double.parseDouble(uhikuHinnaInfo[0].replace(",", "."));
                 uhik = uhikuHinnaInfo[1].split("/")[1];

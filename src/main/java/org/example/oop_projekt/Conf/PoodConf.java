@@ -16,7 +16,7 @@ public class PoodConf {
 
     @Bean(name = "poodCommandLineRunner")
     @Order(1)
-    CommandLineRunner commandLineRunner(PoodRepository repo){
+    CommandLineRunner commandLineRunner(PoodRepository repo, PoodRepository poodRepository){
         return args -> {
 
             Pood coop = new Pood("Coop", new HashSet<>());
@@ -25,8 +25,10 @@ public class PoodConf {
             Pood rimi = new Pood("Rimi", new HashSet<>());
             Pood prisma = new Pood("Prisma", new HashSet<>());
 
-            repo.saveAll(List.of(coop, selver, maxima, rimi, prisma));
-
+            Pood dbPood = poodRepository.findPoodByNimi("Coop");
+            if (dbPood == null) {
+                repo.saveAll(List.of(coop, selver, maxima, rimi, prisma));
+            }
         };
     }
 

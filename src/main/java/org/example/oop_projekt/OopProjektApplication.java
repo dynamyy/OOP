@@ -47,18 +47,24 @@ public class OopProjektApplication {
     @EventListener(ApplicationReadyEvent.class)
     public void initializeApp() throws Exception {
 
-        //COOPi webScraper
-        //CoopScraper coop = new CoopScraper(this.poodRepository);
-        //List<Toode> coopTooted = coop.scrape();
-        //System.out.println("Toodete andmebaasi lisamine");
-        //this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
+//        COOPi webScraper
+//        CoopScraper coop = new CoopScraper(this.poodRepository);
+//        List<Toode> coopTooted = coop.scrape();
+//        System.out.println("Toodete andmebaasi lisamine");
+//        this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
+//        System.out.println("Kõik tooted lisatud!");
+
+        PrismaScraper prisma = new PrismaScraper(this.poodRepository);
+        List<Toode> prismaTooted = prisma.scrape();
+        System.out.println("Toodete andmebaasi lisamine");
+        this.toodeTeenus.lisaTootedAndmebaasi(prismaTooted);
         System.out.println("Kõik tooted lisatud!");
 
         //SelverScraper selver = new SelverScraper(this.poodRepository);
         //selver.scrape();
 
-        BarboraScraper barbora = new BarboraScraper(this.poodRepository);
-        barbora.scrape();
+//        BarboraScraper barbora = new BarboraScraper(this.poodRepository);
+//        barbora.scrape();
 
 
     }

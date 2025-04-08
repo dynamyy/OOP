@@ -6,6 +6,7 @@ import org.example.oop_projekt.andmepääsukiht.ToodeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Teenus, mis vastutab parsimistulemuste lisamise eest andmebaasi. Võtab toodete objektide
@@ -37,14 +38,19 @@ public class ToodeTeenus {
      */
     public void lisaTootedAndmebaasi(List<Toode> tooted) {
         for (Toode toode : tooted) {
-
-            Toode dbToode = toodeRepository.findToodeByNimetus(toode.getNimetus());
+            Toode dbToode = toodeRepository.findToodeByNimetusAndPood(toode.getNimetus(), toode.getPood());
             Pood pood = toode.getPood();
             pood = poodTeenus.getPoodToodetega(pood.getId());
 
             if (dbToode == null) {
                 pood.lisaToode(toode);
                 toodeRepository.save(toode);
+            } else {
+                dbToode.setHindKliendi(toode.getHindKliendi());
+                dbToode.setHulgaHind(toode.getHulgaHind());
+                dbToode.setHulgaHindKliendi(toode.getHulgaHindKliendi());
+                dbToode.setTukiHind(toode.getTukiHind());
+                toodeRepository.save(dbToode);
             }
         }
     }
