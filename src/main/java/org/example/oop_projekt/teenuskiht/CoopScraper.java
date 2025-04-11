@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * COOPi epoe scraper. Kuna COOP on vaikselt oma
@@ -80,7 +81,7 @@ public class CoopScraper extends WebScraper {
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);
-        Elements lapsed = doc.select(".products-wrapper").first().children();
+        Elements lapsed = Objects.requireNonNull(doc.select(".products-wrapper").first()).children();
 
         // Ühik määrab, mis ühikutes peaks hiljem ühikuhinda kuvama (l / kg)
         String tooteNimi, uhik, lisaHind;

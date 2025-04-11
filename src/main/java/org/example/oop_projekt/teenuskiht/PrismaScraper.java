@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PrismaScraper extends WebScraper {
@@ -63,7 +64,7 @@ public class PrismaScraper extends WebScraper {
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);
-        Elements lapsed = doc.select("[data-test-id='product-list'] > div").first().children();
+        Elements lapsed = Objects.requireNonNull(doc.select("[data-test-id='product-list'] > div").first()).children();
 
         // Ühik määrab, mis ühikutes peaks hiljem ühikuhinda kuvama (l / kg)
         String tooteNimi, uhik = "tk";
@@ -79,9 +80,16 @@ public class PrismaScraper extends WebScraper {
             if (tooteNimi.isEmpty()) continue;
 
             // Võtan hinnainfo konteineri, kust saan css-selectorite abil kõik vajaliku info kätte.
-            Elements hinnaInfo = toode.select("[data-test-id='product-card__productPrice']");
+            Elements hinnaInfo = toode.select("[data-test-id='product-card__product-price']");
+            System.out.println(tooteNimi);
 
-            tkHind = tkHindKlient = Double.parseDouble(hinnaInfo.select("[data-test-id='product-price__unitPrice']")
+            Elements tkHindProov = hinnaInfo.select("[data-test-id='product-price__unitPrice']");
+
+            if (tkHindProov.isEmpty()) { // Vaatan, kas eelmine data-test-id select on tühi, sest Prisma muudab neid id-sid
+                tkHindProov = hinnaInfo.select("[data-test-id='product-price__dynamic-unitPrice']");
+            }
+
+            tkHind = tkHindKlient = Double.parseDouble(tkHindProov
                     .text().split(" ")[0]
                     .replace("~", "")
                     .replace(",", "."));

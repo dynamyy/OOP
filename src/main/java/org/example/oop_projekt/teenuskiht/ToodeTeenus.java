@@ -43,7 +43,7 @@ public class ToodeTeenus {
             pood = poodTeenus.getPoodToodetega(pood.getId());
 
             if (dbToode == null) {
-                pood.lisaToode(toode);
+                poodTeenus.lisaToode(pood, toode);
                 toodeRepository.save(toode);
             } else {
                 dbToode.setHindKliendi(toode.getHindKliendi());

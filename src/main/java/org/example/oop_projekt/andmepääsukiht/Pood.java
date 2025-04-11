@@ -46,10 +46,6 @@ public class Pood {
     public Pood() {
     }
 
-    public void lisaToode(Toode toode) {
-        this.tooted.add(toode);
-    }
-
     @Override
     public String toString() {
         return "Pood{" +

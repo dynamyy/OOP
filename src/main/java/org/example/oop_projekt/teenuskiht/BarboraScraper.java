@@ -44,7 +44,7 @@ public class BarboraScraper extends WebScraper{
 
 
             WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-            wait.until(driver -> driver.findElements(By.cssSelector(".category-item--title")).size() > 0);
+            wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
 
 
             return chromedriver.getPageSource();
@@ -59,7 +59,7 @@ public class BarboraScraper extends WebScraper{
             chromedriver.get(url);
 
             WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-            wait.until(driver -> driver.findElements(By.cssSelector(".category-item--title")).size() > 0);
+            wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
             return chromedriver.getPageSource();
         } finally {
         }

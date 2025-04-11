@@ -6,6 +6,8 @@ import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -23,6 +25,12 @@ public class PoodTeenus {
         pood.getTooted().size(); // Toodete arvu leidmine sunnib poe lazy olekust välja ja seda saab kasutada.
                                 // Mulle see lahendus hetkel eriti ei meeldi, aga ei osanud muud välja mõelda.
         return pood;
+    }
+
+    public void lisaToode(Pood pood, Toode toode) {
+        Set<Toode> tooted = pood.getTooted();
+        tooted.add(toode);
+        pood.setTooted(tooted);
     }
 
 }
