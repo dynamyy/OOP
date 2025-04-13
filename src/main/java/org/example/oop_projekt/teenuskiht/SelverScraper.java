@@ -144,27 +144,33 @@ public class SelverScraper extends WebScraper{
                 Element elemendiNimi = tooteInfo.selectFirst("a.ProductCard__link");
                 String nimi = elemendiNimi.ownText().trim();
 
-                Element elemendiHind = tooteInfo.selectFirst("div.ProductPrice");
-                String hind = elemendiHind.ownText().trim();
+                Element elemendiTykiHind = tooteInfo.selectFirst("div.ProductPrice");
+                String tykihind = elemendiTykiHind.ownText().trim();
 
+                Element elemendiYhikuHind = tooteInfo.selectFirst("span.ProductPrice__unit-price");
+                String yhikuhind = elemendiYhikuHind.text().trim();
+                String yhik = yhikuhind.split("/")[1];
 
-                Element elemendiTykiHind = tooteInfo.selectFirst("span.ProductPrice__unit-price");
-                String tykihind = elemendiTykiHind.text().trim();
 
                 String kliendiHind = "";
                 try {
                     Element elemendiKliendiHind = tooteInfo.selectFirst("span.ProductBadge__badge--label");
                     kliendiHind = elemendiKliendiHind.text().trim();
                 } catch (Exception e){
-                    System.out.println("Puudub partnerkaardi hind");
+                    System.out.println("Puudub partnerkaardi soodustus");
                 }
 
+                String yhikuHindKlient;//Selle jaoks oleks vaja leida toote kogus
 
-                System.out.println("Nimi: " + nimi + ", hind: " + hind + ", tükihind: " + tykihind + ", kliendihind: " + kliendiHind);
+                System.out.println("Nimi: " + nimi +
+                        ", tükihind: " + tykihind +
+                        ", ühikuhind: " + yhikuhind +
+                        ", kliendihind: " + kliendiHind +
+                        ", ühik: " + yhik);
 
                 count++;
-                //tootele on vaja veel kliendikaardi hinda
-                //Toode toode = new Toode();
+
+                //Toode toode = new Toode(nimi, yhik, tykiHindKlient, yhikuHindKlient, new HashSet<>(), yhikuHind, tykiHind);
                 //toode.lisaPood(poodRepository.findPoodByNimi("Selver");
                 //tooted.add(toode);
             }

@@ -97,8 +97,8 @@ public class BarboraScraper extends WebScraper{
         for (String url : urlid){
             int i = 2;
 
+            String vaheleht = url;
             while (true) {
-                String vaheleht = url;
 
                 String html = html(vaheleht);
                 Document doc = Jsoup.parse(html);
@@ -122,17 +122,36 @@ public class BarboraScraper extends WebScraper{
                     Element nimiElement = kaart.selectFirst("span.tw-block");
                     String nimi = nimiElement.text();
 
-                    /**
-                     * Kilohinda ei saa hetkel millegipärast, kuigi peaks olema selline html:
-                     * <div class="tw-text-[10px] tw-leading-3 tw-text-neutral-500  md:tw-text-xs">31,92€/kg</div>
-                     */
-                    Element yksusElement = kaart.selectFirst("div.tw-text-[10px].tw-leading-3.tw-text-neutral-500");
-                    String yksus = yksusElement != null ? yksusElement.text() : "";
 
-                    // Lisa andmed uue tootena (oma Toode klassi järgi kohenda vajadusel)
-                    //Toode item = new Item();
+                    Element yhikuHindElement = kaart.selectFirst("div.tw-text-\\[10px\\]");
+                    String yhikuHind = yhikuHindElement != null ? yhikuHindElement.text() : "";
+                    String yhik = yhikuHind.split("/")[1];
 
-                    System.out.println("Leitud toode: " + nimi + " | " + hind + "€ | " + yksus);
+
+                    Element yhikuHindKlientElement;
+                    String yhikuHindKlient = "";
+                    Element tykiHindKlientElement;
+                    String tykiHindKlient = "";
+
+                    try{
+
+
+                    }catch (Exception e){
+                        System.out.println("Puudub kliendihind");
+                    }
+
+
+                    //Lisa andmed uue tootena (oma Toode klassi järgi kohenda vajadusel)
+                    //Toode toode = new Toode(nimi, yhik, tykiHindKlient, yhikuHindKlient, new HashSet<>(), yhikuHind, tykiHind);
+                    //toode.lisaPood(poodRepository.findPoodByNimi("Barbora")
+
+
+                    System.out.println("Nimi: " + nimi +
+                            ", tükihind: " + hind +
+                            ", ühikuhind: " + yhikuHind +
+                            ", kliendihind: " + tykiHindKlient +
+                            ", kliendi ühikuhind: " + yhikuHindKlient +
+                            ", ühik: " + yhik);
                 }
 
                 vaheleht = url + "?page=" + i;
