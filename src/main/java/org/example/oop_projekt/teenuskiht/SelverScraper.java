@@ -67,8 +67,6 @@ public class SelverScraper extends WebScraper{
      */
     @Override
     String hangiDynamicSource() {
-        String leheHTML;
-
         try {
             chromedriver.get(url);
 
@@ -82,7 +80,7 @@ public class SelverScraper extends WebScraper{
     }
 
 
-    //Vahelehtede html leidmind
+    //Vahelehtede html leidmine
     public static String html(String url) {
         WebDriver chromedriver = getChromedriver();
         try {
@@ -100,6 +98,7 @@ public class SelverScraper extends WebScraper{
 
     /*
     Leian kõik URL-d
+
      */
     public List<String> URLiKirjed() throws IOException {
         List<String> info = new ArrayList<>();

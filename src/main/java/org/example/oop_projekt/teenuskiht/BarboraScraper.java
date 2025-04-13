@@ -37,8 +37,6 @@ public class BarboraScraper extends WebScraper{
     //Esilehe html
     @Override
     String hangiDynamicSource() {
-        String leheHTML;
-
         try{
             chromedriver.get(url);
 
