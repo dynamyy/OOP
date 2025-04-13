@@ -54,11 +54,11 @@ public class OopProjektApplication {
         //this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
         System.out.println("Kõik tooted lisatud!");
 
-        //SelverScraper selver = new SelverScraper(this.poodRepository);
-        //selver.scrape();
+        SelverScraper selver = new SelverScraper(this.poodRepository);
+        selver.scrape();
 
-        BarboraScraper barbora = new BarboraScraper(this.poodRepository);
-        barbora.scrape();
+        //BarboraScraper barbora = new BarboraScraper(this.poodRepository);
+        //barbora.scrape();
 
 
     }

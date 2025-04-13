@@ -151,10 +151,22 @@ public class SelverScraper extends WebScraper{
                 Element elemendiTykiHind = tooteInfo.selectFirst("span.ProductPrice__unit-price");
                 String tykihind = elemendiTykiHind.text().trim();
 
-                System.out.println(nimi + " " + hind + " " + tykihind);
+                String kliendiHind = "";
+                try {
+                    Element elemendiKliendiHind = tooteInfo.selectFirst("span.ProductBadge__badge--label");
+                    kliendiHind = elemendiKliendiHind.text().trim();
+                } catch (Exception e){
+                    System.out.println("Puudub partnerkaardi hind");
+                }
+
+
+                System.out.println("Nimi: " + nimi + ", hind: " + hind + ", tükihind: " + tykihind + ", kliendihind: " + kliendiHind);
 
                 count++;
-                //tooted.add(new Toode(nimi, hind, tykihind);
+                //tootele on vaja veel kliendikaardi hinda
+                //Toode toode = new Toode();
+                //toode.lisaPood(poodRepository.findPoodByNimi("Selver");
+                //tooted.add(toode);
             }
         }
         chromedriver.quit();

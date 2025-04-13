@@ -21,11 +21,11 @@ public class PoodConf {
 
             Pood coop = new Pood("Coop", new HashSet<>());
             Pood selver = new Pood("Selver", new HashSet<>());
-            Pood maxima = new Pood("Maxima", new HashSet<>());
+            Pood barbora = new Pood("Barbora", new HashSet<>());
             Pood rimi = new Pood("Rimi", new HashSet<>());
             Pood prisma = new Pood("Prisma", new HashSet<>());
 
-            repo.saveAll(List.of(coop, selver, maxima, rimi, prisma));
+            repo.saveAll(List.of(coop, selver, barbora, rimi, prisma));
 
         };
     }
