@@ -31,45 +31,36 @@ public class BarboraScraper extends WebScraper{
         this.poodRepository = poodRepository;
     }
 
-    static WebDriver chromedriver = getChromedriver();
-
 
     //Esilehe html
     @Override
-    String hangiDynamicSource() {
+    String hangiDynamicSource(WebDriver chromedriver) {
         String leheHTML;
 
-        try{
-            chromedriver.get(url);
+        chromedriver.get(url);
 
 
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-            wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
+        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
 
 
-            return chromedriver.getPageSource();
-        } finally {
-        }
+        return chromedriver.getPageSource();
     }
 
     //Vahelehtede html leidmine
-    public static String html(String url) {
-        WebDriver chromedriver = getChromedriver();
-        try {
-            chromedriver.get(url);
+    public static String html(WebDriver chromedriver, String url) {
+        chromedriver.get(url);
 
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-            wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
-            return chromedriver.getPageSource();
-        } finally {
-        }
+        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
+        return chromedriver.getPageSource();
     }
 
 
     //Leian kõik URL-d
-    public List<String> URLikirjed() throws IOException {
+    public List<String> URLikirjed(WebDriver chromedriver) throws IOException {
         List<String> info = new ArrayList<>();
-        String s = hangiDynamicSource();
+        String s = hangiDynamicSource(chromedriver);
         Document doc = Jsoup.parse(s);
         Elements links = doc.select("a.category-item--title");
 
@@ -89,8 +80,8 @@ public class BarboraScraper extends WebScraper{
     //Kuna kõiki vahelehti ei saanud kohe alguses kätte, tuleb siin kasutada for loopi, et leida vahelehed, kus üldse tooted on.
     //Kui juhtub, et tooteid ei ole lehel või toodet pole hetkel valikus, võime loopi lõpetada sest mittesaadaval olevad tooted on viimased
     @Override
-    public List<Toode> scrape() throws IOException {
-        List<String> urlid = URLikirjed();
+    public List<Toode> scrape(WebDriver chromedriver) throws IOException {
+        List<String> urlid = URLikirjed(chromedriver);
         List<Toode> tooted = new ArrayList<>();
 
 
@@ -100,7 +91,7 @@ public class BarboraScraper extends WebScraper{
             while (true) {
                 String vaheleht = url;
 
-                String html = html(vaheleht);
+                String html = html(chromedriver, vaheleht);
                 Document doc = Jsoup.parse(html);
 
                 Elements kaardid = doc.select("li[data-testid^=product-card]");
@@ -140,7 +131,6 @@ public class BarboraScraper extends WebScraper{
             }
             break;
         }
-        chromedriver.quit();
         return tooted;
     }
 }

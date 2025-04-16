@@ -44,40 +44,36 @@ public class CoopScraper extends WebScraper {
     }
 
     @Override
-    String hangiDynamicSource() {
-        WebDriver chromedriver = getChromedriver();
+    String hangiDynamicSource(WebDriver chromedriver) {
         String leheHTML;
 
-        try {
-            chromedriver.get(url);
+        chromedriver.get(url);
 
-            // Ootan kuni leht laeb, et ei tekiks vigu
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-            wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.option:nth-child(1)"))));
+        // Ootan kuni leht laeb, et ei tekiks vigu
+        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.option:nth-child(1)"))));
 
-            // Vajutab nuppu "Ühel lehel", et
-            // kuvataks kõik tooted
-            chromedriver.findElement(By.cssSelector("span.option:nth-child(1)")).click();
+        // Vajutab nuppu "Ühel lehel", et
+        // kuvataks kõik tooted
+        chromedriver.findElement(By.cssSelector("span.option:nth-child(1)")).click();
 
-            // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
-            WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector(".count"));
-            // Üleliigne tekst eemaldatakse split meetodiga
-            int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
+        // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
+        WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector(".count"));
+        // Üleliigne tekst eemaldatakse split meetodiga
+        int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-            scrolliLeheLoppu(300, ".products-wrapper", "app-product-card.item");
+        scrolliLeheLoppu(chromedriver, 300, ".products-wrapper", "app-product-card.item");
 
-            leheHTML = chromedriver.getPageSource();
-        } finally {
-            chromedriver.quit();
-        }
+        leheHTML = chromedriver.getPageSource();
+
 
         return leheHTML;
     }
 
     @Override
-    public List<Toode> scrape() {
+    public List<Toode> scrape(WebDriver chromedriver) {
         List<Toode> tooted = new ArrayList<>();
-        String lahtekood = hangiDynamicSource();
+        String lahtekood = hangiDynamicSource(chromedriver);
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);

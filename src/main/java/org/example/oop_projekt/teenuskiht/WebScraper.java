@@ -27,45 +27,17 @@ import java.util.List;
  * Iga poe scraper peaks laiendama seda klassi.
  */
 public abstract class WebScraper {
-
-    private static WebDriver chromedriver;
-
-    public static WebDriver getChromedriver() {
-        return chromedriver;
-    }
-
-
-    /**
-     * Seadistab chromedriveri
-     * @throws URISyntaxException
-     */
-    public WebScraper() throws URISyntaxException {
-        // Viitab chromedriver.exe failile resources kaustas
-        URL cdResource = WebScraper.class.getClassLoader().getResource("chromedriver.exe");
-        // Failitee teisendamine, et toetada utf-8 kaustade nimesid
-        assert cdResource != null;
-        String cdPath = Paths.get(cdResource.toURI()).toString();
-
-        System.setProperty("webdriver.chrome.driver", cdPath);
-
-        // Sean chromedriveri jooksma peidetult
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-
-        chromedriver = new ChromeDriver(options);
-    }
-
     /**
      * Kasutab Seleniumi ja chromedriverit, et saada lehe lähtekood.
      * See võimaldab saada andmeid lehtdelet, mis vajavad javascripti
      * tööriistu või muusugust kasutaja sisendit
      */
-    abstract String hangiDynamicSource();
+    abstract String hangiDynamicSource(WebDriver chromedriver);
 
     /**
      * Meetod scrape'imisloogika käivitamiseks
      */
-    abstract List<Toode> scrape() throws IOException;
+    abstract List<Toode> scrape(WebDriver chromedriver) throws IOException;
 
 
     /**
@@ -89,7 +61,7 @@ public abstract class WebScraper {
      * @param VanemaCss Viide elemendile, mis on laste vanem
      * @param lapseCss Viide lapsele endale (üldine mitte mingile kindlale elemendile)
      */
-    void scrolliLeheLoppu(int oodatavLasteArv, String VanemaCss, String lapseCss) {
+    void scrolliLeheLoppu(WebDriver chromedriver, int oodatavLasteArv, String VanemaCss, String lapseCss) {
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(5));
         JavascriptExecutor js = (JavascriptExecutor) chromedriver;
 

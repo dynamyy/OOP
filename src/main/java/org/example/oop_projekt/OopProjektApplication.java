@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
@@ -47,23 +48,27 @@ public class OopProjektApplication {
     @EventListener(ApplicationReadyEvent.class)
     public void initializeApp() throws Exception {
 
-//        COOPi webScraper
-//        CoopScraper coop = new CoopScraper(this.poodRepository);
-//        List<Toode> coopTooted = coop.scrape();
-//        System.out.println("Toodete andmebaasi lisamine");
-//        this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
-//        System.out.println("Kõik tooted lisatud!");
+        // Scraperite loomine
+        List<WebScraper> scraperid = new ArrayList<>();
+        scraperid.add(new CoopScraper(this.poodRepository));
+        scraperid.add(new PrismaScraper(this.poodRepository));
+        scraperid.add(new SelverScraper(this.poodRepository));
+        scraperid.add(new BarboraScraper(this.poodRepository));
 
-        PrismaScraper prisma = new PrismaScraper(this.poodRepository);
-        List<Toode> prismaTooted = prisma.scrape();
-        System.out.println("Toodete andmebaasi lisamine");
-        this.toodeTeenus.lisaTootedAndmebaasi(prismaTooted);
-        System.out.println("Kõik tooted lisatud!");
+        ScraperController scraper = new ScraperController(scraperid, this.toodeTeenus);
+        scraper.scrapeAll();
 
-        //SelverScraper selver = new SelverScraper(this.poodRepository);
+
+
+
+        //List<Toode> coopTooted = coop.scrape();
+        //this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
+
+//        List<Toode> prismaTooted = prisma.scrape();
+//        this.toodeTeenus.lisaTootedAndmebaasi(prismaTooted);
+
         //selver.scrape();
 
-//        BarboraScraper barbora = new BarboraScraper(this.poodRepository);
 //        barbora.scrape();
 
 

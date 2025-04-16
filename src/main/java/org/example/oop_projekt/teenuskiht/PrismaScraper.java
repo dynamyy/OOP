@@ -32,35 +32,30 @@ public class PrismaScraper extends WebScraper {
     }
 
     @Override
-    String hangiDynamicSource() {
-        WebDriver chromedriver = getChromedriver();
+    String hangiDynamicSource(WebDriver chromedriver) {
         String leheHTML;
 
-        try {
-            chromedriver.get(url);
+        chromedriver.get(url);
 
-            // Ootan kuni leht laeb, et ei tekiks vigu
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(15));
-            wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-test-id='product-list'] > div"))));
+        // Ootan kuni leht laeb, et ei tekiks vigu
+        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(15));
+        wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-test-id='product-list'] > div"))));
 
-            // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
-            WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector("[data-test-id='product-result-total']"));
-            // Üleliigne tekst eemaldatakse split meetodiga
-            int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
+        // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
+        WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector("[data-test-id='product-result-total']"));
+        // Üleliigne tekst eemaldatakse split meetodiga
+        int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-            scrolliLeheLoppu(100, "[data-test-id='product-list'] > div", "[data-test-id='product-list-item']");
-            leheHTML = chromedriver.getPageSource();
-        } finally {
-            chromedriver.quit();
-        }
+        scrolliLeheLoppu(chromedriver, 100, "[data-test-id='product-list'] > div", "[data-test-id='product-list-item']");
+        leheHTML = chromedriver.getPageSource();
 
         return leheHTML;
     }
 
     @Override
-    public List<Toode> scrape() {
+    public List<Toode> scrape(WebDriver chromedriver) {
         List<Toode> tooted = new ArrayList<>();
-        String lahtekood = hangiDynamicSource();
+        String lahtekood = hangiDynamicSource(chromedriver);
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);
