@@ -56,8 +56,8 @@ public class SelverScraper extends WebScraper{
     private final PoodRepository poodRepository;
     private String url = "https://www.selver.ee/";
 
-    public SelverScraper(PoodRepository poodRepository) throws URISyntaxException {
-        super();
+    public SelverScraper(PoodRepository poodRepository) {
+        super("Selver");
         this.poodRepository = poodRepository;
     }
 
@@ -65,24 +65,25 @@ public class SelverScraper extends WebScraper{
     Leian esilehe HTML-i
      */
     @Override
-    String hangiDynamicSource(WebDriver chromedriver) {
-        String leheHTML;
+    String hangiDynamicSource() {
+        WebDriver chromedriver = getChromedriver();
 
         chromedriver.get(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        ootaLeheLaadimist("li.SidebarMenu__item");
 
         return chromedriver.getPageSource();
     }
 
 
     //Vahelehtede html leidmind
-    public static String html(WebDriver chromedriver, String url) {
+    public String html(String url) {
+        WebDriver chromedriver = getChromedriver();
         chromedriver.get(url);
 
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-        wait.until(driver -> driver.findElements(By.cssSelector(".ProductCard__info")).size() > 0);
+        wait.until(driver -> !driver.findElements(By.cssSelector(".ProductCard__info")).isEmpty());
 
         return chromedriver.getPageSource();
     }
@@ -92,9 +93,9 @@ public class SelverScraper extends WebScraper{
     /*
     Leian kõik URL-d
      */
-    public List<String> URLiKirjed(WebDriver chromedriver) throws IOException {
+    public List<String> URLiKirjed() throws IOException {
         List<String> info = new ArrayList<>();
-        String s = hangiDynamicSource(chromedriver);
+        String s = hangiDynamicSource();
         Document doc = Jsoup.parse(s);
 
         Elements links = doc.select("a.SidebarMenu__link");
@@ -118,12 +119,13 @@ public class SelverScraper extends WebScraper{
      */
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws IOException {
+        setChromedriver(chromedriver);
         List<Toode> tooted = new ArrayList<>();
-        List<String> urlid = URLiKirjed(chromedriver);
+        List<String> urlid = URLiKirjed();
         int count = 0;
 
         for (String url : urlid){
-            String html = html(chromedriver, url);
+            String html = html(url);
 
             Document doc = Jsoup.parse(html);
 
@@ -141,8 +143,6 @@ public class SelverScraper extends WebScraper{
 
                 Element elemendiTykiHind = tooteInfo.selectFirst("span.ProductPrice__unit-price");
                 String tykihind = elemendiTykiHind.text().trim();
-
-                System.out.println(nimi + " " + hind + " " + tykihind);
 
                 count++;
                 //tooted.add(new Toode(nimi, hind, tykihind);

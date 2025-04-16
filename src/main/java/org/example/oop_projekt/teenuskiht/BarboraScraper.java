@@ -26,19 +26,17 @@ public class BarboraScraper extends WebScraper{
     private final PoodRepository poodRepository;
     private String url = "https://barbora.ee/";
 
-    public BarboraScraper(PoodRepository poodRepository) throws URISyntaxException {
-        super();
+    public BarboraScraper(PoodRepository poodRepository) {
+        super("Barbora");
         this.poodRepository = poodRepository;
     }
 
 
     //Esilehe html
     @Override
-    String hangiDynamicSource(WebDriver chromedriver) {
-        String leheHTML;
-
+    String hangiDynamicSource() {
+        WebDriver chromedriver = getChromedriver();
         chromedriver.get(url);
-
 
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
         wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
@@ -48,19 +46,21 @@ public class BarboraScraper extends WebScraper{
     }
 
     //Vahelehtede html leidmine
-    public static String html(WebDriver chromedriver, String url) {
+    public String html(String url) {
+        WebDriver chromedriver = getChromedriver();
         chromedriver.get(url);
 
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
         wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
+
         return chromedriver.getPageSource();
     }
 
 
     //Leian kõik URL-d
-    public List<String> URLikirjed(WebDriver chromedriver) throws IOException {
+    public List<String> URLikirjed() throws IOException {
         List<String> info = new ArrayList<>();
-        String s = hangiDynamicSource(chromedriver);
+        String s = hangiDynamicSource();
         Document doc = Jsoup.parse(s);
         Elements links = doc.select("a.category-item--title");
 
@@ -81,7 +81,8 @@ public class BarboraScraper extends WebScraper{
     //Kui juhtub, et tooteid ei ole lehel või toodet pole hetkel valikus, võime loopi lõpetada sest mittesaadaval olevad tooted on viimased
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws IOException {
-        List<String> urlid = URLikirjed(chromedriver);
+        setChromedriver(chromedriver);
+        List<String> urlid = URLikirjed();
         List<Toode> tooted = new ArrayList<>();
 
 
@@ -91,7 +92,7 @@ public class BarboraScraper extends WebScraper{
             while (true) {
                 String vaheleht = url;
 
-                String html = html(chromedriver, vaheleht);
+                String html = html(vaheleht);
                 Document doc = Jsoup.parse(html);
 
                 Elements kaardid = doc.select("li[data-testid^=product-card]");

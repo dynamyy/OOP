@@ -27,12 +27,31 @@ import java.util.List;
  * Iga poe scraper peaks laiendama seda klassi.
  */
 public abstract class WebScraper {
+    private WebDriver chromedriver;
+    private String poeNimi;
+
+    public String getPoeNimi() {
+        return poeNimi;
+    }
+
+    public void setChromedriver(WebDriver chromedriver) {
+        this.chromedriver = chromedriver;
+    }
+
+    public WebDriver getChromedriver() {
+        return chromedriver;
+    }
+
+    public WebScraper(String poeNimi) {
+        this.poeNimi = poeNimi;
+    }
+
     /**
      * Kasutab Seleniumi ja chromedriverit, et saada lehe lähtekood.
      * See võimaldab saada andmeid lehtdelet, mis vajavad javascripti
      * tööriistu või muusugust kasutaja sisendit
      */
-    abstract String hangiDynamicSource(WebDriver chromedriver);
+    abstract String hangiDynamicSource();
 
     /**
      * Meetod scrape'imisloogika käivitamiseks
@@ -61,7 +80,7 @@ public abstract class WebScraper {
      * @param VanemaCss Viide elemendile, mis on laste vanem
      * @param lapseCss Viide lapsele endale (üldine mitte mingile kindlale elemendile)
      */
-    void scrolliLeheLoppu(WebDriver chromedriver, int oodatavLasteArv, String VanemaCss, String lapseCss) {
+    void scrolliLeheLoppu(int oodatavLasteArv, String VanemaCss, String lapseCss) {
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(5));
         JavascriptExecutor js = (JavascriptExecutor) chromedriver;
 
@@ -80,5 +99,17 @@ public abstract class WebScraper {
             // Leian uue laste arvu
             lasteArv = leiaLapsed(chromedriver.getPageSource(), VanemaCss).size();
         }
+    }
+
+    /**
+     * Ootab kuni leht on laetud.
+     * Kontrollib kindla elementi olemasolu, mis on
+     * dünaamilistel lehtedel (sisuliselt kõik tänapäevased lehed)
+     * kindlam kui document.readyState kontrollimine
+     * @param cssSelector elemendi CSS Selector, mille olemasolu kontrollida
+     */
+    void ootaLeheLaadimist(String cssSelector) {
+        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector))));
     }
 }

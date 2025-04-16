@@ -25,28 +25,28 @@ public class PrismaScraper extends WebScraper {
     private final PoodRepository poodRepository;
     private String url;
 
-    public PrismaScraper(PoodRepository poodRepository) throws URISyntaxException {
-        super();
+    public PrismaScraper(PoodRepository poodRepository) {
+        super("Prisma");
         url = "https://www.prismamarket.ee/tooted/";
         this.poodRepository = poodRepository;
     }
 
     @Override
-    String hangiDynamicSource(WebDriver chromedriver) {
+    String hangiDynamicSource() {
+        WebDriver chromedriver = getChromedriver();
         String leheHTML;
 
         chromedriver.get(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(15));
-        wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-test-id='product-list'] > div"))));
+        ootaLeheLaadimist("[data-test-id='product-list'] > div");
 
         // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
         WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector("[data-test-id='product-result-total']"));
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        scrolliLeheLoppu(chromedriver, 100, "[data-test-id='product-list'] > div", "[data-test-id='product-list-item']");
+        scrolliLeheLoppu(100, "[data-test-id='product-list'] > div", "[data-test-id='product-list-item']");
         leheHTML = chromedriver.getPageSource();
 
         return leheHTML;
@@ -54,8 +54,9 @@ public class PrismaScraper extends WebScraper {
 
     @Override
     public List<Toode> scrape(WebDriver chromedriver) {
+        setChromedriver(chromedriver);
         List<Toode> tooted = new ArrayList<>();
-        String lahtekood = hangiDynamicSource(chromedriver);
+        String lahtekood = hangiDynamicSource();
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);
@@ -76,7 +77,6 @@ public class PrismaScraper extends WebScraper {
 
             // Võtan hinnainfo konteineri, kust saan css-selectorite abil kõik vajaliku info kätte.
             Elements hinnaInfo = toode.select("[data-test-id='product-card__product-price']");
-            System.out.println(tooteNimi);
 
             Elements tkHindProov = hinnaInfo.select("[data-test-id='product-price__unitPrice']");
 
@@ -105,10 +105,6 @@ public class PrismaScraper extends WebScraper {
                 if (uhikuHind != 0) uhikuHind = uhikuHindKlient / tkHindKlient * tkHind;
             }
 
-            System.out.print(tooteNimi + " " + tkHind + "€ " + uhikuHind + "€/" + uhik);
-            if (tkHind != tkHindKlient) System.out.println(" Säästukaardiga: " + tkHindKlient + "€ " + uhikuHindKlient + "€/" + uhik);
-            else System.out.println();
-
             Toode uusToode = new Toode(tooteNimi,
                     uhik,
                     tkHindKlient,
@@ -117,7 +113,6 @@ public class PrismaScraper extends WebScraper {
                     uhikuHind,
                     tkHind);
             tooted.add(uusToode);
-            System.out.println();
         }
         return tooted;
     }

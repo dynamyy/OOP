@@ -53,25 +53,10 @@ public class OopProjektApplication {
         scraperid.add(new CoopScraper(this.poodRepository));
         scraperid.add(new PrismaScraper(this.poodRepository));
         scraperid.add(new SelverScraper(this.poodRepository));
-        scraperid.add(new BarboraScraper(this.poodRepository));
+        //scraperid.add(new BarboraScraper(this.poodRepository));
 
         ScraperController scraper = new ScraperController(scraperid, this.toodeTeenus);
         scraper.scrapeAll();
-
-
-
-
-        //List<Toode> coopTooted = coop.scrape();
-        //this.toodeTeenus.lisaTootedAndmebaasi(coopTooted);
-
-//        List<Toode> prismaTooted = prisma.scrape();
-//        this.toodeTeenus.lisaTootedAndmebaasi(prismaTooted);
-
-        //selver.scrape();
-
-//        barbora.scrape();
-
-
     }
 
 }

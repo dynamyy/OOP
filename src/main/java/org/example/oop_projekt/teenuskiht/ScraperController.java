@@ -32,21 +32,28 @@ public class ScraperController {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
 
-        chromedriver = new ChromeDriver(options);
+        chromedriver = new ChromeDriver();
     }
 
 
+    /**
+     * Scrapeb kõik poed ja lisab saadud tooted andmebaasi
+     * @throws IOException -
+     */
     public void scrapeAll() throws IOException {
         List<Toode> tooted;
 
+        // Scrapib kõik poed ja lisab tooted andmebaasi
         for (WebScraper pood : scraperid) {
-            System.out.println("Alustan scrapemist");
+            System.out.println("Alustan " + pood.getPoeNimi() + " scrapemist");
             tooted = pood.scrape(chromedriver);
-            System.out.println("Sain andmed, lisan andmebaasi");
+
+            System.out.println("Sain " + pood.getPoeNimi() + " andmed, lisan andmebaasi (" + tooted.size() + ") toodet");
             this.toodeTeenus.lisaTootedAndmebaasi(tooted);
         }
 
         System.out.println("Kõik scrapetud ja andmebaasi lisatud");
+        chromedriver.quit();
     }
 
 }

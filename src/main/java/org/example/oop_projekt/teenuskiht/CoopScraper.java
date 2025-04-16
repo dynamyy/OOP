@@ -35,26 +35,25 @@ import java.util.Objects;
 public class CoopScraper extends WebScraper {
 
     private final PoodRepository poodRepository;
-    private String url;
+    private final String url;
 
-    public CoopScraper(PoodRepository poodRepository) throws URISyntaxException {
-        super();
+    public CoopScraper(PoodRepository poodRepository) {
+        super("COOP");
         url = "https://hiiumaa.ecoop.ee/et/tooted";
         this.poodRepository = poodRepository;
     }
 
     @Override
-    String hangiDynamicSource(WebDriver chromedriver) {
+    String hangiDynamicSource() {
+        WebDriver chromedriver = getChromedriver();
         String leheHTML;
 
         chromedriver.get(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-        wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.option:nth-child(1)"))));
+        ootaLeheLaadimist("span.option:nth-child(1)");
 
-        // Vajutab nuppu "Ühel lehel", et
-        // kuvataks kõik tooted
+        // Vajutab nuppu "Ühel lehel", et kuvataks kõik tooted
         chromedriver.findElement(By.cssSelector("span.option:nth-child(1)")).click();
 
         // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
@@ -62,7 +61,7 @@ public class CoopScraper extends WebScraper {
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        scrolliLeheLoppu(chromedriver, 300, ".products-wrapper", "app-product-card.item");
+        scrolliLeheLoppu(300, ".products-wrapper", "app-product-card.item");
 
         leheHTML = chromedriver.getPageSource();
 
@@ -72,8 +71,10 @@ public class CoopScraper extends WebScraper {
 
     @Override
     public List<Toode> scrape(WebDriver chromedriver) {
+        setChromedriver(chromedriver);
+
         List<Toode> tooted = new ArrayList<>();
-        String lahtekood = hangiDynamicSource(chromedriver);
+        String lahtekood = hangiDynamicSource();
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);
@@ -129,10 +130,6 @@ public class CoopScraper extends WebScraper {
                     uhikuHind = Double.parseDouble(lisaHindadeList[7]);
                 }
             }
-
-            System.out.print(tooteNimi + " " + tkHind + "€ " + uhikuHind + "€/" + uhik);
-            if (tkHind != tkHindKlient) System.out.println(" Säästukaardiga: " + tkHindKlient + "€ " + uhikuHindKlient + "€/" + uhik);
-            else System.out.println();
 
             Toode uusToode = new Toode(tooteNimi,
                                     uhik,
