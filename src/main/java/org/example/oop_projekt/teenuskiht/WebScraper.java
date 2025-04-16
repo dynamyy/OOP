@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -29,6 +30,8 @@ import java.util.List;
 public abstract class WebScraper {
     private WebDriver chromedriver;
     private String poeNimi;
+    private WebDriverWait driverWait;
+    private JavascriptExecutor jsExec;
 
     public String getPoeNimi() {
         return poeNimi;
@@ -36,6 +39,8 @@ public abstract class WebScraper {
 
     public void setChromedriver(WebDriver chromedriver) {
         this.chromedriver = chromedriver;
+        driverWait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        jsExec = (JavascriptExecutor) chromedriver;
     }
 
     public WebDriver getChromedriver() {
@@ -75,41 +80,54 @@ public abstract class WebScraper {
     }
 
     /**
-     * Scrollib kuni etteantud arv lapselemente on laetud
+     * Scrollib kuni etteantud arv lapselemente on laetud.
      * @param oodatavLasteArv Kui palju elemente peaks laadima
-     * @param VanemaCss Viide elemendile, mis on laste vanem
      * @param lapseCss Viide lapsele endale (üldine mitte mingile kindlale elemendile)
+     * @return true kui scrollimine oli edukas, false kui ei õnnestunud laadida
+     * etteantud arv elemente
      */
-    void scrolliLeheLoppu(int oodatavLasteArv, String VanemaCss, String lapseCss) {
-        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(5));
-        JavascriptExecutor js = (JavascriptExecutor) chromedriver;
-
-        int lasteArv = leiaLapsed(chromedriver.getPageSource(), VanemaCss).size();
+    boolean scrolliLeheLoppu(int oodatavLasteArv, String lapseCss) {
+        int lasteArv = chromedriver.findElements(By.cssSelector(lapseCss)).size();
 
         // Scrollin nii kaua kuni kõik lapsed on laetud
         while (lasteArv < oodatavLasteArv) {
             // Scrollin lehe lõppu
-            js.executeScript("window.scrollBy(0,document.body.scrollHeight)");
+            jsExec.executeScript("window.scrollBy(0,document.body.scrollHeight)");
 
             // Ootan, et elemendid laeks
-            wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(
-                    By.cssSelector(lapseCss), lasteArv
-            ));
+            try {
+                driverWait.until(ExpectedConditions.numberOfElementsToBeMoreThan(
+                        By.cssSelector(lapseCss), lasteArv
+                ));
+            } catch (TimeoutException e) {
+                System.out.println("\u001B[31mLehe lõppu scrollimine ebaõnnestus liiga kaua ootamise tõttu" +
+                        "\n\toodatavLasteArv:" + oodatavLasteArv + "; Leidsin vaid:" + lasteArv +
+                        "; lapseCss:" + lapseCss + "\u001B[0m");
+                return false;
+            }
 
             // Leian uue laste arvu
-            lasteArv = leiaLapsed(chromedriver.getPageSource(), VanemaCss).size();
+            lasteArv = chromedriver.findElements(By.cssSelector(lapseCss)).size();
         }
+        return true;
     }
 
     /**
      * Ootab kuni leht on laetud.
      * Kontrollib kindla elementi olemasolu, mis on
-     * dünaamilistel lehtedel (sisuliselt kõik tänapäevased lehed)
+     * dünaamilistel lehtedel (sisuliselt kõik tänapäevased lehed).
+     * Tuvastab, kas laadimine oli edukas või mitte.
      * kindlam kui document.readyState kontrollimine
      * @param cssSelector elemendi CSS Selector, mille olemasolu kontrollida
+     * @return true kui element laadis, false kui oodati 15sec ja element ei laadinud
      */
-    void ootaLeheLaadimist(String cssSelector) {
-        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-        wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector))));
+    boolean ootaLeheLaadimist(String cssSelector) {
+        try {
+            driverWait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector))));
+            return true;
+        } catch (TimeoutException e) {
+            System.out.println("\u001B[31mOotamine kestis liiga kaua, cssSelector: " + cssSelector + "\u001B[0m");
+            return false;
+        }
     }
 }

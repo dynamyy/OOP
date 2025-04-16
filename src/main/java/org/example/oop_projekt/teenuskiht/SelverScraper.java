@@ -71,7 +71,9 @@ public class SelverScraper extends WebScraper{
         chromedriver.get(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        ootaLeheLaadimist("li.SidebarMenu__item");
+        if (!ootaLeheLaadimist("li.SidebarMenu__item")) {
+            return "";
+        }
 
         return chromedriver.getPageSource();
     }
@@ -93,9 +95,15 @@ public class SelverScraper extends WebScraper{
     /*
     Leian kõik URL-d
      */
-    public List<String> URLiKirjed() throws IOException {
+    public List<String> URLiKirjed() {
         List<String> info = new ArrayList<>();
         String s = hangiDynamicSource();
+
+        // Tühja lähtekoodi korral on tekkinud viga, tagastan null
+        if (s.isEmpty()) {
+            return null;
+        }
+
         Document doc = Jsoup.parse(s);
 
         Elements links = doc.select("a.SidebarMenu__link");
@@ -122,6 +130,11 @@ public class SelverScraper extends WebScraper{
         setChromedriver(chromedriver);
         List<Toode> tooted = new ArrayList<>();
         List<String> urlid = URLiKirjed();
+
+        if (urlid == null) {
+            return tooted;
+        }
+
         int count = 0;
 
         for (String url : urlid){

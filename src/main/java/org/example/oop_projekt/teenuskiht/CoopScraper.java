@@ -51,7 +51,9 @@ public class CoopScraper extends WebScraper {
         chromedriver.get(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        ootaLeheLaadimist("span.option:nth-child(1)");
+        if (!ootaLeheLaadimist("span.option:nth-child(1)")) {
+            return "";
+        }
 
         // Vajutab nuppu "Ühel lehel", et kuvataks kõik tooted
         chromedriver.findElement(By.cssSelector("span.option:nth-child(1)")).click();
@@ -61,7 +63,9 @@ public class CoopScraper extends WebScraper {
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        scrolliLeheLoppu(300, ".products-wrapper", "app-product-card.item");
+        if (!scrolliLeheLoppu(300, "app-product-card.item")) {
+            return "";
+        }
 
         leheHTML = chromedriver.getPageSource();
 
@@ -75,6 +79,12 @@ public class CoopScraper extends WebScraper {
 
         List<Toode> tooted = new ArrayList<>();
         String lahtekood = hangiDynamicSource();
+
+        // Tühja lähtekoodi korral on tekkinud viga,
+        // tagastan tühja listi
+        if (lahtekood.isEmpty()) {
+            return tooted;
+        }
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);

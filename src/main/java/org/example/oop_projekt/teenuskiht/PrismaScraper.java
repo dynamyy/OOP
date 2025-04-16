@@ -39,14 +39,19 @@ public class PrismaScraper extends WebScraper {
         chromedriver.get(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        ootaLeheLaadimist("[data-test-id='product-list'] > div");
+        if (!ootaLeheLaadimist("[data-test-id='product-list'] > div")) {
+            return "";
+        }
 
         // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
         WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector("[data-test-id='product-result-total']"));
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        scrolliLeheLoppu(100, "[data-test-id='product-list'] > div", "[data-test-id='product-list-item']");
+        if (!scrolliLeheLoppu(100, "[data-test-id='product-list-item']")) {
+            return "";
+        }
+
         leheHTML = chromedriver.getPageSource();
 
         return leheHTML;
@@ -57,6 +62,12 @@ public class PrismaScraper extends WebScraper {
         setChromedriver(chromedriver);
         List<Toode> tooted = new ArrayList<>();
         String lahtekood = hangiDynamicSource();
+
+        // Tühja lähtekoodi korral on tekkinud viga,
+        // tagastan tühja listi
+        if (lahtekood.isEmpty()) {
+            return tooted;
+        }
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);

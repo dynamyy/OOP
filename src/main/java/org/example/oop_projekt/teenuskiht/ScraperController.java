@@ -45,14 +45,20 @@ public class ScraperController {
 
         // Scrapib kõik poed ja lisab tooted andmebaasi
         for (WebScraper pood : scraperid) {
-            System.out.println("Alustan " + pood.getPoeNimi() + " scrapemist");
+            System.out.println("\u001B[32mAlustan " + pood.getPoeNimi() + " scrapemist\u001B[0m");
             tooted = pood.scrape(chromedriver);
 
-            System.out.println("Sain " + pood.getPoeNimi() + " andmed, lisan andmebaasi (" + tooted.size() + ") toodet");
-            this.toodeTeenus.lisaTootedAndmebaasi(tooted);
+
+            if (!tooted.isEmpty()) {
+                System.out.println("\u001B[32mSain " + pood.getPoeNimi() +
+                        " andmed, lisan andmebaasi (" + tooted.size() + ") toodet\u001B[0m");
+                this.toodeTeenus.lisaTootedAndmebaasi(tooted);
+            } else {
+                System.out.println("\u001B[31mEi saanud " + pood.getPoeNimi() + " andmeid (0 toodet)\u001B[0m");
+            }
         }
 
-        System.out.println("Kõik scrapetud ja andmebaasi lisatud");
+        System.out.println("\u001B[32mKõik scrapetud ja andmebaasi lisatud\u001B[0m");
         chromedriver.quit();
     }
 
