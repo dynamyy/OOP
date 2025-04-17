@@ -131,6 +131,7 @@ public class BarboraScraper extends WebScraper{
                     Element tykiHindKlientElement;
                     String tykiHindKlient = "";
 
+
                     try{
 
 
