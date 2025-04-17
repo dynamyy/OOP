@@ -155,7 +155,7 @@ public class BarboraScraper extends WebScraper{
                 vaheleht = url + "?page=" + i;
                 i++;
             }
-            break;
+            break;//Vaatab ainult 1 alamkategooria
         }
         chromedriver.quit();
         return tooted;
