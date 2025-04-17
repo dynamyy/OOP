@@ -102,8 +102,9 @@ public class BarboraScraper extends WebScraper{
         for (String url : urlid){
             int i = 2;
 
+            String vaheleht = url;
             while (true) {
-                String vaheleht = url;
+
 
                 String html = html(vaheleht);
                 Document doc = Jsoup.parse(html);
