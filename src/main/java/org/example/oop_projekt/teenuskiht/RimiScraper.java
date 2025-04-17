@@ -30,25 +30,28 @@ public class RimiScraper extends WebScraper{
         this.poodRepository = poodRepository;
     }
 
-    static WebDriver chromedriver = getChromedriver();
 
     @Override
     String hangiDynamicSource() {
-        try {
-            chromedriver.get(url);
+        WebDriver chromedriver = getChromedriver();
 
-            // Ootan kuni leht laeb, et ei tekiks vigu
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-
-            return chromedriver.getPageSource();
-        } finally {
+        if (!getUrl(url)) {
+            return "";
         }
+
+        // Ootan kuni leht laeb, et ei tekiks vigu
+        if (!ootaLeheLaadimist("href")) {//Leia element mida oodata
+            return "";
+        }
+
+        return chromedriver.getPageSource();
+
     }
 
 
 
     //Vahelehtede html leidmine
-    public static String html(String url) {
+    public String html(String url) {
         WebDriver chromedriver = getChromedriver();
         try {
             chromedriver.get(url);
@@ -85,7 +88,8 @@ public class RimiScraper extends WebScraper{
     }
 
     @Override
-    List<Toode> scrape() throws IOException {
+    List<Toode> scrape(WebDriver chromedriver) {
+        setChromedriver(chromedriver);
         return List.of();
     }
 

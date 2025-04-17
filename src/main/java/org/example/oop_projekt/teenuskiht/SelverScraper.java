@@ -82,7 +82,7 @@ public class SelverScraper extends WebScraper{
 
 
     //Vahelehtede html leidmine
-    public static String html(String url) {
+    public String html(String url) {
         WebDriver chromedriver = getChromedriver();
 
         // Lehe avamine
