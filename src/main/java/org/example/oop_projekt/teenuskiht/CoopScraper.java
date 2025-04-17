@@ -63,7 +63,7 @@ public class CoopScraper extends WebScraper {
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        if (!scrolliLeheLoppu(300, "app-product-card.item")) {
+        if (!scrolliLeheLoppu(toodeteArv, "app-product-card.item")) {
             return "";
         }
 
@@ -109,9 +109,28 @@ public class CoopScraper extends WebScraper {
             // Kui säästukaardiga pole sätestatud erihinda (enamasti pole),
             // siis tavakliendi hind == kliendi hind
             hindadeList = toode.select("app-price-tag:nth-child(1) > div:nth-child(2)").text().split(" ");
+
+
+            // Võimalike lehe muutuste püüdmine
+            if (hindadeList.length < 7 && hindadeList.length != 3) {
+                System.out.println("Midagi on valesti. hindadelist liiga lühike");
+                System.out.println("\tToote nimi: " + tooteNimi);
+                System.out.println("\tSaadud hindadelist: " + java.util.Arrays.toString(hindadeList));
+                continue;
+            }
+
+
             tkHindKlient = tkHind = Double.parseDouble(hindadeList[0] + "." + hindadeList[1]);
-            uhikuHindKlient = uhikuHind = Double.parseDouble(hindadeList[3]);
-            uhik = hindadeList[6];
+
+            // On väga üksikud tooted, millel pole märgitud ühikuhinda
+            // Sellisel juhul määran kõik hinnad samaks ja ühikuks tk
+            if (hindadeList.length == 3) {
+                uhikuHindKlient = uhikuHind = tkHind;
+                uhik = "tk";
+            } else {
+                uhikuHindKlient = uhikuHind = Double.parseDouble(hindadeList[3]);
+                uhik = hindadeList[6];
+            }
 
 
             // Kui tootel on säästukaardiga erinev hind, siis tavakliendi hind on märgitud lisa hinnasilti
@@ -119,23 +138,17 @@ public class CoopScraper extends WebScraper {
             if (!lisaHind.isEmpty()) {
                 lisaHindadeList = lisaHind.split(" ");
 
-                // Lisahinnasilti märgitakse ka pant, mille kokkuleppeliselt liidame hinnale
-                if (lisaHindadeList[1].equals("Pant")) {
-                    pant = Double.parseDouble(lisaHindadeList[2]);
-
-                    // Arvutan toote koguse, et korrektselt suurendada liitrihinda
-                    // Siin kliendihind ja tavakliendi hind on samad, seega ei pea korduvalt arvutama
-                    kogus = (tkHind / uhikuHind) / (pant / 0.1);
-
-                    tkHindKlient = tkHind += pant;
-                    // Kuna jagamistehe pant / kogus võib tekitada rohkem kui 2 komakohta, siis on vaja ümardada
-                    // Kasutan BidDecimal, et vältida kümnendmurdude ja ümardamisega seotud vigu
-                    // Tegelikult on siin arvutuses endiselt ümardamisvead, sest kogus pole juba täpne
-                    uhikuHindKlient = uhikuHind += (new BigDecimal(pant / kogus).setScale(2, RoundingMode.HALF_UP)).doubleValue();
-                }
-
+                // Lisahinnasilti märgitakse ka pant.
                 // Kui panti pole, siis on tavakliendi hind
-                else {
+                if (!lisaHindadeList[1].equals("Pant")) {
+                    // Võimalike lehe muutuste püüdmine
+                    if (lisaHindadeList.length < 8) {
+                        System.out.println("Midagi on valesti. lisaHindadelist liiga lühike");
+                        System.out.println("\tToote nimi: " + tooteNimi);
+                        System.out.println("\tSaadud lisaHindadelist: " + java.util.Arrays.toString(lisaHindadeList));
+                        continue;
+                    }
+
                     tkHind = Double.parseDouble(lisaHindadeList[2]);
                     uhikuHind = Double.parseDouble(lisaHindadeList[7]);
                 }
