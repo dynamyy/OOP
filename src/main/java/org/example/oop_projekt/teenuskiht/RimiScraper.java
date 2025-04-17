@@ -45,6 +45,8 @@ public class RimiScraper extends WebScraper{
         }
     }
 
+
+
     //Vahelehtede html leidmine
     public static String html(String url) {
         WebDriver chromedriver = getChromedriver();
@@ -83,7 +85,7 @@ public class RimiScraper extends WebScraper{
     }
 
     @Override
-    public List<Toode> scrape() throws IOException {
+    List<Toode> scrape() throws IOException {
         return List.of();
     }
 
