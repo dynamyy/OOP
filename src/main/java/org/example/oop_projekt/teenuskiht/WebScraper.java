@@ -24,7 +24,7 @@ import java.util.List;
  * Peaklass kõigi webscrape'imise tegevuste jaoks.
  * Iga poe scraper peaks laiendama seda klassi.
  */
-public abstract class WebScraper {
+public abstract class WebScraper{
     private WebDriver chromedriver;
     private String poeNimi;
     private WebDriverWait driverWait;

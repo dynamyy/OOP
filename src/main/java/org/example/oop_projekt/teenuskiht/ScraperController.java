@@ -1,7 +1,10 @@
 package org.example.oop_projekt.teenuskiht;
 
 import org.example.oop_projekt.andmepääsukiht.Toode;
+import org.jspecify.annotations.Nullable;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -10,10 +13,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 
-public class ScraperController {
+public class ScraperController{
     private final List<WebScraper> scraperid;
-    private static WebDriver chromedriver;
     private final ToodeTeenus toodeTeenus;
 
     public ScraperController(List<WebScraper> scraperid, ToodeTeenus toodeTeenus) throws URISyntaxException {
@@ -27,12 +30,6 @@ public class ScraperController {
         String cdPath = Paths.get(cdResource.toURI()).toString();
 
         System.setProperty("webdriver.chrome.driver", cdPath);
-
-        // Sean chromedriveri jooksma peidetult
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-
-        chromedriver = new ChromeDriver();
     }
 
 
@@ -41,6 +38,7 @@ public class ScraperController {
      * @throws IOException -
      */
     public void scrapeAll() throws IOException {
+        WebDriver chromedriver = uusDriver();
         List<Toode> tooted;
 
         // Scrapib kõik poed ja lisab tooted andmebaasi
@@ -62,4 +60,17 @@ public class ScraperController {
         chromedriver.quit();
     }
 
+    /**
+     * Loob uue ChromeDriver objekti. Kuna igal objektil saab
+     * vaid korra kutsuda .quit() meetodit, siis tuleks igaks
+     * scrapemiseks luua uus objekt.
+     * @return uus ChromeDriver objekt
+     */
+    private ChromeDriver uusDriver() {
+        // Sean chromedriveri jooksma peidetult
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+
+        return new ChromeDriver();
+    }
 }
