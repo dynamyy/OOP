@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -15,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
+@Component
 public class ScraperController{
     private final List<WebScraper> scraperid;
     private final ToodeTeenus toodeTeenus;
