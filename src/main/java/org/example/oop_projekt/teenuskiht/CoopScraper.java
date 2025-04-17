@@ -9,16 +9,9 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,7 +41,10 @@ public class CoopScraper extends WebScraper {
         WebDriver chromedriver = getChromedriver();
         String leheHTML;
 
-        chromedriver.get(url);
+        // Veebilehe avamine
+        if (!getUrl(url)) {
+            return "";
+        }
 
         // Ootan kuni leht laeb, et ei tekiks vigu
         if (!ootaLeheLaadimist("span.option:nth-child(1)")) {
@@ -63,7 +59,7 @@ public class CoopScraper extends WebScraper {
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        if (!scrolliLeheLoppu(toodeteArv, "app-product-card.item")) {
+        if (!scrolliLeheLoppu(300, "app-product-card.item")) {
             return "";
         }
 
@@ -97,7 +93,6 @@ public class CoopScraper extends WebScraper {
         // tkHind ja uhikuHind on tavakliendi hind ehk ilma säästukaardita
         // Kui säästukaardiga erihinda pole (enamasti pole), siis tavakliendi hind == kliendi hind
         double tkHind, uhikuHind, tkHindKlient, uhikuHindKlient;
-        double pant, kogus;
         for (Element toode : lapsed) {
             tooteNimi = toode.select(".product-name").text();
 

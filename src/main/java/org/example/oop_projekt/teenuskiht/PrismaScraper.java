@@ -36,7 +36,10 @@ public class PrismaScraper extends WebScraper {
         WebDriver chromedriver = getChromedriver();
         String leheHTML;
 
-        chromedriver.get(url);
+        // Veebilehe avamine
+        if (!getUrl(url)) {
+            return "";
+        }
 
         // Ootan kuni leht laeb, et ei tekiks vigu
         if (!ootaLeheLaadimist("[data-test-id='product-list'] > div")) {

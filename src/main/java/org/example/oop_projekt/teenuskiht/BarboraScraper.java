@@ -36,7 +36,10 @@ public class BarboraScraper extends WebScraper{
     @Override
     String hangiDynamicSource() {
         WebDriver chromedriver = getChromedriver();
-        chromedriver.get(url);
+
+        if (!getUrl(url)) {
+            return "";
+        }
 
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
         wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
@@ -58,9 +61,15 @@ public class BarboraScraper extends WebScraper{
 
 
     //Leian kõik URL-d
-    public List<String> URLikirjed() throws IOException {
+    public List<String> URLikirjed() {
         List<String> info = new ArrayList<>();
         String s = hangiDynamicSource();
+
+        // Vea korral tagastatakse null
+        if (s.isEmpty()) {
+            return null;
+        }
+
         Document doc = Jsoup.parse(s);
         Elements links = doc.select("a.category-item--title");
 
@@ -85,6 +94,10 @@ public class BarboraScraper extends WebScraper{
         List<String> urlid = URLikirjed();
         List<Toode> tooted = new ArrayList<>();
 
+        // Vea korral tagastatakse tühi list.
+        if (urlid == null) {
+            return tooted;
+        }
 
         for (String url : urlid){
             int i = 2;

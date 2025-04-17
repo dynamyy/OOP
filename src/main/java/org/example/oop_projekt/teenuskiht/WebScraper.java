@@ -7,10 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -129,5 +126,21 @@ public abstract class WebScraper {
             System.out.println("\u001B[31mOotamine kestis liiga kaua, cssSelector: " + cssSelector + "\u001B[0m");
             return false;
         }
+    }
+
+    /**
+     * Laeb chromedriveriga etteantud veebilehe.
+     * @param url veebileht, kuhu minna
+     * @return true kui veebileht avanes; false kui tekkis viga lehe laadimisel
+     */
+    boolean getUrl(String url) {
+        try {
+            chromedriver.get(url);
+        } catch (WebDriverException e) {
+            System.out.println("\u001B[31mTekkis viga URLi laadimisel: " + url + "\u001B[0m");
+            return false;
+        }
+
+        return true;
     }
 }

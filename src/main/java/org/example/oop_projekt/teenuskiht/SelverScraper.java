@@ -68,7 +68,9 @@ public class SelverScraper extends WebScraper{
     String hangiDynamicSource() {
         WebDriver chromedriver = getChromedriver();
 
-        chromedriver.get(url);
+        if (!getUrl(url)) {
+            return "";
+        }
 
         // Ootan kuni leht laeb, et ei tekiks vigu
         if (!ootaLeheLaadimist("li.SidebarMenu__item")) {
@@ -82,7 +84,11 @@ public class SelverScraper extends WebScraper{
     //Vahelehtede html leidmind
     public String html(String url) {
         WebDriver chromedriver = getChromedriver();
-        chromedriver.get(url);
+
+        // Lehe avamine
+        if (!getUrl(url)) {
+            return "";
+        }
 
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
         wait.until(driver -> !driver.findElements(By.cssSelector(".ProductCard__info")).isEmpty());
@@ -139,6 +145,11 @@ public class SelverScraper extends WebScraper{
 
         for (String url : urlid){
             String html = html(url);
+
+            // Vigase urli korral tagastatakse 0 toodet
+            if (html.isEmpty()) {
+                return new ArrayList<>();
+            }
 
             Document doc = Jsoup.parse(html);
 
