@@ -35,12 +35,7 @@ public class Pood {
     )
     private String nimi;
 
-    @ManyToMany
-    @JoinTable(
-            name = "pood_toode",
-            joinColumns = @JoinColumn(name = "pood_id"),
-            inverseJoinColumns = @JoinColumn(name = "toode_id")
-    )
+    @OneToMany(mappedBy = "pood")
     private Set<Toode> tooted;
 
     public Pood(String nimi, Set<Toode> tooted) {
@@ -49,10 +44,6 @@ public class Pood {
     }
 
     public Pood() {
-    }
-
-    public void lisaToode(Toode toode) {
-        this.tooted.add(toode);
     }
 
     @Override

@@ -7,9 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -26,33 +24,28 @@ import java.util.List;
  * Peaklass kõigi webscrape'imise tegevuste jaoks.
  * Iga poe scraper peaks laiendama seda klassi.
  */
-public abstract class WebScraper {
+public abstract class WebScraper{
+    private WebDriver chromedriver;
+    private String poeNimi;
+    private WebDriverWait driverWait;
+    private JavascriptExecutor jsExec;
 
-    private static WebDriver chromedriver;
+    public String getPoeNimi() {
+        return poeNimi;
+    }
 
-    public static WebDriver getChromedriver() {
+    public void setChromedriver(WebDriver chromedriver) {
+        this.chromedriver = chromedriver;
+        driverWait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        jsExec = (JavascriptExecutor) chromedriver;
+    }
+
+    public WebDriver getChromedriver() {
         return chromedriver;
     }
 
-
-    /**
-     * Seadistab chromedriveri
-     * @throws URISyntaxException
-     */
-    public WebScraper() throws URISyntaxException {
-        // Viitab chromedriver.exe failile resources kaustas
-        URL cdResource = WebScraper.class.getClassLoader().getResource("chromedriver.exe");
-        // Failitee teisendamine, et toetada utf-8 kaustade nimesid
-        assert cdResource != null;
-        String cdPath = Paths.get(cdResource.toURI()).toString();
-
-        System.setProperty("webdriver.chrome.driver", cdPath);
-
-        // Sean chromedriveri jooksma peidetult
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-
-        chromedriver = new ChromeDriver(options);
+    public WebScraper(String poeNimi) {
+        this.poeNimi = poeNimi;
     }
 
     /**
@@ -65,7 +58,7 @@ public abstract class WebScraper {
     /**
      * Meetod scrape'imisloogika käivitamiseks
      */
-    abstract List<Toode> scrape() throws IOException;
+    abstract List<Toode> scrape(WebDriver chromedriver) throws IOException;
 
 
     /**
@@ -84,29 +77,70 @@ public abstract class WebScraper {
     }
 
     /**
-     * Scrollib kuni etteantud arv lapselemente on laetud
+     * Scrollib kuni etteantud arv lapselemente on laetud.
      * @param oodatavLasteArv Kui palju elemente peaks laadima
-     * @param VanemaCss Viide elemendile, mis on laste vanem
      * @param lapseCss Viide lapsele endale (üldine mitte mingile kindlale elemendile)
+     * @return true kui scrollimine oli edukas, false kui ei õnnestunud laadida
+     * etteantud arv elemente
      */
-    void scrolliLeheLoppu(int oodatavLasteArv, String VanemaCss, String lapseCss) {
-        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(5));
-        JavascriptExecutor js = (JavascriptExecutor) chromedriver;
-
-        int lasteArv = leiaLapsed(chromedriver.getPageSource(), VanemaCss).size();
+    boolean scrolliLeheLoppu(int oodatavLasteArv, String lapseCss) {
+        int lasteArv = chromedriver.findElements(By.cssSelector(lapseCss)).size();
 
         // Scrollin nii kaua kuni kõik lapsed on laetud
         while (lasteArv < oodatavLasteArv) {
             // Scrollin lehe lõppu
-            js.executeScript("window.scrollBy(0,document.body.scrollHeight)");
+            jsExec.executeScript("window.scrollBy(0,document.body.scrollHeight)");
 
             // Ootan, et elemendid laeks
-            wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(
-                    By.cssSelector(lapseCss), lasteArv
-            ));
+            try {
+                driverWait.until(ExpectedConditions.numberOfElementsToBeMoreThan(
+                        By.cssSelector(lapseCss), lasteArv
+                ));
+            } catch (TimeoutException e) {
+                System.out.println("\u001B[31mLehe lõppu scrollimine ebaõnnestus liiga kaua ootamise tõttu" +
+                        "\n\toodatavLasteArv:" + oodatavLasteArv + "; Leidsin vaid:" + lasteArv +
+                        "; lapseCss:" + lapseCss + "\u001B[0m");
+                return false;
+            }
 
             // Leian uue laste arvu
-            lasteArv = leiaLapsed(chromedriver.getPageSource(), VanemaCss).size();
+            lasteArv = chromedriver.findElements(By.cssSelector(lapseCss)).size();
         }
+        return true;
+    }
+
+    /**
+     * Ootab kuni leht on laetud.
+     * Kontrollib kindla elementi olemasolu, mis on
+     * dünaamilistel lehtedel (sisuliselt kõik tänapäevased lehed).
+     * Tuvastab, kas laadimine oli edukas või mitte.
+     * kindlam kui document.readyState kontrollimine
+     * @param cssSelector elemendi CSS Selector, mille olemasolu kontrollida
+     * @return true kui element laadis, false kui oodati 15sec ja element ei laadinud
+     */
+    boolean ootaLeheLaadimist(String cssSelector) {
+        try {
+            driverWait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector))));
+            return true;
+        } catch (TimeoutException e) {
+            System.out.println("\u001B[31mOotamine kestis liiga kaua, cssSelector: " + cssSelector + "\u001B[0m");
+            return false;
+        }
+    }
+
+    /**
+     * Laeb chromedriveriga etteantud veebilehe.
+     * @param url veebileht, kuhu minna
+     * @return true kui veebileht avanes; false kui tekkis viga lehe laadimisel
+     */
+    boolean getUrl(String url) {
+        try {
+            chromedriver.get(url);
+        } catch (WebDriverException e) {
+            System.out.println("\u001B[31mTekkis viga URLi laadimisel: " + url + "\u001B[0m");
+            return false;
+        }
+
+        return true;
     }
 }

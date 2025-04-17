@@ -6,6 +6,7 @@ import org.example.oop_projekt.andmepääsukiht.ToodeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Teenus, mis vastutab parsimistulemuste lisamise eest andmebaasi. Võtab toodete objektide
@@ -32,26 +33,24 @@ public class ToodeTeenus {
     }
 
     /**
-     * Lisab toote andmebaasi, kui seda seal veel ei ole,
-     * kui on, siis muudab vajadusel selle andmeid.
-     * @param tooted
+     * Lisab toote andmebaasi, kui seda seal veel ei ole.
+     * @param tooted List toodetest, mis andmebaasi lisatakse.
      */
     public void lisaTootedAndmebaasi(List<Toode> tooted) {
         for (Toode toode : tooted) {
-
-            Toode dbToode = toodeRepository.findToodeByNimetus(toode.getNimetus());
-            Pood pood = toode.getPoed().iterator().next();
+            Toode dbToode = toodeRepository.findToodeByNimetusAndPood(toode.getNimetus(), toode.getPood());
+            Pood pood = toode.getPood();
             pood = poodTeenus.getPoodToodetega(pood.getId());
 
-            // Kui toode on olemas, siis lisab
-            if (dbToode != null) {
-                dbToode.lisaPood(pood);
-                pood.lisaToode(dbToode);
-                toodeRepository.save(dbToode);
-            } else { // Kui toodet pole, lisab selle.
-                toode.lisaPood(pood);
-                pood.lisaToode(toode);
+            if (dbToode == null) {
+                poodTeenus.lisaToode(pood, toode);
                 toodeRepository.save(toode);
+            } else {
+                dbToode.setHindKliendi(toode.getHindKliendi());
+                dbToode.setHulgaHind(toode.getHulgaHind());
+                dbToode.setHulgaHindKliendi(toode.getHulgaHindKliendi());
+                dbToode.setTukiHind(toode.getTukiHind());
+                toodeRepository.save(dbToode);
             }
         }
     }

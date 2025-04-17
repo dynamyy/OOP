@@ -9,15 +9,11 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
-import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * COOPi epoe scraper. Kuna COOP on vaikselt oma
@@ -32,10 +28,10 @@ import java.util.List;
 public class CoopScraper extends WebScraper {
 
     private final PoodRepository poodRepository;
-    private String url;
+    private final String url;
 
-    public CoopScraper(PoodRepository poodRepository) throws URISyntaxException {
-        super();
+    public CoopScraper(PoodRepository poodRepository) {
+        super("COOP");
         url = "https://hiiumaa.ecoop.ee/et/tooted";
         this.poodRepository = poodRepository;
     }
@@ -45,40 +41,50 @@ public class CoopScraper extends WebScraper {
         WebDriver chromedriver = getChromedriver();
         String leheHTML;
 
-        try {
-            chromedriver.get(url);
-
-            // Ootan kuni leht laeb, et ei tekiks vigu
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-            wait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.option:nth-child(1)"))));
-
-            // Vajutab nuppu "Ühel lehel", et
-            // kuvataks kõik tooted
-            chromedriver.findElement(By.cssSelector("span.option:nth-child(1)")).click();
-
-            // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
-            WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector(".count"));
-            // Üleliigne tekst eemaldatakse split meetodiga
-            int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
-
-            scrolliLeheLoppu(300, ".products-wrapper", "app-product-card.item");
-
-            leheHTML = chromedriver.getPageSource();
-        } finally {
-            chromedriver.quit();
+        // Veebilehe avamine
+        if (!getUrl(url)) {
+            return "";
         }
+
+        // Ootan kuni leht laeb, et ei tekiks vigu
+        if (!ootaLeheLaadimist("span.option:nth-child(1)")) {
+            return "";
+        }
+
+        // Vajutab nuppu "Ühel lehel", et kuvataks kõik tooted
+        chromedriver.findElement(By.cssSelector("span.option:nth-child(1)")).click();
+
+        // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
+        WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector(".count"));
+        // Üleliigne tekst eemaldatakse split meetodiga
+        int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
+
+        if (!scrolliLeheLoppu(300, "app-product-card.item")) {
+            return "";
+        }
+
+        leheHTML = chromedriver.getPageSource();
+
 
         return leheHTML;
     }
 
     @Override
-    public List<Toode> scrape() {
+    public List<Toode> scrape(WebDriver chromedriver) {
+        setChromedriver(chromedriver);
+
         List<Toode> tooted = new ArrayList<>();
         String lahtekood = hangiDynamicSource();
 
+        // Tühja lähtekoodi korral on tekkinud viga,
+        // tagastan tühja listi
+        if (lahtekood.isEmpty()) {
+            return tooted;
+        }
+
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);
-        Elements lapsed = doc.select(".products-wrapper").first().children();
+        Elements lapsed = Objects.requireNonNull(doc.select(".products-wrapper").first()).children();
 
         // Ühik määrab, mis ühikutes peaks hiljem ühikuhinda kuvama (l / kg)
         String tooteNimi, uhik, lisaHind;
@@ -98,44 +104,59 @@ public class CoopScraper extends WebScraper {
             // Kui säästukaardiga pole sätestatud erihinda (enamasti pole),
             // siis tavakliendi hind == kliendi hind
             hindadeList = toode.select("app-price-tag:nth-child(1) > div:nth-child(2)").text().split(" ");
+
+
+            // Võimalike lehe muutuste püüdmine
+            if (hindadeList.length < 7 && hindadeList.length != 3) {
+                System.out.println("Midagi on valesti. hindadelist liiga lühike");
+                System.out.println("\tToote nimi: " + tooteNimi);
+                System.out.println("\tSaadud hindadelist: " + java.util.Arrays.toString(hindadeList));
+                continue;
+            }
+
+
             tkHindKlient = tkHind = Double.parseDouble(hindadeList[0] + "." + hindadeList[1]);
-            uhikuHindKlient = uhikuHind = Double.parseDouble(hindadeList[3]);
-            uhik = hindadeList[6];
+
+            // On väga üksikud tooted, millel pole märgitud ühikuhinda
+            // Sellisel juhul määran kõik hinnad samaks ja ühikuks tk
+            if (hindadeList.length == 3) {
+                uhikuHindKlient = uhikuHind = tkHind;
+                uhik = "tk";
+            } else {
+                uhikuHindKlient = uhikuHind = Double.parseDouble(hindadeList[3]);
+                uhik = hindadeList[6];
+            }
 
 
             // Kui tootel on säästukaardiga erinev hind, siis tavakliendi hind on märgitud lisa hinnasilti
             lisaHind = toode.select(".prices-info").text();
-            //if (!lisaHind.isEmpty()) {
-            //    lisaHindadeList = lisaHind.split(" ");
-            //    tkHind = Double.parseDouble(lisaHindadeList[2]);
-            //    uhikuHind = Double.parseDouble(lisaHindadeList[7]);
-            //}
+            if (!lisaHind.isEmpty()) {
+                lisaHindadeList = lisaHind.split(" ");
 
-            System.out.print(tooteNimi + " " + tkHind + "€ " + uhikuHind + "€/" + uhik);
-            if (tkHind != tkHindKlient) System.out.println(" Säästukaardiga: " + tkHindKlient + "€ " + uhikuHindKlient + "€/" + uhik);
-            else System.out.println();
+                // Lisahinnasilti märgitakse ka pant.
+                // Kui panti pole, siis on tavakliendi hind
+                if (!lisaHindadeList[1].equals("Pant")) {
+                    // Võimalike lehe muutuste püüdmine
+                    if (lisaHindadeList.length < 8) {
+                        System.out.println("Midagi on valesti. lisaHindadelist liiga lühike");
+                        System.out.println("\tToote nimi: " + tooteNimi);
+                        System.out.println("\tSaadud lisaHindadelist: " + java.util.Arrays.toString(lisaHindadeList));
+                        continue;
+                    }
 
-            Toode uusToode = new Toode(tooteNimi, uhik, tkHindKlient, uhikuHindKlient, new HashSet<>(), uhikuHind, tkHind);
-            uusToode.lisaPood(poodRepository.findPoodByNimi("Coop"));
+                    tkHind = Double.parseDouble(lisaHindadeList[2]);
+                    uhikuHind = Double.parseDouble(lisaHindadeList[7]);
+                }
+            }
 
+            Toode uusToode = new Toode(tooteNimi,
+                                    uhik,
+                                    tkHindKlient,
+                                    uhikuHindKlient,
+                                    poodRepository.findPoodByNimi("Coop"),
+                                    uhikuHind,
+                                    tkHind);
             tooted.add(uusToode);
-
-            /*
-            Kõik andmed on nüüd peaaegu korrektselt muutujates
-            Read 94-98 on välja kommenteeritud, sest see koht failib kui
-            lisahinnasilti pole märgitud mitte tavakliendi hind vaid pandihind,
-            ehk see case tuleks veel lahendada, muus osas töötab
-
-
-            Järgmisena tuleks luua klassi Toode objektid nende andmetega
-            ja lisada Listi: List<Toode>
-            Seejärel lihtsalt tagastada List<Toode>
-
-            ja peakski olema COOPi scraperiga kõik
-
-            (Praegu ei loo Tooted objekte, sest Tooted klass pole vist veel lõplik)
-
-             */
         }
 
         return tooted;

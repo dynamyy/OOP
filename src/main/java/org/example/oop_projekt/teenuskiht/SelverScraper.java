@@ -56,53 +56,60 @@ public class SelverScraper extends WebScraper{
     private final PoodRepository poodRepository;
     private String url = "https://www.selver.ee/";
 
-    public SelverScraper(PoodRepository poodRepository) throws URISyntaxException {
-        super();
+    public SelverScraper(PoodRepository poodRepository) {
+        super("Selver");
         this.poodRepository = poodRepository;
     }
 
-    static WebDriver chromedriver = getChromedriver();
     /*
     Leian esilehe HTML-i
      */
     @Override
     String hangiDynamicSource() {
-        try {
-            chromedriver.get(url);
+        WebDriver chromedriver = getChromedriver();
 
-            // Ootan kuni leht laeb, et ei tekiks vigu
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-
-            return chromedriver.getPageSource();
-        } finally {
+        if (!getUrl(url)) {
+            return "";
         }
 
+        // Ootan kuni leht laeb, et ei tekiks vigu
+        if (!ootaLeheLaadimist("li.SidebarMenu__item")) {
+            return "";
+        }
+
+        return chromedriver.getPageSource();
     }
 
 
     //Vahelehtede html leidmine
     public static String html(String url) {
         WebDriver chromedriver = getChromedriver();
-        try {
-            chromedriver.get(url);
 
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-            wait.until(driver -> driver.findElements(By.cssSelector(".ProductCard__info")).size() > 0);
-
-            return chromedriver.getPageSource();
-        } finally {
+        // Lehe avamine
+        if (!getUrl(url)) {
+            return "";
         }
+
+        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        wait.until(driver -> !driver.findElements(By.cssSelector(".ProductCard__info")).isEmpty());
+
+        return chromedriver.getPageSource();
     }
 
 
 
     /*
     Leian kõik URL-d
-
      */
-    public List<String> URLiKirjed() throws IOException {
+    public List<String> URLiKirjed() {
         List<String> info = new ArrayList<>();
         String s = hangiDynamicSource();
+
+        // Tühja lähtekoodi korral on tekkinud viga, tagastan null
+        if (s.isEmpty()) {
+            return null;
+        }
+
         Document doc = Jsoup.parse(s);
 
         Elements links = doc.select("a.SidebarMenu__link");
@@ -125,13 +132,24 @@ public class SelverScraper extends WebScraper{
     Kasutan kõiki URL-e, et leida igal lehel olevate toodete info
      */
     @Override
-    public List<Toode> scrape() throws IOException {
+    public List<Toode> scrape(WebDriver chromedriver) throws IOException {
+        setChromedriver(chromedriver);
         List<Toode> tooted = new ArrayList<>();
         List<String> urlid = URLiKirjed();
+
+        if (urlid == null) {
+            return tooted;
+        }
+
         int count = 0;
 
         for (String url : urlid){
             String html = html(url);
+
+            // Vigase urli korral tagastatakse 0 toodet
+            if (html.isEmpty()) {
+                return new ArrayList<>();
+            }
 
             Document doc = Jsoup.parse(html);
 
@@ -174,7 +192,6 @@ public class SelverScraper extends WebScraper{
                 //tooted.add(toode);
             }
         }
-        chromedriver.quit();
 
         return tooted;
     }

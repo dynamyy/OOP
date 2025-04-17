@@ -26,7 +26,7 @@ public class RimiScraper extends WebScraper{
      * @throws URISyntaxException
      */
     public RimiScraper(PoodRepository poodRepository) throws URISyntaxException {
-        super();
+        super("Rimi");
         this.poodRepository = poodRepository;
     }
 
