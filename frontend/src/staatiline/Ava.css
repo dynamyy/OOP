@@ -1,0 +1,10 @@
+#s-log {
+    width: 30%;
+    height: 30%;
+    padding: 2rem;
+}
+
+#s-log input {
+    width: 100%;
+    font-size: medium;
+}
