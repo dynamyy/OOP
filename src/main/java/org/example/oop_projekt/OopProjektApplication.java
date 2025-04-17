@@ -57,11 +57,11 @@ public class OopProjektApplication {
         //SelverScraper selver = new SelverScraper(this.poodRepository);
         //selver.scrape();
 
-        //BarboraScraper barbora = new BarboraScraper(this.poodRepository);
-        //barbora.scrape();
+        BarboraScraper barbora = new BarboraScraper(this.poodRepository);
+        barbora.scrape();
 
-        RimiScraper rimi = new RimiScraper(this.poodRepository);
-        rimi.URLikirjed();
+        //RimiScraper rimi = new RimiScraper(this.poodRepository);
+        //rimi.URLikirjed();
 
 
     }
