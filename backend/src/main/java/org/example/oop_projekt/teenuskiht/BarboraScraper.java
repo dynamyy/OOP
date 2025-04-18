@@ -167,7 +167,7 @@ public class BarboraScraper extends WebScraper{
                 vaheleht = url + "?page=" + i;
                 i++;
             }
-            break;//Vaatab ainult 1 alamkategooria
+            break;//Vaatab ainult 1 alamkategooria, kustuta see ära kui päriselt scrapeda tahad
         }
         return tooted;
     }
