@@ -39,10 +39,13 @@ public class RimiScraper extends WebScraper{
             return "";
         }
 
-        // Ootan kuni leht laeb, et ei tekiks vigu
-        if (!ootaLeheLaadimist("href")) {//Leia element mida oodata
+        // Ootan kuni leht laeb, et ei tekiks vigu. Siia pole teda otseselt vaja
+        /*
+        if (!ootaLeheLaadimist("main.main")) {//Leia element mida oodata
             return "";
         }
+        */
+
 
         return chromedriver.getPageSource();
 
@@ -83,14 +86,90 @@ public class RimiScraper extends WebScraper{
                 info.add("https://rimi.ee" + href);
             }
         }
-        System.out.println(info);
         return info;
     }
 
     @Override
-    List<Toode> scrape(WebDriver chromedriver) {
+    List<Toode> scrape(WebDriver chromedriver) throws IOException {
         setChromedriver(chromedriver);
-        return List.of();
+        int pageNr = 1;
+        List<String> urlid = URLikirjed();
+        List<Toode> tooted = new ArrayList<>();
+
+        if (urlid == null) {
+            return tooted;
+        }
+
+
+        for (String url : urlid) {
+            while (true) {
+                String urliLisa = "?currentPage=" + pageNr + "&pageSize=80&query=%3Arelevance%3AallCategories%3ASH-19%3AassortmentStatus%3AinAssortment";
+                String vaheleht = url + urliLisa;
+
+                String html = html(vaheleht);
+                Document doc = Jsoup.parse(html);
+
+                Elements info = doc.select("li.product-grid__item");
+
+                // Kui ei leitud üldse tooteid, katkesta while
+                if (info.isEmpty()) {
+                    System.out.println("Leht " + pageNr + " tühjaks jäänud – katkestan selle kategooria.");
+                    break;
+                }
+
+                boolean katkesta = false;
+
+                for (Element toode : info) {
+                    try {//Kui jõuan lehele, kus pole ühtegi elementi, liigun järgmise alamkategooria juurde
+                        Element kasSaadaval = toode.selectFirst("div.card__price-wrapper p.card__price-per");
+                        if (kasSaadaval != null) {
+                            String saadavus = kasSaadaval.text();
+                            if (saadavus.contains("Ei ole")) {
+                                katkesta = true;
+                                break;
+                            }
+                        }
+                    } catch (Exception e) {
+                        katkesta = true;
+                        break;
+                    }
+
+                    Element tooteNimiElement = toode.selectFirst("div.card__details p.card__name");
+                    String tooteNimi = tooteNimiElement.text();
+
+                    Element yhikuHindElement = toode.selectFirst("p.card__price-per");
+                    String yhikuHind = yhikuHindElement.text();
+                    String yhik = yhikuHind.split("/")[1];
+
+
+                    Element hindElement = toode.selectFirst("div.price-tag.card__price");
+
+                    String täisarvulineOsa = hindElement.selectFirst("span").text();
+                    String komakoht = hindElement.selectFirst("sup").text();
+
+                    String hindStr = täisarvulineOsa + "." + komakoht;
+                    double hind = Double.parseDouble(hindStr);
+
+
+                    System.out.println("Nimi: " + tooteNimi + " Tükihind: " + hind + " Ühikuhind: " + yhikuHind + " Ühik: " + yhik);
+                }
+
+                if (katkesta) {
+                    System.out.println("Lehel oli toode, mis polnud saadaval. Katkestan");
+                    break;
+                }
+
+
+                pageNr++;
+            }
+
+            break; // testimiseks ainult esimene kategooria
+        }
+
+
+
+
+        return tooted;
     }
 
 }
