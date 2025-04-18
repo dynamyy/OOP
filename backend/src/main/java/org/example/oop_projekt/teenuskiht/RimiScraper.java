@@ -150,8 +150,28 @@ public class RimiScraper extends WebScraper{
                     String hindStr = täisarvulineOsa + "." + komakoht;
                     double hind = Double.parseDouble(hindStr);
 
+                    double kliendiHind = hind;
+                    String kliendiYhikuhind = yhikuHind;
+                    try{
+                        Element kliendiHindElement = toode.selectFirst("div.price-label__price");
 
-                    System.out.println("Nimi: " + tooteNimi + " Tükihind: " + hind + " Ühikuhind: " + yhikuHind + " Ühik: " + yhik);
+                        String täisarv = kliendiHindElement.selectFirst("span.major").text();
+                        String komad = kliendiHindElement.selectFirst("span.cents").text();
+
+                        String hindSt = täisarv + "." + komad;
+                        kliendiHind = Double.parseDouble(hindSt);
+
+                        Element yhikuhindElement = toode.selectFirst("div.price-per-unit");
+
+                        String yhikuHindStr = yhikuhindElement.text();
+                        kliendiYhikuhind = yhikuHindStr.replace(",", ".");
+
+                    }catch (Exception e){
+                        System.out.println("Puudub kliendihind");
+                    }
+
+
+                    System.out.println("Nimi: " + tooteNimi + " Tükihind: " + hind + " Ühikuhind: " + yhikuHind + ", Kliendihind: " + kliendiHind + " kliendiühikuhind: " + kliendiYhikuhind + " Ühik: " + yhik);
                 }
 
                 if (katkesta) {
