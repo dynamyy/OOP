@@ -133,23 +133,24 @@ public class BarboraScraper extends WebScraper{
                     String yhik = yhikuHind.split("/")[1];
 
 
-                    Element yhikuHindKlientElement;
-                    String yhikuHindKlient = "";
-                    Element tykiHindKlientElement;
-                    String tykiHindKlient = "";
+
+                    String yhikuHindKlient = yhikuHind;
+                    double tykiHindKlient = hind;
 
 
                     try{
-
+                        Element yhikuHindKlientElement = kaart.selectFirst("div.tw-relative.tw-text-\\[10px\\]");
+                        yhikuHind = yhikuHindKlientElement.text();//Ühikuhind peaks toimima
+                        Element tykiHindKlientElementTaisosa = kaart.select("span.tw-pr-\\[2px\\]").get(1);
+                        Element tykiHindKlientElementMurdosa = kaart.select("span.tw-pr-\\[1px\\]").get(1);
+                        System.out.println(tykiHindKlientElementTaisosa.text() + "." + tykiHindKlientElementMurdosa.text());
+                        hind = Double.parseDouble(tykiHindKlientElementTaisosa.text() + "." + tykiHindKlientElementMurdosa.text());
 
                     }catch (Exception e){
-                        System.out.println("Puudub kliendihind");
+                        System.out.println("Puudub kliendihind" + e);
                     }
 
 
-                    //Lisa andmed uue tootena (oma Toode klassi järgi kohenda vajadusel)
-                    //Toode toode = new Toode(nimi, yhik, tykiHindKlient, yhikuHindKlient, new HashSet<>(), yhikuHind, tykiHind);
-                    //toode.lisaPood(poodRepository.findPoodByNimi("Barbora")
 
 
                     System.out.println("Nimi: " + nimi +
@@ -158,6 +159,9 @@ public class BarboraScraper extends WebScraper{
                             ", kliendihind: " + tykiHindKlient +
                             ", kliendi ühikuhind: " + yhikuHindKlient +
                             ", ühik: " + yhik);
+                    //Lisa andmed uue tootena (oma Toode klassi järgi kohenda vajadusel)
+                    //Toode toode = new Toode(nimi, yhik, tykiHindKlient, yhikuHindKlient, new HashSet<>(), yhikuHind, tykiHind);
+                    //toode.lisaPood(poodRepository.findPoodByNimi("Barbora")
                 }
 
                 vaheleht = url + "?page=" + i;
