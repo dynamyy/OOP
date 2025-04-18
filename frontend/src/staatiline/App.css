@@ -13,19 +13,24 @@
 }
 
 .tume {
-    background-color: #163020;
+    background-color: #153448;
 }
 
 .tume2 {
-    background-color: #304D30;
+    background-color: #3C5B6F;
 }
 
 .hele {
-    background-color: #EEF0E5;
+    background-color: #DFD0B8;
 }
 
 .hele2 {
-    background-color: #B6C4B6;
+    background-color: #948979;
+}
+
+.hele-tekst {
+    color: #DFD0B8;
+    font-weight: 500;
 }
 
 .umar-nurk {
@@ -41,7 +46,6 @@
     flex-direction: column;
     align-items: center;
     height: 100%;
-    background-color: #163020 ;
     width: fit-content;
     z-index: 10;
 }
@@ -66,4 +70,23 @@
 
 .menuu ul li a:hover {
     color: #808080;
+}
+
+.nupp {
+    padding: 0.5rem;
+    max-width: fit-content;
+    max-height: fit-content;
+    font-size: medium;
+    padding: 0.7rem 1rem;
+    margin: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.teksti-paar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 100%;
 }

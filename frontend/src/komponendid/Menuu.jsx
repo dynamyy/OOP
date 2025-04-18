@@ -2,7 +2,7 @@ import React from 'react'
 
 function Menuu() {
     return (
-        <header className="menuu">
+        <header className="menuu tume">
             <nav>
                 <ul>
                     <li><a href="">Kasutaja</a></li>
