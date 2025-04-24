@@ -2,16 +2,23 @@ import { useState, React } from 'react'
 import Menuu from '../komponendid/Menuu'
 import { postSisseLogimine } from '../teenused/api'
 import { postRegistreerimine } from '../teenused/api'
+import { useNavigate } from 'react-router-dom';
 
 function Ava() {
 
+    const navigate = useNavigate();
     const [email, setEmail] = useState('')
     const[parool, setParool] = useState('')
     const [sisselogimiseTeade, setSisselogimiseTeade] = useState('');
 
     async function logiSisse(email, parool) {
         const vastus = await postSisseLogimine(email, parool);
-        setSisselogimiseTeade(vastus.sonum);
+        
+        if (!vastus.ok) {
+            setSisselogimiseTeade(vastus.sonum);
+        } else {
+            navigate('/ostukorvid');
+        }
     }
 
     async function registreeri(email, parool) {
