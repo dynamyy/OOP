@@ -4,7 +4,11 @@ import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
 import org.example.oop_projekt.teenuskiht.AuthTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -18,12 +22,12 @@ public class RegistreerimineKontroller {
     }
 
     @PostMapping
-    public void registreeri(@RequestBody SisseLogimine sisselogimisinfo) {
+    public ResponseEntity<?> registreeri(@RequestBody SisseLogimine sisselogimisinfo) {
         try {
             authTeenus.registreeriKasutaja(sisselogimisinfo);
-            System.out.println("Loodud kasutaja " + sisselogimisinfo);
+            return ResponseEntity.ok(Map.of("sonum", "Registreerimine edukas"));
         } catch (RegistreerimineFailedException e) {
-            System.out.println("Registeerimine ebaõnnestus. " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sonum", e.getMessage()));
         }
     }
 }

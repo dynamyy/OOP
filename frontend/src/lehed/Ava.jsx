@@ -7,13 +7,32 @@ function Ava() {
 
     const [email, setEmail] = useState('')
     const[parool, setParool] = useState('')
+    const [sisselogimiseTeade, setSisselogimiseTeade] = useState('');
 
     async function logiSisse(email, parool) {
-        await postSisseLogimine(email, parool)
+        const vastus = await postSisseLogimine(email, parool);
+        setSisselogimiseTeade(vastus.sonum);
     }
 
     async function registreeri(email, parool) {
-        await postRegistreerimine(email, parool)
+        const vastus = await postRegistreerimine(email, parool);
+        const vastuseSonum = await vastus.sonum;
+
+        if (!vastus.ok) {
+            if (vastuseSonum === "Parool ei vasta nõuetele") {
+                setSisselogimiseTeade(vastus.sonum +
+                    "\n- Peab olema vähemalt 8 tähemärki pikk" +
+                    "\n- Sisaldama vähemalt ühte suurtähte" +
+                    "\n- Sisaldama vähemalt ühte väiketähte" +
+                    "\n- Sisaldama vähemalt ühte numbrit");
+            } else {
+                setSisselogimiseTeade(vastus.sonum);
+            }
+        } else {
+            setSisselogimiseTeade(vastus.sonum);
+            setEmail('');
+            setParool('');
+        }
     }
 
     return (
@@ -21,6 +40,13 @@ function Ava() {
             <Menuu />
             <div id='sisu' className='hele'>
                 <div className="tume umar-nurk hele-tekst" id='s-log'>
+                    { sisselogimiseTeade && (
+                    <div className="teade">
+                    {sisselogimiseTeade.split('\n').map((line, i) => (
+                        <p key={i}>{line}</p>
+                    ))}
+                    </div>
+                    )}
                     <div className="teksti-paar">
                         <label htmlFor="email">Email</label>
                         <input type="text" name='email' className='hele tume-tekst' value={email} onChange={e => setEmail(e.target.value)} />

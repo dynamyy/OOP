@@ -4,7 +4,11 @@ import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.Erindid.LoginFailException;
 import org.example.oop_projekt.teenuskiht.AuthTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -18,13 +22,13 @@ public class SisseLogimineKontroller {
     }
 
     @PostMapping
-    public void kuvaBroneering(@RequestBody SisseLogimine sisselogimisinfo) {
+    public ResponseEntity<?> kuvaBroneering(@RequestBody SisseLogimine sisselogimisinfo) {
 
         try {
             authTeenus.logiKasutajaSisse(sisselogimisinfo);
-            System.out.println("Edukalt sisse logitud: " + sisselogimisinfo);
+            return ResponseEntity.ok(Map.of("sonum", "Sisselogimine edukas"));
         } catch (LoginFailException e) {
-            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sonum", e.getMessage()));
         }
 
     }
