@@ -1,25 +1,12 @@
 package org.example.oop_projekt.DTO;
 
+import lombok.Getter;
+
+@Getter
 public class SisseLogimine {
 
     private String email;
     private String parool;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getParool() {
-        return parool;
-    }
-
-    public void setParool(String parool) {
-        this.parool = parool;
-    }
 
     @Override
     public String toString() {
