@@ -34,12 +34,17 @@ public class AuthTeenus {
         sobivad kõik eesti tähestiku tähed.
          - Peab olema 1 suurtäht ja 1 väiketäht
          - Peab olema 1 number
-         - Peab olema vähemal 8 tähemärki pikk
+         - Peab olema vähemalt 8 tähemärki pikk
          */
         String pwRegex = "^(?=.*[a-zäöüõšž])(?=.*[A-ZÄÖÜÕŠŽ])(?=.*\\d)[\\p{L}\\d\\p{P}\\p{S}]{8,}$";
 
         if (!dto.getParool().matches(pwRegex)) {
             throw new RegistreerimineFailedException("Parool ei vasta nõuetele");
+        }
+
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        if (!dto.getEmail().matches(emailRegex)) {
+            throw new RegistreerimineFailedException("Meiliaadress ei vasta nõuetele");
         }
 
         String hashedParool = encoder.encode(dto.getParool());
