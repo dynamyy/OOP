@@ -1,24 +1,17 @@
 package org.example.oop_projekt.teenuskiht;
 
 import lombok.Getter;
-import org.example.oop_projekt.Erandid.ScrapeFailedException;
-import org.example.oop_projekt.andmepääsukiht.PoodRepository;
+import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.Toode;
-import org.example.oop_projekt.andmepääsukiht.ToodeRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
 

@@ -1,11 +1,8 @@
 package org.example.oop_projekt.teenuskiht;
 
-import org.example.oop_projekt.Erandid.ScrapeFailedException;
+import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.Toode;
-import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Component;
@@ -15,7 +12,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class ScraperController{

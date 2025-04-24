@@ -1,7 +1,6 @@
 package org.example.oop_projekt.Kontrollerid;
 
 import org.example.oop_projekt.DTO.SisseLogimine;
-import org.example.oop_projekt.Erandid.LoginFailException;
 import org.example.oop_projekt.teenuskiht.AuthTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

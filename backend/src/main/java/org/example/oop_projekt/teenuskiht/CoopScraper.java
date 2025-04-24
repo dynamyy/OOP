@@ -1,6 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
-import org.example.oop_projekt.Erandid.ScrapeFailedException;
+import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;

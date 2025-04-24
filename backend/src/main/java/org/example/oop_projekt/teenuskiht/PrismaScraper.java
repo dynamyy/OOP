@@ -1,6 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
-import org.example.oop_projekt.Erandid.ScrapeFailedException;
+import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;
@@ -10,12 +10,8 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
-import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package org.example.oop_projekt.Erandid;
+package org.example.oop_projekt.Erindid;
 
 public class LoginFailException extends RuntimeException{
     private final String message;

@@ -1,7 +1,7 @@
 package org.example.oop_projekt.teenuskiht;
 
 import org.example.oop_projekt.DTO.SisseLogimine;
-import org.example.oop_projekt.Erandid.LoginFailException;
+import org.example.oop_projekt.Erindid.LoginFailException;
 import org.example.oop_projekt.andmepääsukiht.Kasutaja;
 import org.example.oop_projekt.andmepääsukiht.KasutajaRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
