@@ -2,6 +2,7 @@ package org.example.oop_projekt.teenuskiht;
 
 import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.Erindid.LoginFailException;
+import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
 import org.example.oop_projekt.andmepääsukiht.Kasutaja;
 import org.example.oop_projekt.andmepääsukiht.KasutajaRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,8 +23,25 @@ public class AuthTeenus {
     /**
      * Registreerib uue kasutaja
      * @param dto Kasutaja logimisinfo andmete objekt
+     * @throws RegistreerimineFailedException
      */
-    public void registreeriKasutaja(SisseLogimine dto) {
+    public void registreeriKasutaja(SisseLogimine dto) throws RegistreerimineFailedException {
+        if (kasutajaRepository.findByEmail(dto.getEmail()) != null) {
+            throw new RegistreerimineFailedException("Selle meiliaadressiga kasutaja on juba olemas");
+        }
+
+        /*
+        sobivad kõik eesti tähestiku tähed.
+         - Peab olema 1 suurtäht ja 1 väiketäht
+         - Peab olema 1 number
+         - Peab olema vähemal 8 tähemärki pikk
+         */
+        String pwRegex = "^(?=.*[a-zäöüõšž])(?=.*[A-ZÄÖÜÕŠŽ])(?=.*\\d)[\\p{L}\\d\\p{P}\\p{S}]{8,}$";
+
+        if (!dto.getParool().matches(pwRegex)) {
+            throw new RegistreerimineFailedException("Parool ei vasta nõuetele");
+        }
+
         String hashedParool = encoder.encode(dto.getParool());
 
         Kasutaja kasutaja = new Kasutaja();

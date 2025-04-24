@@ -1,6 +1,7 @@
 package org.example.oop_projekt.Kontrollerid;
 
 import org.example.oop_projekt.DTO.SisseLogimine;
+import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
 import org.example.oop_projekt.teenuskiht.AuthTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,11 @@ public class RegistreerimineKontroller {
 
     @PostMapping
     public void registreeri(@RequestBody SisseLogimine sisselogimisinfo) {
-        authTeenus.registreeriKasutaja(sisselogimisinfo);
-        System.out.println("Loodud kasutaja " + sisselogimisinfo);
+        try {
+            authTeenus.registreeriKasutaja(sisselogimisinfo);
+            System.out.println("Loodud kasutaja " + sisselogimisinfo);
+        } catch (RegistreerimineFailedException e) {
+            System.out.println("Registeerimine ebaõnnestus. " + e.getMessage());
+        }
     }
 }
