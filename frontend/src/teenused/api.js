@@ -7,3 +7,11 @@ export const postSisseLogimine = async (email, parool) => {
         body: JSON.stringify({email, parool})
     })
 }
+
+export const postRegistreerimine = async (email, parool) => {
+    fetch(`${BAAS_URL}/registreeri`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({email, parool})
+    })
+}

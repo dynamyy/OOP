@@ -1,6 +1,7 @@
 import { useState, React } from 'react'
 import Menuu from '../komponendid/Menuu'
 import { postSisseLogimine } from '../teenused/api'
+import { postRegistreerimine } from '../teenused/api'
 
 function Ava() {
 
@@ -9,6 +10,10 @@ function Ava() {
 
     async function logiSisse(email, parool) {
         await postSisseLogimine(email, parool)
+    }
+
+    async function registreeri(email, parool) {
+        await postRegistreerimine(email, parool)
     }
 
     return (
@@ -25,6 +30,7 @@ function Ava() {
                         <input type="text" name='parool' className='hele tume-tekst' value={parool} onChange={e => setParool(e.target.value)} />
                     </div>
                     <button className='nupp tume2 hele-tekst' onClick={() => logiSisse(email, parool)}><span>Logi sisse</span></button>
+                    <button className='nupp tume2 hele-tekst' onClick={() => registreeri(email, parool)}><span>Registreeri</span></button>
                 </div>
             </div>
         </>
