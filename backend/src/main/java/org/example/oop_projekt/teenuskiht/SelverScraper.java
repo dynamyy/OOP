@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.Erandid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;
@@ -65,30 +66,24 @@ public class SelverScraper extends WebScraper{
     Leian esilehe HTML-i
      */
     @Override
-    String hangiDynamicSource() {
+    String hangiDynamicSource() throws ScrapeFailedException {
         WebDriver chromedriver = getChromedriver();
 
-        if (!getUrl(url)) {
-            return "";
-        }
+        getUrl(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        if (!ootaLeheLaadimist("li.SidebarMenu__item")) {
-            return "";
-        }
+        ootaLeheLaadimist("li.SidebarMenu__item");
 
         return chromedriver.getPageSource();
     }
 
 
     //Vahelehtede html leidmine
-    public String html(String url) {
+    public String html(String url) throws ScrapeFailedException{
         WebDriver chromedriver = getChromedriver();
 
         // Lehe avamine
-        if (!getUrl(url)) {
-            return "";
-        }
+        getUrl(url);
 
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
         wait.until(driver -> !driver.findElements(By.cssSelector(".ProductCard__info")).isEmpty());
@@ -101,14 +96,9 @@ public class SelverScraper extends WebScraper{
     /*
     Leian kõik URL-d
      */
-    public List<String> URLiKirjed() {
+    public List<String> URLiKirjed() throws ScrapeFailedException {
         List<String> info = new ArrayList<>();
         String s = hangiDynamicSource();
-
-        // Tühja lähtekoodi korral on tekkinud viga, tagastan null
-        if (s.isEmpty()) {
-            return null;
-        }
 
         Document doc = Jsoup.parse(s);
 
@@ -132,7 +122,7 @@ public class SelverScraper extends WebScraper{
     Kasutan kõiki URL-e, et leida igal lehel olevate toodete info
      */
     @Override
-    public List<Toode> scrape(WebDriver chromedriver) throws IOException {
+    public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException {
         setChromedriver(chromedriver);
         List<Toode> tooted = new ArrayList<>();
         List<String> urlid = URLiKirjed();

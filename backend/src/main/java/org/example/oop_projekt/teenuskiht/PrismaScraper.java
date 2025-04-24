@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.Erandid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;
@@ -32,45 +33,30 @@ public class PrismaScraper extends WebScraper {
     }
 
     @Override
-    String hangiDynamicSource() {
+    String hangiDynamicSource() throws ScrapeFailedException {
         WebDriver chromedriver = getChromedriver();
-        String leheHTML;
 
         // Veebilehe avamine
-        if (!getUrl(url)) {
-            return "";
-        }
+        getUrl(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        if (!ootaLeheLaadimist("[data-test-id='product-list'] > div")) {
-            return "";
-        }
+        ootaLeheLaadimist("[data-test-id='product-list'] > div");
 
         // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
         WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector("[data-test-id='product-result-total']"));
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        if (!scrolliLeheLoppu(100, "[data-test-id='product-list-item']")) {
-            return "";
-        }
+        scrolliLeheLoppu(100, "[data-test-id='product-list-item']");
 
-        leheHTML = chromedriver.getPageSource();
-
-        return leheHTML;
+        return chromedriver.getPageSource();
     }
 
     @Override
-    public List<Toode> scrape(WebDriver chromedriver) {
+    public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
         List<Toode> tooted = new ArrayList<>();
         String lahtekood = hangiDynamicSource();
-
-        // Tühja lähtekoodi korral on tekkinud viga,
-        // tagastan tühja listi
-        if (lahtekood.isEmpty()) {
-            return tooted;
-        }
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);

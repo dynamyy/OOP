@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.Erandid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -46,16 +47,24 @@ public class ScraperController{
         // Scrapib kõik poed ja lisab tooted andmebaasi
         for (WebScraper pood : scraperid) {
             System.out.println("\u001B[32mAlustan " + pood.getPoeNimi() + " scrapemist\u001B[0m");
-            tooted = pood.scrape(chromedriver);
 
+            try {
+                tooted = pood.scrape(chromedriver);
 
-            if (!tooted.isEmpty()) {
-                System.out.println("\u001B[32mSain " + pood.getPoeNimi() +
-                        " andmed, lisan andmebaasi (" + tooted.size() + ") toodet\u001B[0m");
-                this.toodeTeenus.lisaTootedAndmebaasi(tooted);
-            } else {
-                System.out.println("\u001B[31mEi saanud " + pood.getPoeNimi() + " andmeid (0 toodet)\u001B[0m");
+                if (!tooted.isEmpty()) {
+                    System.out.println("\u001B[32mSain " + pood.getPoeNimi() +
+                            " andmed, lisan andmebaasi (" + tooted.size() + ") toodet\u001B[0m");
+                    this.toodeTeenus.lisaTootedAndmebaasi(tooted);
+                } else {
+                    System.out.println("\u001B[31mScrape õnnestus, kuid ei saanud " + pood.getPoeNimi() + " andmeid (0 toodet)\u001B[0m");
+                }
+
+            } catch (ScrapeFailedException e) {
+                System.out.println("\u001B[31m" + pood.getPoeNimi() + " scrape failis.");
+                System.out.println(e.getMessage() + "\u001B[0m");
             }
+
+
         }
 
         System.out.println("\u001B[32mKõik scrapetud ja andmebaasi lisatud\u001B[0m");
@@ -73,6 +82,7 @@ public class ScraperController{
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
 
-        return new ChromeDriver();
+        //return new chromeDriver(options); //Peidetud
+        return new ChromeDriver(); //Mittepeidetud
     }
 }

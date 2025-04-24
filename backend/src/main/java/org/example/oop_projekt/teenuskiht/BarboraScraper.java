@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.Erandid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;
@@ -34,16 +35,13 @@ public class BarboraScraper extends WebScraper{
 
     //Esilehe html
     @Override
-    String hangiDynamicSource() {
+    String hangiDynamicSource() throws ScrapeFailedException {
         WebDriver chromedriver = getChromedriver();
 
-        if (!getUrl(url)) {
-            return "";
-        }
+        getUrl(url);
 
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
         wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
-
 
         return chromedriver.getPageSource();
     }
@@ -61,7 +59,7 @@ public class BarboraScraper extends WebScraper{
 
 
     //Leian kõik URL-d
-    public List<String> URLikirjed() {
+    public List<String> URLikirjed() throws ScrapeFailedException {
         List<String> info = new ArrayList<>();
         String s = hangiDynamicSource();
 
@@ -89,7 +87,7 @@ public class BarboraScraper extends WebScraper{
     //Kuna kõiki vahelehti ei saanud kohe alguses kätte, tuleb siin kasutada for loopi, et leida vahelehed, kus üldse tooted on.
     //Kui juhtub, et tooteid ei ole lehel või toodet pole hetkel valikus, võime loopi lõpetada sest mittesaadaval olevad tooted on viimased
     @Override
-    public List<Toode> scrape(WebDriver chromedriver) throws IOException {
+    public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException {
         setChromedriver(chromedriver);
         List<String> urlid = URLikirjed();
         List<Toode> tooted = new ArrayList<>();

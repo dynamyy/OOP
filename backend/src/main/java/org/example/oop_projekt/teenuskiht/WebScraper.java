@@ -1,5 +1,7 @@
 package org.example.oop_projekt.teenuskiht;
 
+import lombok.Getter;
+import org.example.oop_projekt.Erandid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.example.oop_projekt.andmepääsukiht.ToodeRepository;
@@ -25,23 +27,17 @@ import java.util.List;
  * Iga poe scraper peaks laiendama seda klassi.
  */
 public abstract class WebScraper{
+    @Getter
     private WebDriver chromedriver;
-    private String poeNimi;
+    @Getter
+    private final String poeNimi;
     private WebDriverWait driverWait;
     private JavascriptExecutor jsExec;
-
-    public String getPoeNimi() {
-        return poeNimi;
-    }
 
     public void setChromedriver(WebDriver chromedriver) {
         this.chromedriver = chromedriver;
         driverWait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
         jsExec = (JavascriptExecutor) chromedriver;
-    }
-
-    public WebDriver getChromedriver() {
-        return chromedriver;
     }
 
     public WebScraper(String poeNimi) {
@@ -80,10 +76,9 @@ public abstract class WebScraper{
      * Scrollib kuni etteantud arv lapselemente on laetud.
      * @param oodatavLasteArv Kui palju elemente peaks laadima
      * @param lapseCss Viide lapsele endale (üldine mitte mingile kindlale elemendile)
-     * @return true kui scrollimine oli edukas, false kui ei õnnestunud laadida
-     * etteantud arv elemente
+     * @throws ScrapeFailedException Viga kui kui ei õnnestunud laadida etteantud arv elemente
      */
-    boolean scrolliLeheLoppu(int oodatavLasteArv, String lapseCss) {
+    void scrolliLeheLoppu(int oodatavLasteArv, String lapseCss) throws ScrapeFailedException {
         int lasteArv = chromedriver.findElements(By.cssSelector(lapseCss)).size();
 
         // Scrollin nii kaua kuni kõik lapsed on laetud
@@ -97,16 +92,14 @@ public abstract class WebScraper{
                         By.cssSelector(lapseCss), lasteArv
                 ));
             } catch (TimeoutException e) {
-                System.out.println("\u001B[31mLehe lõppu scrollimine ebaõnnestus liiga kaua ootamise tõttu" +
+                throw new ScrapeFailedException("\u001B[31mLehe lõppu scrollimine ebaõnnestus liiga kaua ootamise tõttu" +
                         "\n\toodatavLasteArv:" + oodatavLasteArv + "; Leidsin vaid:" + lasteArv +
                         "; lapseCss:" + lapseCss + "\u001B[0m");
-                return false;
             }
 
             // Leian uue laste arvu
             lasteArv = chromedriver.findElements(By.cssSelector(lapseCss)).size();
         }
-        return true;
     }
 
     /**
@@ -116,31 +109,26 @@ public abstract class WebScraper{
      * Tuvastab, kas laadimine oli edukas või mitte.
      * kindlam kui document.readyState kontrollimine
      * @param cssSelector elemendi CSS Selector, mille olemasolu kontrollida
-     * @return true kui element laadis, false kui oodati 15sec ja element ei laadinud
+     * @throws ScrapeFailedException Viga kui oodati 15sec ja element ei laadinud
      */
-    boolean ootaLeheLaadimist(String cssSelector) {
+    void ootaLeheLaadimist(String cssSelector) throws ScrapeFailedException {
         try {
             driverWait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector))));
-            return true;
         } catch (TimeoutException e) {
-            System.out.println("\u001B[31mOotamine kestis liiga kaua, cssSelector: " + cssSelector + "\u001B[0m");
-            return false;
+            throw new ScrapeFailedException("\u001B[31mOotamine kestis liiga kaua, cssSelector: " + cssSelector + "\u001B[0m");
         }
     }
 
     /**
      * Laeb chromedriveriga etteantud veebilehe.
      * @param url veebileht, kuhu minna
-     * @return true kui veebileht avanes; false kui tekkis viga lehe laadimisel
+     * @throws ScrapeFailedException Viga tekib kui url ei lae.
      */
-    boolean getUrl(String url) {
+    void getUrl(String url) throws ScrapeFailedException {
         try {
             chromedriver.get(url);
         } catch (WebDriverException e) {
-            System.out.println("\u001B[31mTekkis viga URLi laadimisel: " + url + "\u001B[0m");
-            return false;
+            throw new ScrapeFailedException("\u001B[31mTekkis viga URLi laadimisel: " + url + "\u001B[0m");
         }
-
-        return true;
     }
 }

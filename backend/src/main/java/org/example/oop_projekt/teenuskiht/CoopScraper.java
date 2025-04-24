@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.Erandid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;
@@ -37,19 +38,14 @@ public class CoopScraper extends WebScraper {
     }
 
     @Override
-    String hangiDynamicSource() {
+    String hangiDynamicSource() throws ScrapeFailedException {
         WebDriver chromedriver = getChromedriver();
-        String leheHTML;
 
         // Veebilehe avamine
-        if (!getUrl(url)) {
-            return "";
-        }
+        getUrl(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        if (!ootaLeheLaadimist("span.option:nth-child(1)")) {
-            return "";
-        }
+        ootaLeheLaadimist("span.option:nth-child(1)");
 
         // Vajutab nuppu "Ühel lehel", et kuvataks kõik tooted
         chromedriver.findElement(By.cssSelector("span.option:nth-child(1)")).click();
@@ -59,28 +55,17 @@ public class CoopScraper extends WebScraper {
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        if (!scrolliLeheLoppu(300, "app-product-card.item")) {
-            return "";
-        }
+        scrolliLeheLoppu(300, "app-product-card.item");
 
-        leheHTML = chromedriver.getPageSource();
-
-
-        return leheHTML;
+        return chromedriver.getPageSource();
     }
 
     @Override
-    public List<Toode> scrape(WebDriver chromedriver) {
+    public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
 
         List<Toode> tooted = new ArrayList<>();
         String lahtekood = hangiDynamicSource();
-
-        // Tühja lähtekoodi korral on tekkinud viga,
-        // tagastan tühja listi
-        if (lahtekood.isEmpty()) {
-            return tooted;
-        }
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);

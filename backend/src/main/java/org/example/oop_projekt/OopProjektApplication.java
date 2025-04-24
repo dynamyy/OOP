@@ -57,7 +57,7 @@ public class OopProjektApplication {
 
         scraper = new ScraperController(scraperid, this.toodeTeenus);
 
-        //scraper.scrapeAll();
+        scraper.scrapeAll();
     }
 
 }

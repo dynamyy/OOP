@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht;
 
+import org.example.oop_projekt.Erandid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.jsoup.Jsoup;
@@ -32,12 +33,10 @@ public class RimiScraper extends WebScraper{
 
 
     @Override
-    String hangiDynamicSource() {
+    String hangiDynamicSource() throws ScrapeFailedException {
         WebDriver chromedriver = getChromedriver();
 
-        if (!getUrl(url)) {
-            return "";
-        }
+        getUrl(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu. Siia pole teda otseselt vaja
         /*
@@ -56,15 +55,12 @@ public class RimiScraper extends WebScraper{
     //Vahelehtede html leidmine
     public String html(String url) {
         WebDriver chromedriver = getChromedriver();
-        try {
-            chromedriver.get(url);
+        chromedriver.get(url);
 
-            WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-            wait.until(driver -> driver.findElements(By.cssSelector(".section-header__wrapper")).size() > 0);
+        WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        wait.until(driver -> driver.findElements(By.cssSelector(".section-header__wrapper")).size() > 0);
 
-            return chromedriver.getPageSource();
-        } finally {
-        }
+        return chromedriver.getPageSource();
     }
 
     /*
@@ -72,7 +68,7 @@ public class RimiScraper extends WebScraper{
     Urlide leidmiseks pean info saama button class="trigger gtm" klassist
     <button role="menuitem" class="trigger gtm" href="/epood/ee/tooted/puuviljad-koogiviljad-lilled/c/SH-12">
      */
-    public List<String> URLikirjed() throws IOException {
+    public List<String> URLikirjed() throws ScrapeFailedException {
         List<String> info = new ArrayList<>();
         String s = hangiDynamicSource();
         Document doc = Jsoup.parse(s);
@@ -90,7 +86,7 @@ public class RimiScraper extends WebScraper{
     }
 
     @Override
-    List<Toode> scrape(WebDriver chromedriver) throws IOException {
+    List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException {
         setChromedriver(chromedriver);
         int pageNr = 1;
         List<String> urlid = URLikirjed();
