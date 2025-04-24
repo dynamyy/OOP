@@ -9,7 +9,12 @@ export const postSisseLogimine = async (email, parool) => {
         });
     
         const vastuseData = await vastus.json();
-        return await {ok: vastus.ok, sonum: vastuseData.sonum};
+
+        if (vastus.ok) {
+            return {ok: vastus.ok, sonum: vastuseData.sonum, token: vastuseData.token};
+        } else {
+            return {ok: vastus.ok, sonum: vastuseData.sonum};
+        }
 
     } catch (viga) {
         console.error("Viga sisselogimisega: ", viga.message);

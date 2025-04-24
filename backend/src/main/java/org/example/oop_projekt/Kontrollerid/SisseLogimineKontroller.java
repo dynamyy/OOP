@@ -3,6 +3,7 @@ package org.example.oop_projekt.Kontrollerid;
 import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.Erindid.LoginFailException;
 import org.example.oop_projekt.teenuskiht.AuthTeenus;
+import org.example.oop_projekt.teenuskiht.TokenHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,8 @@ public class SisseLogimineKontroller {
 
         try {
             authTeenus.logiKasutajaSisse(sisselogimisinfo);
-            return ResponseEntity.ok(Map.of("sonum", "Sisselogimine edukas"));
+            return ResponseEntity.ok(Map.of("sonum", "Sisselogimine edukas",
+                    "token", TokenHandler.genereeriToken(sisselogimisinfo.getEmail())));
         } catch (LoginFailException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sonum", e.getMessage()));
         }

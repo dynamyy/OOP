@@ -13,10 +13,11 @@ function Ava() {
 
     async function logiSisse(email, parool) {
         const vastus = await postSisseLogimine(email, parool);
-        
+
         if (!vastus.ok) {
             setSisselogimiseTeade(vastus.sonum);
         } else {
+            localStorage.setItem('AuthToken', vastus.token);
             navigate('/ostukorvid');
         }
     }
