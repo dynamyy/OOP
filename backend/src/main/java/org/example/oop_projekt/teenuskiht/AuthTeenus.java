@@ -1,23 +1,37 @@
 package org.example.oop_projekt.teenuskiht;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.example.oop_projekt.DTO.SisseLogimine;
+import org.example.oop_projekt.DTO.TokenVerify;
 import org.example.oop_projekt.Erindid.LoginFailException;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
+import org.example.oop_projekt.Erindid.TokenKehtetuException;
 import org.example.oop_projekt.andmepääsukiht.Kasutaja;
 import org.example.oop_projekt.andmepääsukiht.KasutajaRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.security.Key;
+import java.util.Date;
 
 @Service
 public class AuthTeenus {
     private final BCryptPasswordEncoder encoder;
     private final KasutajaRepository kasutajaRepository;
+    private final SecretKey key;
 
     @Autowired
-    public AuthTeenus(KasutajaRepository kasutajaRepository) {
+    public AuthTeenus(KasutajaRepository kasutajaRepository, @Value("${jwt.secret}") String secret) {
         this.kasutajaRepository = kasutajaRepository;
         this.encoder = new BCryptPasswordEncoder();
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     /**
@@ -86,6 +100,26 @@ public class AuthTeenus {
         // Parooli õigsuse kontroll ja tagastus
         if (!encoder.matches(dto.getParool(), kasutaja.getParool())) {
             throw new LoginFailException("Sisselogimine ebaõnnestus. Vale parool");
+        }
+    }
+
+    public void verifyToken(TokenVerify dto) {
+        String token = dto.getToken();
+
+        try {
+            Jws<Claims> claimJws = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+            Claims claim = claimJws.getPayload();
+
+            if (!claim.getIssuer().equals("ostukorvivordlus")) {
+                throw new TokenKehtetuException("Token on kehtetu. Vale väljastaja");
+            }
+
+            Date tokeniKehtivusaeg = claim.getExpiration();
+            if (tokeniKehtivusaeg == null || tokeniKehtivusaeg.before(new Date())) {
+                throw new TokenKehtetuException("Token on kehtetu. Aegunud");
+            }
+        } catch (JwtException e) {
+            throw new TokenKehtetuException("Token on kehtetu. " + e.getMessage());
         }
     }
 }

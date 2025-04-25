@@ -8,7 +8,12 @@ function Tooted() {
     
 
     useEffect(() => {
-        setOnSisseLogitud(authTeenus.kasSisselogitud());
+        const checkSisselogitud = async () => {
+            const isLoggedIn = await authTeenus.kasSisselogitud();
+            setOnSisseLogitud(isLoggedIn);
+        };
+
+        checkSisselogitud();
     }, []);
 
 
