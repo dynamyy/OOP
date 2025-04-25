@@ -26,6 +26,11 @@ public class AuthTeenus {
      * @throws RegistreerimineFailedException
      */
     public void registreeriKasutaja(SisseLogimine dto) throws RegistreerimineFailedException {
+        // Sisselogimisandmete olemasolu kontroll
+        if (dto.getEmail().isEmpty() || dto.getParool().isEmpty()) {
+            throw new RegistreerimineFailedException("Kõik väljad peavad olema täidetud");
+        }
+
         if (kasutajaRepository.findByEmail(dto.getEmail()) != null) {
             throw new RegistreerimineFailedException("Selle meiliaadressiga kasutaja on juba olemas");
         }
@@ -64,6 +69,11 @@ public class AuthTeenus {
      * ei eksisteeri või parool on vale.
      */
     public void logiKasutajaSisse(SisseLogimine dto) throws LoginFailException {
+        // Sisselogimisandmete olemasolu kontroll
+        if (dto.getEmail().isEmpty() || dto.getParool().isEmpty()) {
+            throw new LoginFailException("Kõik väljad peavad olema täidetud");
+        }
+
         // Kasutaja andmed andmebaasist
         Kasutaja kasutaja = kasutajaRepository.findByEmail(dto.getEmail());
 
@@ -71,7 +81,7 @@ public class AuthTeenus {
         // siis ei saa sisse logida
         if (kasutaja == null) {
             throw new LoginFailException("Sisselogimine ebaõnnestus. Sellise meiliaadressiga kasutajat ei ole");
-        };
+        }
 
         // Parooli õigsuse kontroll ja tagastus
         if (!encoder.matches(dto.getParool(), kasutaja.getParool())) {

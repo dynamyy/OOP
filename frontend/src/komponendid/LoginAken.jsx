@@ -1,15 +1,14 @@
-import { useState, React } from 'react'
+import React, { useState } from 'react'
 import Menuu from '../komponendid/Menuu'
+import { useNavigate } from 'react-router-dom';
 import { postSisseLogimine } from '../teenused/api'
 import { postRegistreerimine } from '../teenused/api'
-import { useNavigate } from 'react-router-dom';
 
-function Ava() {
-
+function loginAken() {
     const navigate = useNavigate();
+    const [sisselogimiseTeade, setSisselogimiseTeade] = useState('');
     const [email, setEmail] = useState('')
     const[parool, setParool] = useState('')
-    const [sisselogimiseTeade, setSisselogimiseTeade] = useState('');
 
     async function logiSisse(email, parool) {
         const vastus = await postSisseLogimine(email, parool);
@@ -71,4 +70,4 @@ function Ava() {
     )
 }
 
-export default Ava;
+export default loginAken;
