@@ -43,20 +43,18 @@
 
 .menuu {
     display: flex;
-    flex-direction: column;
+    position: fixed;
     align-items: center;
-    height: 100%;
+    height: fit-content;
     width: fit-content;
+    border-bottom-right-radius: 10px;
     z-index: 10;
 }
 
 .menuu ul {
     display: flex;
-    flex-direction: column;
     list-style-type: none;
     padding: 0;
-    gap: 3rem;
-    margin-top: 3rem;
 }
 
 .menuu ul li a {
@@ -89,4 +87,10 @@
     flex-direction: column;
     gap: 0.3rem;
     width: 100%;
+}
+
+.tekst-nupp-konteiner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

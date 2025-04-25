@@ -1,0 +1,40 @@
+#marksonad-konteiner {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100%;
+    width: 40%;
+    padding: 3rem;
+    padding-top: 5rem;
+}
+
+#marksonad-konteiner .teksti-paar {
+    gap: 1rem;
+}
+
+#marksonad-konteiner label {
+    font-size: x-large;
+    font-weight: 700;
+}
+
+#marksonad-konteiner input {
+    font-size: x-large;
+    border: 1px solid;
+    height: 100%;
+    width: 65%;
+}
+
+#marksonad-konteiner .nupp {
+    margin: 0;
+    font-size: large;
+}
+
+#tooted-list-konteiner {
+    height: 100%;
+    width: 40%;
+}
+
+#ostukorv-konteiner {
+    height: 80%;
+    width: 20%;
+}

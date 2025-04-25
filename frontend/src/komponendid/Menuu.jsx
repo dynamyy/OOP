@@ -5,8 +5,8 @@ function Menuu() {
         <header className="menuu tume">
             <nav>
                 <ul>
-                    <li><a href="">Kasutaja</a></li>
-                    <li><a href="">Ostukorvid</a></li>
+                    <li><a href="/">Kasutaja</a></li>
+                    <li><a href="/uus-ostukorv">Ostukorvid</a></li>
                     <li><a href="">Tooted</a></li>
                 </ul>
             </nav>
