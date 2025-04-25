@@ -23,9 +23,9 @@ function Menuu() {
         <header className="menuu tume">
             <nav>
                 <ul>
-                    <li><Link to="/kasutaja">Kasutaja</Link></li>
-                    <li><Link to="/ostukorvid">Ostukorvid</Link></li>
-                    <li><Link to="/tooted">Tooted</Link></li>
+                    <li><Link to="/kasutaja" className='hele-tekst'>Kasutaja</Link></li>
+                    <li><Link to="/ostukorvid" className='hele-tekst'>Ostukorvid</Link></li>
+                    <li><Link to="/tooted" className='hele-tekst'>Tooted</Link></li>
                     {onSisselogitud && (
                         <li><Link to="#" onClick={logiValja}>Logi välja</Link></li>
                     )}

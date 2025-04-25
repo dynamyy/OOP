@@ -12,7 +12,7 @@
     gap: 1rem;
 }
 
-#marksonad-konteiner label {
+#marksonad-konteiner .teksti-paar > :first-child {
     font-size: x-large;
     font-weight: 700;
 }
@@ -21,7 +21,8 @@
     font-size: x-large;
     border: 1px solid;
     height: 100%;
-    width: 65%;
+    flex: 1;
+    min-width: 0;
 }
 
 #marksonad-konteiner .nupp {
@@ -37,4 +38,23 @@
 #ostukorv-konteiner {
     height: 80%;
     width: 20%;
+}
+
+.marksona-konteiner {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    height: fit-content;
+    width: fit-content;
+    padding: 0.5rem 0.7rem;
+}
+
+#marksonad-konteiner .teksti-paar :nth-child(2) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+}
+
+#marksonad-konteiner .teksti-paar :nth-child(2) .ikoon {
+    cursor: pointer;
 }

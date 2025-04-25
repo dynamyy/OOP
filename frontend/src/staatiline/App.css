@@ -28,6 +28,14 @@
     background-color: #948979;
 }
 
+.roheline {
+    background-color: #4b714c;
+}
+
+.punane {
+    background-color: #902c2c;
+}
+
 .hele-tekst {
     color: #DFD0B8;
     font-weight: 500;
@@ -37,8 +45,16 @@
     border-radius: 10px;
 }
 
+.umar-nurk2 {
+    border-radius: 40px;
+}
+
 .tume-tekst {
-    color: #171717;
+    color: #153448;
+}
+
+.tume-piir {
+    border: #153448 solid;
 }
 
 .menuu {
@@ -59,7 +75,6 @@
 
 .menuu ul li a {
     display: block;
-    color: white;
     font-size: 1.5rem ;
     font-weight: 500;
     padding: 0 2rem;
@@ -94,4 +109,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.ikoon {
+    font-size: large;
+    transform: translateY(3px);
 }
