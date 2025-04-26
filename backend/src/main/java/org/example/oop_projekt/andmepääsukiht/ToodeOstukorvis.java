@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity(name = "ToodeOstukorvis")
 @Table(name = "tooted_ostukorvis")
 @Getter
@@ -31,17 +33,25 @@ public class ToodeOstukorvis {
     private Ostukorv ostukorv;
 
     @OneToOne
-    @JoinColumn(name = "toode_id")
+    @JoinColumn(
+            name = "toode_id",
+            nullable = false
+    )
     private Toode toode;
+
+    @OneToMany(mappedBy = "toodeOstukorvis")
+    private List<TooteMarksona> tooteMarksonad;
 
     @Column(
             name = "kogus"
     )
     private Integer kogus;
 
-    public ToodeOstukorvis(Ostukorv ostukorv, Toode toode, Integer kogus) {
+    public ToodeOstukorvis(Ostukorv ostukorv,
+                           List<TooteMarksona> tooteMarksonad,
+                           Integer kogus) {
         this.ostukorv = ostukorv;
-        this.toode = toode;
+        this.tooteMarksonad = tooteMarksonad;
         this.kogus = kogus;
     }
 

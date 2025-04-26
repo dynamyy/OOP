@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Service
@@ -68,10 +69,7 @@ public class AuthTeenus {
 
         String hashedParool = encoder.encode(dto.getParool());
 
-        Kasutaja kasutaja = new Kasutaja();
-
-        kasutaja.setParool(hashedParool);
-        kasutaja.setEmail(dto.getEmail());
+        Kasutaja kasutaja = new Kasutaja(dto.getEmail(), hashedParool, new ArrayList<>());
 
         kasutajaRepository.save(kasutaja);
     }

@@ -14,7 +14,7 @@ public class OstukorvTeenus {
     private final OstukorvRepository ostukorvRepository;
     private final ToodeOstukorvisRepository toodeOstukorvisRepository;
 
-    // Konstruktoripõhine sõltuvuste süstimine (Spring injekteerib bean'id siia)
+    // Konstruktoripõhine sõltuvuste süstimine (Spring süstib bean'id siia)
     public OstukorvTeenus(OstukorvRepository ostukorvRepository,
                           ToodeOstukorvisRepository toodeOstukorvisRepository) {
         this.ostukorvRepository = ostukorvRepository;
@@ -48,7 +48,7 @@ public class OstukorvTeenus {
 
     // Meetod, mis vähendab antud toodete arvu ostukorvis sisendarvu võrra
     @Transactional // Annotatsioon selleks, et kõik andmebaasi muudatused toimuksid korraga
-    public void eemaldaOstukorvist(Ostukorv ostukorv, ToodeOstukorvis toodeOstukorvis, int toodeteArv) {
+    public void muudaKogust(Ostukorv ostukorv, ToodeOstukorvis toodeOstukorvis, int toodeteArv) {
 
         // Võetakse olemasolev tootenimekiri ostukorvist
         List<ToodeOstukorvis> tootedOstukorvis = ostukorv.getTootedOstukorvis();
@@ -68,6 +68,4 @@ public class OstukorvTeenus {
             toodeOstukorvisRepository.save(toodeOstukorvis); // Salvestatakse uuendatud kogus andmebaasi
         }
     }
-
 }
-
