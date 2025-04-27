@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht.äriloogika;
 
+import org.example.oop_projekt.DTO.MärksõnaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.andmepääsukiht.Pood;
 import org.example.oop_projekt.andmepääsukiht.Toode;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.List;
+
 
 /**
  * Teenus, mis vastutab parsimistulemuste lisamise eest andmebaasi. Võtab toodete objektide
@@ -58,22 +59,20 @@ public class ToodeTeenus {
     }
 
     // Meetod, mis kuvab kasutajale valitud märksõnaga tooted
-    public List<ToodeDTO> valitudTootedAndmebaasist(Map<String, String> märksõnad) {
+    public List<ToodeDTO> valitudTootedAndmebaasist(List<MärksõnaDTO> märksõnad) {
         List<String> rohelised = new ArrayList<>();
         List<String> punased = new ArrayList<>();
 
-        for (Map.Entry<String, String> entry : märksõnad.entrySet()) {
-            String märksõna = entry.getKey().toLowerCase();
-            String väärtus = entry.getValue();
+        for (MärksõnaDTO märksõna : märksõnad) {
 
-            if (väärtus.equalsIgnoreCase("roheline")) {
-                rohelised.add("%" + märksõna + "%"); // % märk laseb võrrelda substringe
-            } else if (väärtus.equalsIgnoreCase("punane")) {
-                punased.add("%" + märksõna + "%");
+            if (märksõna.valikuVärv().equalsIgnoreCase("roheline")) {
+                rohelised.add("%" + märksõna.märksõna() + "%"); // % märk laseb võrrelda substringe
+            } else if (märksõna.valikuVärv().equalsIgnoreCase("punane")) {
+                punased.add("%" + märksõna.märksõna() + "%");
             }
         }
 
-        // Tõmbame kõik rohelised ja punased tooted
+        // Leiame kõik rohelised ja punased tooted
         List<ToodeDTO> rohelisedTooted = new ArrayList<>();
         for (String roheline : rohelised) {
             rohelisedTooted.addAll(toodeRepository.leiaToodeNimega(roheline));

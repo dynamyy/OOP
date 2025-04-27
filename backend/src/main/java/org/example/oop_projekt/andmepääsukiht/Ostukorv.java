@@ -35,8 +35,7 @@ public class Ostukorv {
     @OneToMany(mappedBy = "ostukorv")
     private List<ToodeOstukorvis> tootedOstukorvis;
 
-    public Ostukorv(Kasutaja kasutaja, List<ToodeOstukorvis> tootedOstukorvis) {
-        this.kasutaja = kasutaja;
+    public Ostukorv(List<ToodeOstukorvis> tootedOstukorvis) {
         this.tootedOstukorvis = tootedOstukorvis;
     }
 

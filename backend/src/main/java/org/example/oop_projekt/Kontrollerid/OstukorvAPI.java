@@ -1,13 +1,16 @@
 package org.example.oop_projekt.Kontrollerid;
 
 
+import org.example.oop_projekt.DTO.MärksõnaDTO;
+import org.example.oop_projekt.DTO.OstukorvDTO;
 import org.example.oop_projekt.andmepääsukiht.Ostukorv;
 import org.example.oop_projekt.andmepääsukiht.ToodeOstukorvis;
-import org.example.oop_projekt.teenuskiht.OstukorvTeenus;
+import org.example.oop_projekt.teenuskiht.äriloogika.OstukorvTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,13 +26,11 @@ public class OstukorvAPI {
     }
 
 
-    /*
+
     //Selle kaudu saab lõpuks ostukorvi välja arvutada
+    //Sisendiks on hetkel märksõnad ja nende tõeväärtus, ilmselt peab seda hiljem muutma Märksõnade DTO-ks
     @PostMapping
-    public Ostukorv getOstukorv(@RequestBody Map<String, String> märksõnad){
-        return ostukorvTeenus.getOstukorv(märksõnad);
+    public Ostukorv getOstukorv(@RequestBody OstukorvDTO ostukorv){//Java teisendab automaatselt jsoni DTO-ks
+        return ostukorvTeenus.looOstukorv(ostukorv);
     }
-     */
-
-
 }

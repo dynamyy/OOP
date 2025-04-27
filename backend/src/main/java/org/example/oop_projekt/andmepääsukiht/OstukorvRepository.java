@@ -8,6 +8,4 @@ import java.util.Map;
 @Repository
 public interface OstukorvRepository extends JpaRepository<Ostukorv, Long> {
 
-
-    //Ostukorv LooOstukorv(Map<String, String> märksõnad); - siia ei saa mapi panna, tuleb mingi muu lahendus välja mõelda
 }

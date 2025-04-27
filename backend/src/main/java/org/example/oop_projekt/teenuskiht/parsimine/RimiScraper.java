@@ -168,6 +168,7 @@ public class RimiScraper extends WebScraper {
                     }
 
 
+                    //Siin saab tooteid luua, rn ainult printimine
                     System.out.println("Nimi: " + tooteNimi + " Tükihind: " + hind + " Ühikuhind: " + yhikuHind + ", Kliendihind: " + kliendiHind + " kliendiühikuhind: " + kliendiYhikuhind + " Ühik: " + yhik);
                 }
 

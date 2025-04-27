@@ -1,9 +1,11 @@
 package org.example.oop_projekt.teenuskiht.äriloogika;
 
 import jakarta.transaction.Transactional;
+import org.example.oop_projekt.DTO.OstukorvDTO;
 import org.example.oop_projekt.andmepääsukiht.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,12 +72,39 @@ public class OstukorvTeenus {
         }
     }
 
-    /*
+
     // Tagastab lõpliku ostukorvi elementidest, mis kasutaja on välja valinud
-    public Ostukorv getOstukorv(Map<String, String> märksõnad) {
-        return ostukorvRepository.LooOstukorv(märksõnad);
+    public Ostukorv looOstukorv(OstukorvDTO ostukorv) {
+        Ostukorv ostuKorv = new Ostukorv();
+        List<ToodeOstukorvis> tootedOstukorvis = new ArrayList<>();// See tuleb anda ostukorvile sisse
+
+        // See meetod tuleb hiljem veidi ümber teha, siis, kui on täpselt teada, mida frontend backi saadab.
+        // Kuid ilmselt on selleks ostukorvis olevate toodete nimed, nende kogused ja märksõnad mida kasutati otsimisel
+
+
+
+        // Ostukorv vajab List<ToodeOstukorvis> elementidest listi
+        // ToodeOstukorvis objekt vajab List<TooteMarksona> elemenditest listi
+        // TooteMarksona tahab toodet, mille kohta ta käib ja ühte märksõna selle toote kohta
+
+        for (String tootenimi : ostukorv.tooted()){
+            List<TooteMarksona> tooteMarksonad = new ArrayList<>();
+            ToodeOstukorvis toodeOstukorvis = new ToodeOstukorvis();
+            for(String tooteMarksona : ostukorv.märksõnad()){
+                //if (); ilmselt tuleks TooteMarksona objektile teha ka isendiväli, kas see taheti otsingusse panna või mitte
+
+                tooteMarksonad.add(new TooteMarksona(tooteMarksona, toodeOstukorvis));
+            }
+            tootedOstukorvis.add(new ToodeOstukorvis(ostuKorv, tooteMarksonad, toodeOstukorvis.getKogus()));//vajab ostukorvi, kuhu pannakse List TooteMarksonadest ja kogustest
+        }
+
+
+        ostuKorv.setTootedOstukorvis(tootedOstukorvis);
+        ostukorvRepository.save(ostuKorv);
+
+        return ostuKorv;
     }
-     */
+
 
 }
 
