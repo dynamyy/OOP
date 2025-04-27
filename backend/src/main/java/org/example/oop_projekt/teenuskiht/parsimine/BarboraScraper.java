@@ -1,4 +1,4 @@
-package org.example.oop_projekt.teenuskiht;
+package org.example.oop_projekt.teenuskiht.parsimine;
 
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BarboraScraper extends WebScraper{
+public class BarboraScraper extends WebScraper {
     /**
      * Seadistab chromedriveri
      *

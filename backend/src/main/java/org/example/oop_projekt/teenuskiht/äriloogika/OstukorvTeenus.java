@@ -1,4 +1,4 @@
-package org.example.oop_projekt.teenuskiht;
+package org.example.oop_projekt.teenuskiht.äriloogika;
 
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.andmepääsukiht.*;
@@ -21,30 +21,30 @@ public class OstukorvTeenus {
         this.toodeOstukorvisRepository = toodeOstukorvisRepository;
     }
 
-    // Meetod, mis lisab antud toote ostukorvi
-    @Transactional // Annotatsioon selleks, et kõik andmebaasi muudatused toimuksid korraga
-    public void lisaToodeOstukorvi(Ostukorv ostukorv, Toode toode) {
-
-        // Võetakse olemasolev tootenimekiri ostukorvist
-        List<ToodeOstukorvis> tootedOstukorvis = ostukorv.getTootedOstukorvis();
-
-        // Kontrollitakse, kas see toode on juba ostukorvis olemas
-        ToodeOstukorvis toodeOstukorvis = toodeOstukorvisRepository
-                .findToodeOstukorvisByToodeAndOstukorv(toode, ostukorv);
-
-        if (toodeOstukorvis == null) {
-            // Kui toodet pole veel korvis: luuakse uus ToodeOstukorvis objekt
-            ToodeOstukorvis uusToode = new ToodeOstukorvis(ostukorv, toode, 1);
-            tootedOstukorvis.add(uusToode); // Lisatakse ostukorvi tootenimekirja
-            ostukorv.setTootedOstukorvis(tootedOstukorvis); // Uuendatakse ostukorvi
-            toodeOstukorvisRepository.save(uusToode); // Salvestatakse andmebaasi
-        } else {
-            // Kui toode on juba olemas, suurendatakse kogust
-            Integer kogus = toodeOstukorvis.getKogus();
-            toodeOstukorvis.setKogus(kogus + 1);
-            toodeOstukorvisRepository.save(toodeOstukorvis); // Salvestatakse uuendatud kogus
-        }
-    }
+//    // Meetod, mis lisab antud toote ostukorvi
+//    @Transactional // Annotatsioon selleks, et kõik andmebaasi muudatused toimuksid korraga
+//    public void lisaToodeOstukorvi(Ostukorv ostukorv, Toode toode) {
+//
+//        // Võetakse olemasolev tootenimekiri ostukorvist
+//        List<ToodeOstukorvis> tootedOstukorvis = ostukorv.getTootedOstukorvis();
+//
+//        // Kontrollitakse, kas see toode on juba ostukorvis olemas
+//        ToodeOstukorvis toodeOstukorvis = toodeOstukorvisRepository
+//                .findToodeOstukorvisByToodeAndOstukorv(toode, ostukorv);
+//
+//        if (toodeOstukorvis == null) {
+//            // Kui toodet pole veel korvis: luuakse uus ToodeOstukorvis objekt
+//            ToodeOstukorvis uusToode = new ToodeOstukorvis(ostukorv, toode, 1);
+//            tootedOstukorvis.add(uusToode); // Lisatakse ostukorvi tootenimekirja
+//            ostukorv.setTootedOstukorvis(tootedOstukorvis); // Uuendatakse ostukorvi
+//            toodeOstukorvisRepository.save(uusToode); // Salvestatakse andmebaasi
+//        } else {
+//            // Kui toode on juba olemas, suurendatakse kogust
+//            Integer kogus = toodeOstukorvis.getKogus();
+//            toodeOstukorvis.setKogus(kogus + 1);
+//            toodeOstukorvisRepository.save(toodeOstukorvis); // Salvestatakse uuendatud kogus
+//        }
+//    }
 
     // Meetod, mis vähendab antud toodete arvu ostukorvis sisendarvu võrra
     @Transactional // Annotatsioon selleks, et kõik andmebaasi muudatused toimuksid korraga

@@ -1,6 +1,7 @@
 package org.example.oop_projekt.andmepääsukiht;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +9,7 @@ import java.util.List;
 
 @Entity(name = "ToodeOstukorvis")
 @Table(name = "tooted_ostukorvis")
-@Getter
-@Setter
+@Data
 public class ToodeOstukorvis {
 
     @Id

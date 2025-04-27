@@ -1,4 +1,4 @@
-package org.example.oop_projekt.teenuskiht;
+package org.example.oop_projekt.teenuskiht.äriloogika;
 
 import org.example.oop_projekt.andmepääsukiht.Pood;
 import org.example.oop_projekt.andmepääsukiht.Toode;
@@ -6,7 +6,6 @@ import org.example.oop_projekt.andmepääsukiht.ToodeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Teenus, mis vastutab parsimistulemuste lisamise eest andmebaasi. Võtab toodete objektide

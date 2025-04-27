@@ -1,4 +1,4 @@
-package org.example.oop_projekt.teenuskiht;
+package org.example.oop_projekt.teenuskiht.autentimine;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
 

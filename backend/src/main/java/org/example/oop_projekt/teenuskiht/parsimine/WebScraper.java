@@ -1,4 +1,4 @@
-package org.example.oop_projekt.teenuskiht;
+package org.example.oop_projekt.teenuskiht.parsimine;
 
 import lombok.Getter;
 import org.example.oop_projekt.Erindid.ScrapeFailedException;

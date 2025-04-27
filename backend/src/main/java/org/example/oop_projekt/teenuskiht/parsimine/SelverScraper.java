@@ -1,4 +1,4 @@
-package org.example.oop_projekt.teenuskiht;
+package org.example.oop_projekt.teenuskiht.parsimine;
 
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.util.*;
 
 @Service
-public class SelverScraper extends WebScraper{
+public class SelverScraper extends WebScraper {
 
     /**
      * Seadistab chromedriveri
