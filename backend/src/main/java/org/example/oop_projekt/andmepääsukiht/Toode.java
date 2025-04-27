@@ -85,5 +85,8 @@ public class Toode {
     public Toode() {
     }
 
+    public String getNimetus() {
+        return nimetus;
+    }
 }
 
