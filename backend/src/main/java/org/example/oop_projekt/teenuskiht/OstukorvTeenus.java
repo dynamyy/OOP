@@ -5,6 +5,7 @@ import org.example.oop_projekt.andmepääsukiht.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 // Teenuseklass, mis sisaldab ostukorviga seotud äriloogikat
 @Service
@@ -68,6 +69,13 @@ public class OstukorvTeenus {
             toodeOstukorvisRepository.save(toodeOstukorvis); // Salvestatakse uuendatud kogus andmebaasi
         }
     }
+
+    /*
+    // Tagastab lõpliku ostukorvi elementidest, mis kasutaja on välja valinud
+    public Ostukorv getOstukorv(Map<String, String> märksõnad) {
+        return ostukorvRepository.LooOstukorv(märksõnad);
+    }
+     */
 
 }
 
