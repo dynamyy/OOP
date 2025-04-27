@@ -2,7 +2,7 @@ package org.example.oop_projekt.Kontrollerid;
 
 import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
-import org.example.oop_projekt.teenuskiht.AuthTeenus;
+import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

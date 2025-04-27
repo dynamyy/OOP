@@ -1,24 +1,55 @@
 package org.example.oop_projekt.andmepääsukiht;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
+import java.util.List;
+
+@Entity(name = "Kasutaja")
+@Table(name = "kasutajad")
+@Data
 public class Kasutaja {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "kasutaja_sequence",
+            sequenceName = "kasutaja_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "kasutaja_sequence"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
     private long id;
 
-    @Setter
+    @Column(
+            name = "email",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
     private String email;
 
-    @Setter
-    @Getter
+    @Column(
+            name = "parool",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
     private String parool;
 
+    @OneToMany(mappedBy = "kasutaja")
+    private List<Ostukorv> ostukorvid;
 
+    public Kasutaja(String email, String parool, List<Ostukorv> ostukorvid) {
+        this.email = email;
+        this.parool = parool;
+        this.ostukorvid = ostukorvid;
+    }
+
+    public Kasutaja() {
+    }
 }

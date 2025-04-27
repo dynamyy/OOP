@@ -1,6 +1,6 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.teenuskiht.ScraperController;
+import org.example.oop_projekt.teenuskiht.parsimine.ScraperController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

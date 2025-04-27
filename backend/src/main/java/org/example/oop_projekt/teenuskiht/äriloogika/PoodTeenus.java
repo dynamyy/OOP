@@ -1,4 +1,4 @@
-package org.example.oop_projekt.teenuskiht;
+package org.example.oop_projekt.teenuskiht.äriloogika;
 
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.andmepääsukiht.Pood;
@@ -6,8 +6,6 @@ import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 @Service

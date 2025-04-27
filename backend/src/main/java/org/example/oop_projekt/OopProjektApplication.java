@@ -2,7 +2,9 @@ package org.example.oop_projekt;
 
 import org.example.oop_projekt.andmepääsukiht.PoodRepository;
 import org.example.oop_projekt.andmepääsukiht.ToodeRepository;
-import org.example.oop_projekt.teenuskiht.*;
+import org.example.oop_projekt.teenuskiht.parsimine.*;
+import org.example.oop_projekt.teenuskiht.äriloogika.PoodTeenus;
+import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

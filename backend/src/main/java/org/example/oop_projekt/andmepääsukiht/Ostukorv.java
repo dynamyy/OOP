@@ -1,6 +1,7 @@
 package org.example.oop_projekt.andmepääsukiht;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +9,7 @@ import java.util.List;
 
 @Entity(name = "Ostukorv")
 @Table(name = "ostukorvid")
-@Getter
-@Setter
+@Data
 public class Ostukorv {
 
     @Id
@@ -28,10 +28,15 @@ public class Ostukorv {
     )
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "kasutaja_id")
+    private Kasutaja kasutaja;
+
     @OneToMany(mappedBy = "ostukorv")
     private List<ToodeOstukorvis> tootedOstukorvis;
 
-    public Ostukorv(List<ToodeOstukorvis> tootedOstukorvis) {
+    public Ostukorv(Kasutaja kasutaja, List<ToodeOstukorvis> tootedOstukorvis) {
+        this.kasutaja = kasutaja;
         this.tootedOstukorvis = tootedOstukorvis;
     }
 

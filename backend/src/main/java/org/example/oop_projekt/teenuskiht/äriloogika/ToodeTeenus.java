@@ -1,4 +1,4 @@
-package org.example.oop_projekt.teenuskiht;
+package org.example.oop_projekt.teenuskiht.äriloogika;
 
 import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.andmepääsukiht.Pood;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * Teenus, mis vastutab parsimistulemuste lisamise eest andmebaasi. Võtab toodete objektide
