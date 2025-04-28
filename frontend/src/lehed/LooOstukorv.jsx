@@ -1,15 +1,29 @@
 import { useState, React, useEffect } from 'react'
 import Menuu from '../komponendid/Menuu'
 import Marksona from '../komponendid/Marksona'
+import ToodeKaart from '../komponendid/ToodeKaart'
+import { postMarksonad } from '../teenused/api'
 
 function LooOstukorv() {
 
     const [marksonad, setMarksonad] = useState({})
     const [uusMarksona, setUusMarksona] = useState('')
     const [uusSisalduvus, setUusSisalduvus] = useState("roheline")
+    const [tooted, setTooted] = useState({})
+
+    async function fetchTooted(ms) {
+        const vastus = await postMarksonad(marksonad)
+        console.log(marksonad)
+
+        if (vastus.ok) {
+            console.log(vastus)
+            setTooted(await vastus.marksonad)
+        }
+
+    }
 
     useEffect(() => {
-
+        fetchTooted(marksonad)
     }, [marksonad])
 
     function lisaMarksona(marksona) {
@@ -76,7 +90,18 @@ function LooOstukorv() {
                     </div>
                 </div>
                 <div id="tooted-list-konteiner">
-
+                    <div className="teksti-paar">
+                        <span>Leitud tooted</span>
+                        <div>
+                            {/* {tooted.map(toode => (
+                                <ToodeKaart
+                                    key={toode.nimetus}
+                                    tooteNimetus={toode.nimetus}
+                                    uhikuHind={toode.uhikuHind}
+                                />
+                            ))} */}
+                        </div>
+                    </div>
                 </div>
                 <div id="ostukorv-konteiner">
 

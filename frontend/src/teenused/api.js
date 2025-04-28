@@ -52,3 +52,32 @@ export const verifyToken = async (token) => {
         console.error("Viga tokeni kontrollimisel", viga.message);
     }
 }
+
+export const postMarksonad = async (marksonad) => {
+    try {
+        const marksonadList = Object.entries(marksonad).map(([märksõna, valikuVärv]) => ({
+            märksõna,
+            valikuVärv
+        }));
+        console.log(marksonadList)
+
+        const vastus = await fetch(`${BAAS_URL}/tooted`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify(marksonadList)
+        })
+
+        const vastuseAndmed = await vastus.json();
+        console.log(vastuseAndmed)
+
+        if (vastus.ok) {
+            return {ok: true, marksonad: vastuseAndmed}
+        } else {
+            return {ok: false, marksonad: {}}
+        }
+       
+    } catch (viga) {
+        console.log("Viga märksõnade saatmisel ", viga.message)
+        return {ok: false, marksonad: {}}
+    }
+}

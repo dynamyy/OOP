@@ -58,3 +58,12 @@
 #marksonad-konteiner .teksti-paar :nth-child(2) .ikoon {
     cursor: pointer;
 }
+
+.toode-kaart-konteiner {
+    display: flex;
+    justify-content: space-between;
+}
+
+.toode-kaart-konteiner span {
+    font-size: small;
+}
