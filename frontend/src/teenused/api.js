@@ -59,7 +59,6 @@ export const postMarksonad = async (marksonad) => {
             märksõna,
             valikuVärv
         }));
-        console.log(marksonadList)
 
         const vastus = await fetch(`${BAAS_URL}/tooted`, {
             method: "POST",
@@ -68,7 +67,6 @@ export const postMarksonad = async (marksonad) => {
         })
 
         const vastuseAndmed = await vastus.json();
-        console.log(vastuseAndmed)
 
         if (vastus.ok) {
             return {ok: true, marksonad: vastuseAndmed}

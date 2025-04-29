@@ -1,8 +1,13 @@
-import { useState, React, useEffect } from 'react'
-import Menuu from '../komponendid/Menuu'
-import Marksona from '../komponendid/Marksona'
-import ToodeKaart from '../komponendid/ToodeKaart'
-import { postMarksonad } from '../teenused/api'
+import { useState, React, useEffect } from 'react';
+import Menuu from '../komponendid/Menuu';
+import Marksona from '../komponendid/Marksona';
+import ToodeKaart from '../komponendid/ToodeKaart';
+import { postMarksonad } from '../teenused/api';
+import coopLogo from '../staatiline/logod/coop.png';
+import maximaLogo from '../staatiline/logod/maxima.png';
+import selverLogo from '../staatiline/logod/selver.png';
+import rimiLogo from '../staatiline/logod/rimi.png';
+import prismaLogo from '../staatiline/logod/prisma.png';
 
 function LooOstukorv() {
 
@@ -10,15 +15,19 @@ function LooOstukorv() {
     const [uusMarksona, setUusMarksona] = useState('')
     const [uusSisalduvus, setUusSisalduvus] = useState("roheline")
     const [tooted, setTooted] = useState([])
+    const logod = {
+        Prisma: prismaLogo,
+        Selver: selverLogo,
+        Maxima: maximaLogo,
+        Coop: coopLogo,
+        Rimi: rimiLogo
+    }
 
     async function fetchTooted(ms) {
         const vastus = await postMarksonad(marksonad)
-        console.log(marksonad)
 
         if (vastus.ok) {
-            console.log(vastus)
             setTooted(vastus.marksonad)
-            console.log(tooted)
         }
     }
 
@@ -35,6 +44,7 @@ function LooOstukorv() {
         const nupp = document.getElementById('sisalduvus')
         nupp.classList.remove("punane")
         nupp.classList.add("roheline")
+        nupp.textContent = "Sisaldab"
     }
 
     function eemaldaMarksona(marksona) {
@@ -61,6 +71,8 @@ function LooOstukorv() {
             setUusSisalduvus("roheline")
         }
     }
+
+    console.log(tooted)
 
     return (
         <>
@@ -92,7 +104,7 @@ function LooOstukorv() {
                 <div id="tooted-list-konteiner">
                     <div className="teksti-paar">
                         <span className="tume-tekst">Leitud tooted</span>
-                        <div id="tooted-list">
+                        <div id="tooted-list" className="umar-nurk">
                             {tooted.map(toode => (
                                 <ToodeKaart
                                     key={toode.tooteNimi}
@@ -101,6 +113,7 @@ function LooOstukorv() {
                                     uhikuHind={toode.tooteÜhikuHind}
                                     uhik={toode.ühik}
                                     soodus={toode.kasonSoodus}
+                                    poodPilt={logod[toode.pood]}
                                 />
                             ))}
                         </div>

@@ -32,7 +32,7 @@
 
 #ostukorv-konteiner {
     height: 80%;
-    width: 20%;
+    width: 0%;
 }
 
 .marksona-konteiner {
@@ -54,12 +54,13 @@
     cursor: pointer;
 }
 
-
 #tooted-list-konteiner {
     display: flex;
     flex-direction: column;
-    max-height: 100%;
-    width: 40%;
+    justify-content: start;
+    margin: 2rem;
+    height: 100%;
+    width: 60%;
 }
 
 #tooted-list-konteiner > div > span {
@@ -71,6 +72,8 @@
 #tooted-list {
     display: flex;
     flex-direction: column;
+    border: #153448 solid 1px;
+    padding: 1rem;
     max-height: 80vh;
     gap: 0.5rem;
     overflow-y: auto;
@@ -89,6 +92,7 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
     gap: 1rem;
     margin-bottom: 0.5rem;
 }
@@ -103,15 +107,23 @@
 }
 
 #tooted-list::-webkit-scrollbar {
-    width: 8px; /* Width of the scrollbar */
+    width: 8px;
 }
 
 #tooted-list::-webkit-scrollbar-track {
     border: #3C5B6F solid 1px;
-    border-radius: 4px; /* Optional: Rounded corners for the track */
+    margin: 10px;
+    border-radius: 4px;
 }
 
 #tooted-list::-webkit-scrollbar-thumb {
-    background: #3C5B6F; /* Color of the scrollbar thumb */
-    border-radius: 4px; /* Optional: Rounded corners for the thumb */
+    background: #3C5B6F;
+    border-radius: 4px;
+    width: 10px;
+}
+
+.logo-pilt {
+    width: 6rem;
+    height: 3rem;
+    object-fit: cover;
 }
