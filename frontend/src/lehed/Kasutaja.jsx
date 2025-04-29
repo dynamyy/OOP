@@ -4,7 +4,8 @@ import LoginAken from '../komponendid/LoginAken'
 import Kliendikaart from '../komponendid/Kliendikaart'
 import authTeenus from '../teenused/AuthTeenus'
 
-function Tooted() {
+function Kasutaja() {
+    const [kliendikaartideMuutmine, setKliendikaartideMuutmine] = useState(false);
     const [onSisselogitud, setOnSisseLogitud] = useState(false);
     const [kasutaja, setKasutaja] = useState('');
     
@@ -28,6 +29,17 @@ function Tooted() {
         return <LoginAken />;
     }
 
+    function toggleKliendikaardiMuutmine() {
+        setKliendikaartideMuutmine(prev => !prev);
+    }
+
+    function valiKliendikaart(pood) {
+        if (!kliendikaartideMuutmine) {
+            return;
+        }
+
+        console.log(pood);
+    }
 
     return (
         <>
@@ -38,13 +50,13 @@ function Tooted() {
                     
                     <h2>Kliendikaardid:</h2>
                     <div className="kliendikaardid samal-real">
-                        <Kliendikaart poeNimi="COOP" varv="roheline"/>
-                        <Kliendikaart poeNimi="Prisma" varv="roheline"/>
-                        <Kliendikaart poeNimi="Rimi" varv="roheline"/>
-                        <Kliendikaart poeNimi="Maxima" varv="roheline"/>
-                        <Kliendikaart poeNimi="Selver" varv="roheline"/>
-                        <button className='nupp tume2 hele-tekst' onClick={() => console.log("nupp")}><span>Muuda</span></button>
+                        <Kliendikaart poeNimi="COOP" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("COOP")}/>
+                        <Kliendikaart poeNimi="Prisma" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("Prisma")}/>
+                        <Kliendikaart poeNimi="Rimi" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("Rimi")}/>
+                        <Kliendikaart poeNimi="Maxima" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("Maxima")}/>
+                        <Kliendikaart poeNimi="Selver" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("Selver")}/>
                     </div>
+                    <button className='nupp tume2 hele-tekst' onClick={() => toggleKliendikaardiMuutmine()}><span>{kliendikaartideMuutmine ? 'Lõpeta muutmine' : 'Muuda kliendikaarte'}</span></button>
 
                     <div className="samal-real">
                         <button className='nupp tume2 hele-tekst' onClick={() => console.log("nupp")}><span>Muuda parooli</span></button>
@@ -56,4 +68,4 @@ function Tooted() {
     )
 }
 
-export default Tooted;
+export default Kasutaja;

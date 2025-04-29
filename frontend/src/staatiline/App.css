@@ -40,12 +40,20 @@
     background-color: #679c68;
 }
 
+.roheline-hover-disabled:hover {
+    background-color: #4b714c;
+}
+
 .punane {
     background-color: #902c2c;
 }
 
 .punane:hover {
     background-color: #b94747;
+}
+
+.punane-hover-disabled:hover {
+    background-color: #902c2c;
 }
 
 .hele-tekst {
