@@ -85,7 +85,10 @@ function loginAken() {
                         (
                             <>
                             <button className='nupp tume2 hele-tekst' onClick={() => logiSisse(email, parool)}><span>Logi sisse</span></button>
-                            <button className='nupp tume2 hele-tekst' onClick={() => setKasutajaRegistreerimine(true)}><span>Registreeri uus kasutaja</span></button>
+                            <button className='nupp tume2 hele-tekst' onClick={() => {
+                                setKasutajaRegistreerimine(true);
+                                setSisselogimiseTeade('');
+                                }}><span>Registreeri uus kasutaja</span></button>
                             </>
                         ) : (
                             <>
@@ -104,6 +107,7 @@ function loginAken() {
                             <button className='nupp tume2 hele-tekst' onClick={() => {
                                 setKasutajaRegistreerimine(false);
                                 setValitudPoed(new Set());
+                                setSisselogimiseTeade('');
                                 }}><span>Logi sisse olemasolevasse kasutajasse</span></button>
                             </>
                         )

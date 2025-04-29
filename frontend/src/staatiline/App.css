@@ -20,6 +20,10 @@
     background-color: #3C5B6F;
 }
 
+.tume2:hover {
+    background-color: #5b7890;
+}
+
 .hele {
     background-color: #DFD0B8;
 }
@@ -32,8 +36,16 @@
     background-color: #4b714c;
 }
 
+.roheline:hover {
+    background-color: #679c68;
+}
+
 .punane {
     background-color: #902c2c;
+}
+
+.punane:hover {
+    background-color: #b94747;
 }
 
 .hele-tekst {
