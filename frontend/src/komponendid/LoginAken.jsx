@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Menuu from '../komponendid/Menuu'
+import Kliendikaart from '../komponendid/Kliendikaart'
 import { useNavigate } from 'react-router-dom';
 import { postSisseLogimine } from '../teenused/api'
 import { postRegistreerimine } from '../teenused/api'
@@ -9,6 +10,8 @@ function loginAken() {
     const [sisselogimiseTeade, setSisselogimiseTeade] = useState('');
     const [email, setEmail] = useState('')
     const[parool, setParool] = useState('')
+    const [kasutajaRegistreerimine, setKasutajaRegistreerimine] = useState(false);
+    const [valitudPoed, setValitudPoed] = useState(new Set());
 
     async function logiSisse(email, parool) {
         const vastus = await postSisseLogimine(email, parool);
@@ -42,6 +45,19 @@ function loginAken() {
         }
     }
 
+    function valiKliendikaart(pood) {
+        setValitudPoed((poed) => {
+            const uuendaPoode = new Set(poed);
+            if (uuendaPoode.has(pood)) {
+                uuendaPoode.delete(pood);
+            } else {
+                uuendaPoode.add(pood);
+            }
+
+            return uuendaPoode;
+        });
+    }
+
     return (
         <>
             <Menuu />
@@ -62,8 +78,37 @@ function loginAken() {
                         <label htmlFor="parool">Parool</label>
                         <input type="text" name='parool' className='hele tume-tekst' value={parool} onChange={e => setParool(e.target.value)} />
                     </div>
-                    <button className='nupp tume2 hele-tekst' onClick={() => logiSisse(email, parool)}><span>Logi sisse</span></button>
-                    <button className='nupp tume2 hele-tekst' onClick={() => registreeri(email, parool)}><span>Registreeri</span></button>
+
+                    { !kasutajaRegistreerimine ?  
+                        (
+                            <>
+                            <button className='nupp tume2 hele-tekst' onClick={() => logiSisse(email, parool)}><span>Logi sisse</span></button>
+                            <button className='nupp tume2 hele-tekst' onClick={() => setKasutajaRegistreerimine(true)}><span>Registreeri uus kasutaja</span></button>
+                            </>
+                        ) : (
+                            <>
+                            <div className="teksti-paar">
+                                <label>Vali olemasolevad poodide kliendikaardid</label>
+                                <div className="kliendikaardid samal-real">
+                                    <Kliendikaart poeNimi="COOP" varv={valitudPoed.has("COOP") ? "roheline" : "punane"} kaartValitud={() => valiKliendikaart("COOP")}/>
+                                    <Kliendikaart poeNimi="Prisma" varv={valitudPoed.has("Prisma") ? "roheline" : "punane"} kaartValitud={() => valiKliendikaart("Prisma")}/>
+                                    <Kliendikaart poeNimi="Rimi" varv={valitudPoed.has("Rimi") ? "roheline" : "punane"} kaartValitud={() => valiKliendikaart("Rimi")}/>
+                                    <Kliendikaart poeNimi="Maxima" varv={valitudPoed.has("Maxima") ? "roheline" : "punane"} kaartValitud={() => valiKliendikaart("Maxima")}/>
+                                    <Kliendikaart poeNimi="Selver" varv={valitudPoed.has("Selver") ? "roheline" : "punane"} kaartValitud={() => valiKliendikaart("Selver")}/>
+                                </div>
+                            </div>
+
+                            <button className='nupp tume2 hele-tekst' onClick={() => registreeri(email, parool)}><span>Registreeri</span></button>
+                            <button className='nupp tume2 hele-tekst' onClick={() => {
+                                setKasutajaRegistreerimine(false);
+                                setValitudPoed(new Set());
+                                }}><span>Logi sisse olemasolevasse kasutajasse</span></button>
+                            </>
+                        )
+                    }
+                    
+                
+                
                 </div>
             </div>
         </>

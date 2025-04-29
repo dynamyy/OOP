@@ -1,0 +1,8 @@
+.kliendikaardid {
+    gap: 1rem;
+    align-items: center;
+}
+
+.kliendikaart {
+    flex: 0 0 auto;
+}

@@ -115,3 +115,8 @@
     font-size: large;
     transform: translateY(3px);
 }
+
+.samal-real {
+    display: flex;
+    flex-wrap: wrap;
+}

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './staatiline/App.css'
 import './staatiline/Ava.css'
 import './staatiline/UusOStukorv.css'
+import './staatiline/Kasutaja.css'
 
 function App() {
 

@@ -38,6 +38,17 @@ const AuthTeenus = {
         const aeg = Date.now() / 1000;
 
         return tokenDecoded.exp > aeg;
+    },
+
+    getKasutaja: function() {
+        if (!this.kasSisselogitud()) {
+            return "";
+        }
+
+        const token = localStorage.getItem('AuthToken');
+        const tokenDecoded = jwtDecode(token);
+
+        return tokenDecoded.sub;
     }
 };
 
