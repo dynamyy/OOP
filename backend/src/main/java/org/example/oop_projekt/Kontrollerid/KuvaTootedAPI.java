@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/tooted")
-@CrossOrigin(origins = "http://localhost:5137")
+@CrossOrigin(origins = "http://localhost:5173")
 public class KuvaTootedAPI {
 
 
