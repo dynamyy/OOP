@@ -9,6 +9,10 @@ function Kasutaja() {
     const [valitudPoed, setValitudPoed] = useState(new Set());
     const [onSisselogitud, setOnSisseLogitud] = useState(false);
     const [kasutaja, setKasutaja] = useState('');
+    const [parooliMuutmine, setParooliMuutmine] = useState(false);
+    const [sisselogimiseTeade, setSisselogimiseTeade] = useState('');
+    const [vanaParool, setVanaParool] = useState('');
+    const[uusParool, setUusParool] = useState('');
     
 
     useEffect(() => {
@@ -66,6 +70,53 @@ function Kasutaja() {
         return valitudPoed.has(pood) ? 'roheline' : 'punane';
     }
 
+    async function uuendaParool() {
+        const vastus = await authTeenus.setParool([vanaParool, uusParool]);
+        if (!vastus.ok) {
+            if (vastus.sonum === "Uus parool ei vasta nõuetele") {
+                setSisselogimiseTeade(vastus.sonum +
+                    "\n- Peab olema vähemalt 8 tähemärki pikk" +
+                    "\n- Sisaldama vähemalt ühte suurtähte" +
+                    "\n- Sisaldama vähemalt ühte väiketähte" +
+                    "\n- Sisaldama vähemalt ühte numbrit");
+            } else {
+                setSisselogimiseTeade(vastus.sonum);
+            }
+        } else {
+            setSisselogimiseTeade("Parool edukalt muudetud");
+            setVanaParool('');
+            setUusParool('');
+        }
+    }
+
+    if (parooliMuutmine) {
+        return (
+        <>
+            <Menuu />
+            <div id="sisu" className="hele">
+                <div className="tume umar-nurk hele-tekst" id="s-log">
+                    { sisselogimiseTeade && (
+                    <div className="teade">
+                    {sisselogimiseTeade.split('\n').map((line, i) => (
+                        <p key={i}>{line}</p>
+                    ))}
+                    </div>
+                    )}
+                    <div className="teksti-paar">
+                        <label>Vana parool</label>
+                        <input type="password" name='vanaParool' className='hele tume-tekst' value={vanaParool} onChange={e => setVanaParool(e.target.value)} />
+                    </div>
+                    <div className="teksti-paar">
+                        <label>Uus parool</label>
+                        <input type="password" name='uusParool' className='hele tume-tekst' value={uusParool} onChange={e => setUusParool(e.target.value)} />
+                    </div>
+                    <button className='nupp tume2 hele-tekst' onClick={() => uuendaParool()}><span>Muuda parool</span></button>
+                </div>
+            </div>
+        </>
+        )
+    }
+
     return (
         <>
             <Menuu />
@@ -84,7 +135,7 @@ function Kasutaja() {
                     <button className='nupp tume2 hele-tekst' onClick={() => toggleKliendikaardiMuutmine()}><span>{kliendikaartideMuutmine ? 'Lõpeta muutmine' : 'Muuda kliendikaarte'}</span></button>
 
                     <div className="samal-real">
-                        <button className='nupp tume2 hele-tekst' onClick={() => console.log("nupp")}><span>Muuda parooli</span></button>
+                        <button className='nupp tume2 hele-tekst' onClick={() => setParooliMuutmine(prev => !prev)}><span>Muuda parooli</span></button>
                         <button className='nupp tume2 hele-tekst' onClick={() => console.log("nupp")}><span>Kustuta konto</span></button>
                     </div>
                 </div>

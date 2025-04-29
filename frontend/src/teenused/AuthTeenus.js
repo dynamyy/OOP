@@ -59,6 +59,12 @@ const AuthTeenus = {
         }
     },
 
+    setParool: async function(uusListTuup) {
+        const vastus = await setKasutajaAndmed(localStorage.getItem('AuthToken'), "parool", "", uusListTuup);
+        
+        return {ok:vastus.ok, sonum:vastus.sonum};
+    },
+
     getKliendikaardid: async function() {
         const vastus = await getKasutajaAndmed(localStorage.getItem('AuthToken'), "kliendikaardid");
         if (vastus.ok) {

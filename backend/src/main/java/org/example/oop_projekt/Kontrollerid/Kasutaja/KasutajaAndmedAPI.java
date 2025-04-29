@@ -1,6 +1,8 @@
 package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
 import org.example.oop_projekt.DTO.KasutajaAndmedDTO;
+import org.example.oop_projekt.Erindid.AndmeteUuendusException;
+import org.example.oop_projekt.Erindid.LoginFailException;
 import org.example.oop_projekt.Erindid.TokenKehtetuException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.http.HttpStatus;
@@ -36,7 +38,7 @@ public class KasutajaAndmedAPI {
             authTeenus.setKasutajaAndmed(kasutajaAndmed);
             return ResponseEntity.ok(Map.of("sonum", "andmed uuendatud"));
 
-        } catch (TokenKehtetuException e) {
+        } catch (TokenKehtetuException | AndmeteUuendusException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sonum", e.getMessage()));
         }
     }

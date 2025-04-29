@@ -9,6 +9,7 @@ import org.example.oop_projekt.DTO.KasutajaAndmedDTO;
 import org.example.oop_projekt.DTO.Registreerimine;
 import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.DTO.TokenVerify;
+import org.example.oop_projekt.Erindid.AndmeteUuendusException;
 import org.example.oop_projekt.Erindid.LoginFailException;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
 import org.example.oop_projekt.Erindid.TokenKehtetuException;
@@ -32,6 +33,7 @@ public class AuthTeenus {
     private final KasutajaRepository kasutajaRepository;
     private final KliendikaardidRepository kliendikaardidRepository;
     private final SecretKey key;
+    private final String pwRegex;
 
     @Autowired
     public AuthTeenus(KasutajaRepository kasutajaRepository, KliendikaardidRepository kliendikaardidRepository,
@@ -40,6 +42,7 @@ public class AuthTeenus {
         this.encoder = new BCryptPasswordEncoder();
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.kliendikaardidRepository = kliendikaardidRepository;
+        this.pwRegex = "^(?=.*[a-zäöüõšž])(?=.*[A-ZÄÖÜÕŠŽ])(?=.*\\d)[\\p{L}\\d\\p{P}\\p{S}]{8,}$";
     }
 
     /**
@@ -63,7 +66,6 @@ public class AuthTeenus {
          - Peab olema 1 number
          - Peab olema vähemalt 8 tähemärki pikk
          */
-        String pwRegex = "^(?=.*[a-zäöüõšž])(?=.*[A-ZÄÖÜÕŠŽ])(?=.*\\d)[\\p{L}\\d\\p{P}\\p{S}]{8,}$";
 
         if (!dto.parool().matches(pwRegex)) {
             throw new RegistreerimineFailedException("Parool ei vasta nõuetele");
@@ -151,7 +153,7 @@ public class AuthTeenus {
         return new ArrayList<>();
     }
 
-    public void setKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws TokenKehtetuException{
+    public void setKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws TokenKehtetuException, AndmeteUuendusException{
         // Tokeni check
         String token = kasutajaAndmed.token();
         verifyToken(new TokenVerify(token));
@@ -176,6 +178,24 @@ public class AuthTeenus {
             uuedKaardid.forEach(kaart -> {
                 kliendikaardidRepository.save(new Kliendikaardid(kasutaja, kaart));
             });
+
+            return;
+        }
+
+        if (kasutajaAndmed.andmetuup().equals("parool")) {
+            String vanaParool = kasutajaAndmed.uusListTuup().get(0);
+            String uusParool = kasutajaAndmed.uusListTuup().get(1);
+
+            if (!encoder.matches(vanaParool, kasutaja.getParool())) {
+                throw new AndmeteUuendusException("Parooli uuendamine ebaõnnestus. Vale parool");
+            }
+
+            if (!uusParool.matches(pwRegex)) {
+                throw new AndmeteUuendusException("Uus parool ei vasta nõuetele");
+            }
+
+            kasutaja.setParool(encoder.encode(uusParool));
+            kasutajaRepository.save(kasutaja);
         }
     }
 }

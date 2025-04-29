@@ -8,8 +8,8 @@ import { postRegistreerimine } from '../teenused/api'
 function loginAken() {
     const navigate = useNavigate();
     const [sisselogimiseTeade, setSisselogimiseTeade] = useState('');
-    const [email, setEmail] = useState('')
-    const[parool, setParool] = useState('')
+    const [email, setEmail] = useState('');
+    const[parool, setParool] = useState('');
     const [kasutajaRegistreerimine, setKasutajaRegistreerimine] = useState(false);
     const [valitudPoed, setValitudPoed] = useState(new Set());
 
