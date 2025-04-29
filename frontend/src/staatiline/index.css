@@ -21,7 +21,7 @@ a {
   text-decoration: inherit;
 }
 
-input[type=text] {
+input[type=text], input[type="password"] {
   border: 0;
   border-radius: 3px;
   padding: 3px;

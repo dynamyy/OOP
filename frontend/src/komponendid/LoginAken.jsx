@@ -42,6 +42,8 @@ function loginAken() {
             setSisselogimiseTeade(vastus.sonum);
             setEmail('');
             setParool('');
+            setKasutajaRegistreerimine(false);
+            setValitudPoed(new Set());
         }
     }
 
@@ -76,7 +78,7 @@ function loginAken() {
                     </div>
                     <div className="teksti-paar">
                         <label htmlFor="parool">Parool</label>
-                        <input type="text" name='parool' className='hele tume-tekst' value={parool} onChange={e => setParool(e.target.value)} />
+                        <input type="password" name='parool' className='hele tume-tekst' value={parool} onChange={e => setParool(e.target.value)} />
                     </div>
 
                     { !kasutajaRegistreerimine ?  
