@@ -25,8 +25,8 @@ function loginAken() {
     }
 
     async function registreeri(email, parool) {
-        const vastus = await postRegistreerimine(email, parool);
-        const vastuseSonum = await vastus.sonum;
+        const vastus = await postRegistreerimine(email, parool, Array.from(valitudPoed));
+        const vastuseSonum = vastus.sonum;
 
         if (!vastus.ok) {
             if (vastuseSonum === "Parool ei vasta nõuetele") {

@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.example.oop_projekt.DTO.Registreerimine;
 import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.DTO.TokenVerify;
 import org.example.oop_projekt.Erindid.LoginFailException;
@@ -12,6 +13,8 @@ import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
 import org.example.oop_projekt.Erindid.TokenKehtetuException;
 import org.example.oop_projekt.andmepääsukiht.Kasutaja;
 import org.example.oop_projekt.andmepääsukiht.KasutajaRepository;
+import org.example.oop_projekt.andmepääsukiht.Kliendikaardid;
+import org.example.oop_projekt.andmepääsukiht.KliendikaardidRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +28,16 @@ import java.util.Date;
 public class AuthTeenus {
     private final BCryptPasswordEncoder encoder;
     private final KasutajaRepository kasutajaRepository;
+    private final KliendikaardidRepository kliendikaardidRepository;
     private final SecretKey key;
 
     @Autowired
-    public AuthTeenus(KasutajaRepository kasutajaRepository, @Value("${jwt.secret}") String secret) {
+    public AuthTeenus(KasutajaRepository kasutajaRepository, KliendikaardidRepository kliendikaardidRepository,
+                      @Value("${jwt.secret}") String secret) {
         this.kasutajaRepository = kasutajaRepository;
         this.encoder = new BCryptPasswordEncoder();
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.kliendikaardidRepository = kliendikaardidRepository;
     }
 
     /**
@@ -39,13 +45,13 @@ public class AuthTeenus {
      * @param dto Kasutaja logimisinfo andmete objekt
      * @throws RegistreerimineFailedException
      */
-    public void registreeriKasutaja(SisseLogimine dto) throws RegistreerimineFailedException {
+    public void registreeriKasutaja(Registreerimine dto) throws RegistreerimineFailedException {
         // Sisselogimisandmete olemasolu kontroll
-        if (dto.getEmail().isEmpty() || dto.getParool().isEmpty()) {
+        if (dto.email().isEmpty() || dto.parool().isEmpty()) {
             throw new RegistreerimineFailedException("Kõik väljad peavad olema täidetud");
         }
 
-        if (kasutajaRepository.findByEmail(dto.getEmail()) != null) {
+        if (kasutajaRepository.findByEmail(dto.email()) != null) {
             throw new RegistreerimineFailedException("Selle meiliaadressiga kasutaja on juba olemas");
         }
 
@@ -57,20 +63,26 @@ public class AuthTeenus {
          */
         String pwRegex = "^(?=.*[a-zäöüõšž])(?=.*[A-ZÄÖÜÕŠŽ])(?=.*\\d)[\\p{L}\\d\\p{P}\\p{S}]{8,}$";
 
-        if (!dto.getParool().matches(pwRegex)) {
+        if (!dto.parool().matches(pwRegex)) {
             throw new RegistreerimineFailedException("Parool ei vasta nõuetele");
         }
 
         String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-        if (!dto.getEmail().matches(emailRegex)) {
+        if (!dto.email().matches(emailRegex)) {
             throw new RegistreerimineFailedException("Meiliaadress ei vasta nõuetele");
         }
 
-        String hashedParool = encoder.encode(dto.getParool());
+        String hashedParool = encoder.encode(dto.parool());
 
-        Kasutaja kasutaja = new Kasutaja(dto.getEmail(), hashedParool, new ArrayList<>());
 
+
+        Kasutaja kasutaja = new Kasutaja(dto.email(), hashedParool, new ArrayList<>());
         kasutajaRepository.save(kasutaja);
+
+        for (String poeNimi : dto.kliendikaardid()) {
+            Kliendikaardid kliendikaart = new Kliendikaardid(kasutaja, poeNimi);
+            kliendikaardidRepository.save(kliendikaart);
+        }
     }
 
     /**

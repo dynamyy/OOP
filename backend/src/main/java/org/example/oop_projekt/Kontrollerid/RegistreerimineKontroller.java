@@ -1,5 +1,6 @@
 package org.example.oop_projekt.Kontrollerid;
 
+import org.example.oop_projekt.DTO.Registreerimine;
 import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
@@ -22,7 +23,7 @@ public class RegistreerimineKontroller {
     }
 
     @PostMapping
-    public ResponseEntity<?> registreeri(@RequestBody SisseLogimine sisselogimisinfo) {
+    public ResponseEntity<?> registreeri(@RequestBody Registreerimine sisselogimisinfo) {
         try {
             authTeenus.registreeriKasutaja(sisselogimisinfo);
             return ResponseEntity.ok(Map.of("sonum", "Registreerimine edukas"));

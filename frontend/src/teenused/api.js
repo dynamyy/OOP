@@ -21,12 +21,12 @@ export const postSisseLogimine = async (email, parool) => {
     }
 }
 
-export const postRegistreerimine = async (email, parool) => {
+export const postRegistreerimine = async (email, parool, kliendikaardid) => {
     try {
         const vastus = await fetch(`${BAAS_URL}/registreeri`, {
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            body: JSON.stringify({email, parool})
+            body: JSON.stringify({email, parool, kliendikaardid})
         })
 
         const vastuseData = await vastus.json();

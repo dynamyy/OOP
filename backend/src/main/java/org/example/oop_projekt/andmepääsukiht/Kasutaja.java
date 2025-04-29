@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Kasutaja")
@@ -44,10 +45,14 @@ public class Kasutaja {
     @OneToMany(mappedBy = "kasutaja")
     private List<Ostukorv> ostukorvid;
 
+    @OneToMany(mappedBy = "kasutaja")
+    private List<Kliendikaardid> kliendikaardid;
+
     public Kasutaja(String email, String parool, List<Ostukorv> ostukorvid) {
         this.email = email;
         this.parool = parool;
         this.ostukorvid = ostukorvid;
+        this.kliendikaardid = new ArrayList<>();
     }
 
     public Kasutaja() {
