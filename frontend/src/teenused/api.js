@@ -58,14 +58,30 @@ export const getKasutajaAndmed = async (token, andmetuup) => {
         const vastus = await fetch(`${BAAS_URL}/kasutaja`, {
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            body: JSON.stringify({token, andmetuup})
+            body: JSON.stringify({"token":token, "tegevus":"get", "andmetuup":andmetuup})
         })
 
         const vastuseData = await vastus.json();
         return {ok: vastus.ok, sonum: vastuseData.sonum};
 
     } catch (viga) {
-        console.error("Viga tokeni kontrollimisel", viga.message);
+        console.error("Viga kasutaja andmete hankimisel", viga.message);
+    }
+}
+
+export const setKasutajaAndmed = async (token, andmetuup, uusSoneTuup, uusListTuup) => {
+    try {
+        const vastus = await fetch(`${BAAS_URL}/kasutaja`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({"token":token, "tegevus":"set", "andmetuup":andmetuup, "uusSoneTuup":uusSoneTuup, "uusListTuup":uusListTuup})
+        })
+
+        const vastuseData = await vastus.json();
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
+
+    } catch (viga) {
+        console.error("Viga kasutaja andmete uuendamisel", viga.message);
     }
 }
 

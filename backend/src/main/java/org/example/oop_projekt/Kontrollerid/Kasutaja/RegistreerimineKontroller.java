@@ -1,7 +1,6 @@
-package org.example.oop_projekt.Kontrollerid;
+package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
 import org.example.oop_projekt.DTO.Registreerimine;
-import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -114,7 +114,7 @@ public class AuthTeenus {
         }
     }
 
-    public void verifyToken(TokenVerify dto) {
+    public void verifyToken(TokenVerify dto) throws TokenKehtetuException{
         String token = dto.getToken();
 
         try {
@@ -134,21 +134,48 @@ public class AuthTeenus {
         }
     }
 
-    public List<String> getKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) {
+    public List<String> getKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws TokenKehtetuException{
+        // Tokeni check
         String token = kasutajaAndmed.token();
         verifyToken(new TokenVerify(token));
 
         Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        String kasutajaMeil = claim.getSubject();
+        Kasutaja kasutaja = kasutajaRepository.findByEmail(kasutajaMeil);
 
         // Kliendikaartide tagastamine
         if (kasutajaAndmed.andmetuup().equals("kliendikaardid")) {
-            String kasutajaMeil = claim.getSubject();
-
-            Kasutaja kasutaja = kasutajaRepository.findByEmail(kasutajaMeil);
-
             return kasutaja.getKliendikaardid().stream().map(Kliendikaardid::getPoeNimi).toList();
         }
 
         return new ArrayList<>();
+    }
+
+    public void setKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws TokenKehtetuException{
+        // Tokeni check
+        String token = kasutajaAndmed.token();
+        verifyToken(new TokenVerify(token));
+
+        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        String kasutajaMeil = claim.getSubject();
+        Kasutaja kasutaja = kasutajaRepository.findByEmail(kasutajaMeil);
+
+        // Kliendikaartide uuendus
+        if (kasutajaAndmed.andmetuup().equals("kliendikaardid")) {
+            List<Kliendikaardid> vanadKaardid = kasutaja.getKliendikaardid();
+            List<String> uuedKaardid = kasutajaAndmed.uusListTuup();
+
+            // Eemaldatud kliendikaartide andmebaasist kustutamine
+            // Eemaldan uute hulgast juba andmebaasis olevad kaardid
+            vanadKaardid.forEach(kaart -> {
+                if (!uuedKaardid.contains(kaart.getPoeNimi())) kliendikaardidRepository.delete(kaart);
+                    else uuedKaardid.remove(kaart.getPoeNimi());
+                });
+
+            // Lisatud kliendikaartide andmebaasi lisamine
+            uuedKaardid.forEach(kaart -> {
+                kliendikaardidRepository.save(new Kliendikaardid(kasutaja, kaart));
+            });
+        }
     }
 }

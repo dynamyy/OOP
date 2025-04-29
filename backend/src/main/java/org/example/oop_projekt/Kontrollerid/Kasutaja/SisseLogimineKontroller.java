@@ -1,4 +1,4 @@
-package org.example.oop_projekt.Kontrollerid;
+package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
 import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.Erindid.LoginFailException;

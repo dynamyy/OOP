@@ -1,11 +1,8 @@
-package org.example.oop_projekt.Kontrollerid;
+package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
 import org.example.oop_projekt.DTO.KasutajaAndmedDTO;
-import org.example.oop_projekt.DTO.MärksõnaDTO;
-import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.Erindid.TokenKehtetuException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
-import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +26,16 @@ public class KasutajaAndmedAPI {
     @PostMapping
     public ResponseEntity<?> kuvaTooted(@RequestBody KasutajaAndmedDTO kasutajaAndmed){
         try {
-            List<String> andmed = authTeenus.getKasutajaAndmed(kasutajaAndmed);
-            return ResponseEntity.ok(Map.of("sonum", andmed));
+            // Andmete get requesti handlimine
+            if (kasutajaAndmed.tegevus().equals("get")) {
+                List<String> andmed = authTeenus.getKasutajaAndmed(kasutajaAndmed);
+                return ResponseEntity.ok(Map.of("sonum", andmed));
+            }
+
+            // Andmete post requesti handlimine
+            authTeenus.setKasutajaAndmed(kasutajaAndmed);
+            return ResponseEntity.ok(Map.of("sonum", "andmed uuendatud"));
+
         } catch (TokenKehtetuException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sonum", e.getMessage()));
         }

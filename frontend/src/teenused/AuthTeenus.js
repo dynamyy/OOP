@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
-import { verifyToken, getKasutajaAndmed } from '../teenused/api'
+import { verifyToken, getKasutajaAndmed, setKasutajaAndmed } from '../teenused/api'
 
 const AuthTeenus = {
     kasSisselogitud: async function() {
@@ -49,6 +49,14 @@ const AuthTeenus = {
         const tokenDecoded = jwtDecode(token);
 
         return tokenDecoded.sub;
+    },
+
+    setKliendikaardid: async function(uusListTuup) {
+        const vastus = await setKasutajaAndmed(localStorage.getItem('AuthToken'), "kliendikaardid", "", uusListTuup);
+
+        if (!vastus.ok) {
+            console.log("Kasutaja kliendikaartide uuendamine ebaõnnestus");
+        }
     },
 
     getKliendikaardid: async function() {

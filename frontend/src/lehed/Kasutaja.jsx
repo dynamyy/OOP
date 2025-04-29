@@ -33,7 +33,12 @@ function Kasutaja() {
     }
 
     function toggleKliendikaardiMuutmine() {
+        const algneOlek = kliendikaartideMuutmine;
         setKliendikaartideMuutmine(prev => !prev);
+
+        if (algneOlek) {
+            authTeenus.setKliendikaardid(Array.from(valitudPoed));
+        }
     }
 
     function valiKliendikaart(pood) {
@@ -41,7 +46,16 @@ function Kasutaja() {
             return;
         }
 
-        console.log(pood);
+        setValitudPoed((poed) => {
+            const uuendaPoode = new Set(poed);
+            if (uuendaPoode.has(pood)) {
+                uuendaPoode.delete(pood);
+            } else {
+                uuendaPoode.add(pood);
+            }
+
+            return uuendaPoode;
+        });
     }
 
     function kliendikaardiVarv(pood) {
@@ -71,7 +85,7 @@ function Kasutaja() {
 
                     <div className="samal-real">
                         <button className='nupp tume2 hele-tekst' onClick={() => console.log("nupp")}><span>Muuda parooli</span></button>
-                        <button className='nupp tume2 hele-tekst' onClick={() => authTeenus.getKliendikaardid()}><span>Kustuta konto</span></button>
+                        <button className='nupp tume2 hele-tekst' onClick={() => console.log("nupp")}><span>Kustuta konto</span></button>
                     </div>
                 </div>
             </div>
