@@ -13,7 +13,7 @@ public interface ToodeRepository extends JpaRepository<Toode, Long> {
 
     Toode findToodeByNimetusAndPood(String nimetus, Pood pood);
 
-    @Query("SELECT new org.example.oop_projekt.DTO.ToodeDTO(t.nimetus, t.hindKliendi, t.hulgaHindKliendi, t.yhik, CASE WHEN t.hulgaHindKliendi < t.hindKliendi THEN 'true' ELSE 'false' END) " +
+    @Query("SELECT new org.example.oop_projekt.DTO.ToodeDTO(t.nimetus, t.hindKliendi, t.hulgaHindKliendi, t.yhik, CASE WHEN t.hulgaHindKliendi < t.hindKliendi THEN 'true' ELSE 'false' END, t.pood.nimi) " +
             "FROM Toode t " +
             "WHERE LOWER(t.nimetus) LIKE LOWER(:nimetus)")
     List<ToodeDTO> leiaToodeNimega(@Param("nimetus") String nimetus);

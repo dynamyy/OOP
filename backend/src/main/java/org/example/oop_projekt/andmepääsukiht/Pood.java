@@ -46,10 +46,6 @@ public class Pood {
 
     @Override
     public String toString() {
-        return "Pood{" +
-                "id=" + id +
-                ", nimi='" + nimi + '\'' +
-                ", tooted=" + tooted +
-                '}';
+        return nimi;
     }
 }
