@@ -58,25 +58,29 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
-    margin: 2rem;
+    padding: 3rem;
+    padding-top: 5rem;
     height: 100%;
     width: 60%;
+}
+
+#tooted-list-konteiner div.teksti-paar {
+    gap: 1rem;
 }
 
 #tooted-list-konteiner > div > span {
     font-size: x-large;
     font-weight: 700;
-    margin: 1.5rem 0;
 }
 
 #tooted-list {
     display: flex;
     flex-direction: column;
-    border: #153448 solid 1px;
     padding: 1rem;
-    max-height: 80vh;
-    gap: 0.5rem;
+    padding-right: 1rem;
     overflow-y: auto;
+    height: 80vh;
+    gap: 0.5rem;
 }
 
 #tooted-list > *:not(:last-child)::after {
@@ -93,13 +97,42 @@
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
     margin-bottom: 0.5rem;
 }
 
 .toode-kaart-konteiner span {
     font-size: medium;
     width: 20%;
+}
+
+.toode-kaart-konteiner > div {
+    display: flex;
+    align-items: center;
+    width: 60%;
+}
+
+.toode-kaart-konteiner > div > span {
+    flex-grow: 1;
+}
+
+.toode-pilt {
+    height: 4rem;
+    width: 4rem;
+    object-fit: cover;
+    opacity: 0.2;
+    margin: 1rem;
+}
+
+.logo-pilt {
+    width: 9rem;
+    height: 1.5rem;
+    object-fit: contain;
+}
+
+#tooted-list-valimine {
+    border: #153448 solid 1px;
+    padding-right: 0.5rem;
 }
 
 .toode-kaart-konteiner > span:nth-child(1) {
@@ -120,10 +153,4 @@
     background: #3C5B6F;
     border-radius: 4px;
     width: 10px;
-}
-
-.logo-pilt {
-    width: 6rem;
-    height: 3rem;
-    object-fit: cover;
 }

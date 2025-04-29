@@ -103,19 +103,21 @@ function LooOstukorv() {
                 </div>
                 <div id="tooted-list-konteiner">
                     <div className="teksti-paar">
-                        <span className="tume-tekst">Leitud tooted</span>
-                        <div id="tooted-list" className="umar-nurk">
-                            {tooted.map(toode => (
-                                <ToodeKaart
-                                    key={toode.tooteNimi}
-                                    tooteNimetus={toode.tooteNimi}
-                                    tukiHind={toode.tooteTükihind}
-                                    uhikuHind={toode.tooteÜhikuHind}
-                                    uhik={toode.ühik}
-                                    soodus={toode.kasonSoodus}
-                                    poodPilt={logod[toode.pood]}
-                                />
-                            ))}
+                        <span className="tume-tekst">Leitud {tooted.length} toodet</span>
+                        <div id="tooted-list-valimine" className="umar-nurk">
+                            <div id="tooted-list">
+                                {tooted.map(toode => (
+                                    <ToodeKaart
+                                        key={toode.tooteNimi}
+                                        tooteNimetus={toode.tooteNimi}
+                                        tukiHind={toode.tooteTükihind}
+                                        uhikuHind={toode.tooteÜhikuHind}
+                                        uhik={toode.ühik}
+                                        soodus={toode.kasonSoodus}
+                                        poodPilt={logod[toode.pood]}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
