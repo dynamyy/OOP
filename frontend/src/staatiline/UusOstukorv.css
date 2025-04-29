@@ -30,11 +30,6 @@
     font-size: large;
 }
 
-#tooted-list-konteiner {
-    height: 100%;
-    width: 40%;
-}
-
 #ostukorv-konteiner {
     height: 80%;
     width: 20%;
@@ -59,11 +54,64 @@
     cursor: pointer;
 }
 
+
+#tooted-list-konteiner {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    width: 40%;
+}
+
+#tooted-list-konteiner > div > span {
+    font-size: x-large;
+    font-weight: 700;
+    margin: 1.5rem 0;
+}
+
+#tooted-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    gap: 0.5rem;
+    overflow-y: auto;
+}
+
+#tooted-list > *:not(:last-child)::after {
+    content: "";
+    display: block;
+    width: calc(100% - 2em);
+    height: 0.5px;
+    margin: auto;
+    background-color: #153448;
+}
+
 .toode-kaart-konteiner {
     display: flex;
+    width: 100%;
     justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .toode-kaart-konteiner span {
-    font-size: small;
+    font-size: medium;
+    width: 20%;
+}
+
+.toode-kaart-konteiner > span:nth-child(1) {
+    width: 60%;
+}
+
+#tooted-list::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+#tooted-list::-webkit-scrollbar-track {
+    border: #3C5B6F solid 1px;
+    border-radius: 4px; /* Optional: Rounded corners for the track */
+}
+
+#tooted-list::-webkit-scrollbar-thumb {
+    background: #3C5B6F; /* Color of the scrollbar thumb */
+    border-radius: 4px; /* Optional: Rounded corners for the thumb */
 }

@@ -9,7 +9,7 @@ function LooOstukorv() {
     const [marksonad, setMarksonad] = useState({})
     const [uusMarksona, setUusMarksona] = useState('')
     const [uusSisalduvus, setUusSisalduvus] = useState("roheline")
-    const [tooted, setTooted] = useState({})
+    const [tooted, setTooted] = useState([])
 
     async function fetchTooted(ms) {
         const vastus = await postMarksonad(marksonad)
@@ -17,9 +17,9 @@ function LooOstukorv() {
 
         if (vastus.ok) {
             console.log(vastus)
-            setTooted(await vastus.marksonad)
+            setTooted(vastus.marksonad)
+            console.log(tooted)
         }
-
     }
 
     useEffect(() => {
@@ -91,15 +91,18 @@ function LooOstukorv() {
                 </div>
                 <div id="tooted-list-konteiner">
                     <div className="teksti-paar">
-                        <span>Leitud tooted</span>
-                        <div>
-                            {/* {tooted.map(toode => (
+                        <span className="tume-tekst">Leitud tooted</span>
+                        <div id="tooted-list">
+                            {tooted.map(toode => (
                                 <ToodeKaart
-                                    key={toode.nimetus}
-                                    tooteNimetus={toode.nimetus}
-                                    uhikuHind={toode.uhikuHind}
+                                    key={toode.tooteNimi}
+                                    tooteNimetus={toode.tooteNimi}
+                                    tukiHind={toode.tooteTükihind}
+                                    uhikuHind={toode.tooteÜhikuHind}
+                                    uhik={toode.ühik}
+                                    soodus={toode.kasonSoodus}
                                 />
-                            ))} */}
+                            ))}
                         </div>
                     </div>
                 </div>
