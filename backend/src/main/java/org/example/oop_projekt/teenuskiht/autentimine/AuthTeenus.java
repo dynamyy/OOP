@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.example.oop_projekt.DTO.KasutajaAndmedDTO;
 import org.example.oop_projekt.DTO.Registreerimine;
 import org.example.oop_projekt.DTO.SisseLogimine;
 import org.example.oop_projekt.DTO.TokenVerify;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class AuthTeenus {
@@ -130,5 +132,23 @@ public class AuthTeenus {
         } catch (JwtException e) {
             throw new TokenKehtetuException("Token on kehtetu. " + e.getMessage());
         }
+    }
+
+    public List<String> getKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) {
+        String token = kasutajaAndmed.token();
+        verifyToken(new TokenVerify(token));
+
+        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+
+        // Kliendikaartide tagastamine
+        if (kasutajaAndmed.andmetuup().equals("kliendikaardid")) {
+            String kasutajaMeil = claim.getSubject();
+
+            Kasutaja kasutaja = kasutajaRepository.findByEmail(kasutajaMeil);
+
+            return kasutaja.getKliendikaardid().stream().map(Kliendikaardid::getPoeNimi).toList();
+        }
+
+        return new ArrayList<>();
     }
 }

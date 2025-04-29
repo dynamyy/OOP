@@ -53,6 +53,22 @@ export const verifyToken = async (token) => {
     }
 }
 
+export const getKasutajaAndmed = async (token, andmetuup) => {
+    try {
+        const vastus = await fetch(`${BAAS_URL}/kasutaja`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({token, andmetuup})
+        })
+
+        const vastuseData = await vastus.json();
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
+
+    } catch (viga) {
+        console.error("Viga tokeni kontrollimisel", viga.message);
+    }
+}
+
 export const postMarksonad = async (marksonad) => {
     try {
         const marksonadList = Object.entries(marksonad).map(([märksõna, valikuVärv]) => ({

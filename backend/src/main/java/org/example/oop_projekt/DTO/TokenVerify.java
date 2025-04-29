@@ -7,4 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TokenVerify {
     private String token;
+
+    public TokenVerify(String token) {
+        this.token = token;
+    }
 }

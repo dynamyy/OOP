@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
-import { verifyToken } from '../teenused/api'
+import { verifyToken, getKasutajaAndmed } from '../teenused/api'
 
 const AuthTeenus = {
     kasSisselogitud: async function() {
@@ -49,6 +49,15 @@ const AuthTeenus = {
         const tokenDecoded = jwtDecode(token);
 
         return tokenDecoded.sub;
+    },
+
+    getKliendikaardid: async function() {
+        const vastus = await getKasutajaAndmed(localStorage.getItem('AuthToken'), "kliendikaardid");
+        if (vastus.ok) {
+            return new Set(vastus.sonum);
+        } else {
+            console.log("Kasutaja andmete hankimine ebaõnnestus: " + vastus.sonum);
+        }
     }
 };
 

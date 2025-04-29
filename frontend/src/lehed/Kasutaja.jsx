@@ -6,6 +6,7 @@ import authTeenus from '../teenused/AuthTeenus'
 
 function Kasutaja() {
     const [kliendikaartideMuutmine, setKliendikaartideMuutmine] = useState(false);
+    const [valitudPoed, setValitudPoed] = useState(new Set());
     const [onSisselogitud, setOnSisseLogitud] = useState(false);
     const [kasutaja, setKasutaja] = useState('');
     
@@ -18,6 +19,8 @@ function Kasutaja() {
             if (isLoggedIn) {
                 const kasutajaNimi = await authTeenus.getKasutaja();
                 setKasutaja(kasutajaNimi);
+                const poed = await authTeenus.getKliendikaardid();
+                setValitudPoed(poed);
             }
         };
 
@@ -41,6 +44,14 @@ function Kasutaja() {
         console.log(pood);
     }
 
+    function kliendikaardiVarv(pood) {
+        if (!kliendikaartideMuutmine) {
+            return valitudPoed.has(pood) ? 'roheline roheline-hover-disabled' : 'punane punane-hover-disabled';
+        }
+
+        return valitudPoed.has(pood) ? 'roheline' : 'punane';
+    }
+
     return (
         <>
             <Menuu />
@@ -50,17 +61,17 @@ function Kasutaja() {
                     
                     <h2>Kliendikaardid:</h2>
                     <div className="kliendikaardid samal-real">
-                        <Kliendikaart poeNimi="COOP" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("COOP")}/>
-                        <Kliendikaart poeNimi="Prisma" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("Prisma")}/>
-                        <Kliendikaart poeNimi="Rimi" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("Rimi")}/>
-                        <Kliendikaart poeNimi="Maxima" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("Maxima")}/>
-                        <Kliendikaart poeNimi="Selver" varv={kliendikaartideMuutmine ? 'roheline' : 'roheline roheline-hover-disabled'} kaartValitud={() => valiKliendikaart("Selver")}/>
+                        <Kliendikaart poeNimi="COOP" varv={kliendikaardiVarv("COOP")} kaartValitud={() => valiKliendikaart("COOP")}/>
+                        <Kliendikaart poeNimi="Prisma" varv={kliendikaardiVarv("Prisma")} kaartValitud={() => valiKliendikaart("Prisma")}/>
+                        <Kliendikaart poeNimi="Rimi" varv={kliendikaardiVarv("Rimi")} kaartValitud={() => valiKliendikaart("Rimi")}/>
+                        <Kliendikaart poeNimi="Maxima" varv={kliendikaardiVarv("Maxima")} kaartValitud={() => valiKliendikaart("Maxima")}/>
+                        <Kliendikaart poeNimi="Selver" varv={kliendikaardiVarv("Selver")} kaartValitud={() => valiKliendikaart("Selver")}/>
                     </div>
                     <button className='nupp tume2 hele-tekst' onClick={() => toggleKliendikaardiMuutmine()}><span>{kliendikaartideMuutmine ? 'Lõpeta muutmine' : 'Muuda kliendikaarte'}</span></button>
 
                     <div className="samal-real">
                         <button className='nupp tume2 hele-tekst' onClick={() => console.log("nupp")}><span>Muuda parooli</span></button>
-                        <button className='nupp tume2 hele-tekst' onClick={() => console.log("nupp")}><span>Kustuta konto</span></button>
+                        <button className='nupp tume2 hele-tekst' onClick={() => authTeenus.getKliendikaardid()}><span>Kustuta konto</span></button>
                     </div>
                 </div>
             </div>
