@@ -17,18 +17,8 @@ public class PoodTeenus {
         this.poodRepository = poodRepository;
     }
 
-    @Transactional
-    public Pood getPoodToodetega(Long id) {
-        Pood pood = poodRepository.findById(id).orElseThrow();
-        pood.getTooted().size(); // Toodete arvu leidmine sunnib poe lazy olekust välja ja seda saab kasutada.
-                                // Mulle see lahendus hetkel eriti ei meeldi, aga ei osanud muud välja mõelda.
-        return pood;
-    }
-
     public void lisaToode(Pood pood, Toode toode) {
-        Set<Toode> tooted = pood.getTooted();
-        tooted.add(toode);
-        pood.setTooted(tooted);
+        pood.getTooted().add(toode);
     }
 
 }

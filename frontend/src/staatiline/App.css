@@ -57,7 +57,7 @@
 }
 
 .hele-tekst {
-    color: #DFD0B8;
+    color: #DFD0B8 !important;
     font-weight: 500;
 }
 

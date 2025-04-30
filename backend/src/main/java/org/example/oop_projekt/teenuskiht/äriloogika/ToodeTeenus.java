@@ -40,21 +40,29 @@ public class ToodeTeenus {
      * @param tooted List toodetest, mis andmebaasi lisatakse.
      */
     public void lisaTootedAndmebaasi(List<Toode> tooted) {
+
+        List<Toode> uuedTooted = new ArrayList<>();
+
+        Pood pood = tooted.getFirst().getPood();
+
         for (Toode toode : tooted) {
             Toode dbToode = toodeRepository.findToodeByNimetusAndPood(toode.getNimetus(), toode.getPood());
-            Pood pood = toode.getPood();
-            pood = poodTeenus.getPoodToodetega(pood.getId());
 
             if (dbToode == null) {
-                poodTeenus.lisaToode(pood, toode);
-                toodeRepository.save(toode);
+                uuedTooted.add(toode);
             } else {
                 dbToode.setHindKliendi(toode.getHindKliendi());
                 dbToode.setHulgaHind(toode.getHulgaHind());
                 dbToode.setHulgaHindKliendi(toode.getHulgaHindKliendi());
                 dbToode.setTukiHind(toode.getTukiHind());
+                dbToode.setTootePiltURL(toode.getTootePiltURL());
                 toodeRepository.save(dbToode);
             }
+        }
+
+        for (Toode uusToode : uuedTooted) {
+            poodTeenus.lisaToode(pood, uusToode);
+            toodeRepository.save(uusToode);
         }
     }
 

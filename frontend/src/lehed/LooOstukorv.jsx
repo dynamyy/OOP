@@ -1,6 +1,5 @@
 import { useState, React, useEffect } from 'react';
 import Menuu from '../komponendid/Menuu';
-import Marksona from '../komponendid/Marksona';
 import ToodeKaart from '../komponendid/ToodeKaart';
 import { postMarksonad } from '../teenused/api';
 import coopLogo from '../staatiline/logod/coop.png';
@@ -8,12 +7,14 @@ import maximaLogo from '../staatiline/logod/maxima.png';
 import selverLogo from '../staatiline/logod/selver.png';
 import rimiLogo from '../staatiline/logod/rimi.png';
 import prismaLogo from '../staatiline/logod/prisma.png';
+import MarksonadeLisamine from '../komponendid/MarksonadeLisamine';
 
 function LooOstukorv() {
 
     const [marksonad, setMarksonad] = useState({})
     const [uusMarksona, setUusMarksona] = useState('')
     const [uusSisalduvus, setUusSisalduvus] = useState("roheline")
+    const [tooteKogus, setTooteKogus] = useState(1)
     const [tooted, setTooted] = useState([])
     const logod = {
         Prisma: prismaLogo,
@@ -79,25 +80,23 @@ function LooOstukorv() {
             <Menuu />
             <div id='sisu' className='hele'>
                 <div id="marksonad-konteiner">
+                    <MarksonadeLisamine
+                        setUusMarksona={setUusMarksona}
+                        muudaSisalduvust={muudaSisalduvust}
+                        lisaMarksona={lisaMarksona}
+                        marksonad={marksonad}
+                        uusMarksona={uusMarksona}
+                        eemaldaMarksona={eemaldaMarksona}
+                    />
                     <div className="teksti-paar">
-                        <label htmlFor="marksona" className="tume-tekst">Sisesta toote otsimiseks märksõna:</label>
-                        <div className="tekst-nupp-konteiner">
-                            <input type="text" name='marksona' className='hele tume-tekst' value={uusMarksona} onChange={e => setUusMarksona(e.target.value)} />
-                            <button className='nupp hele-tekst roheline     ' id='sisalduvus' onClick={() => muudaSisalduvust()}><span>Sisaldab</span></button>
-                            <button className='nupp tume2 hele-tekst' onClick={() => lisaMarksona(uusMarksona)}><span>Lisa</span></button>
-                        </div>
-                    </div>
-                    <div className="teksti-paar">
-                        <span className="tume-tekst">Märksõnad</span>
+                        <span className="tume-tekst">Kogus</span>
                         <div>
-                            {Object.entries(marksonad).map(([ms, varv]) => (
-                                <Marksona 
-                                    key={ms}
-                                    eemaldaMarksona={eemaldaMarksona}
-                                    marksona={ms}
-                                    varv={varv}
-                                />
-                            ))}
+                            <div>
+                                <button className='nupp hele-tekst tume2' id='sisalduvus' onClick={() => setTooteKogus(tooteKogus > 0 ? tooteKogus - 1 : 0)}>-</button>
+                                <input type="text" name='marksona' className='hele tume-tekst umar-nurk tume-piir' value={tooteKogus} onChange={e => setTooteKogus(parseInt(e.target.value))} />
+                                <button className='nupp hele-tekst tume2' id='sisalduvus' onClick={() => setTooteKogus(tooteKogus + 1)}>+</button>
+                            </div>
+                            <button className='nupp hele-tekst tume' id='sisalduvus' onClick={() => lisaToode()}>Lisa toode</button>
                         </div>
                     </div>
                 </div>
@@ -106,7 +105,10 @@ function LooOstukorv() {
                         <span className="tume-tekst">Leitud {tooted.length} toodet</span>
                         <div id="tooted-list-valimine" className="umar-nurk">
                             <div id="tooted-list">
-                                {tooted.map(toode => (
+                            {tooted.map(toode => {
+                                console.log(toode); // Log the entire object
+                                console.log(toode.toodePiltURL); // Log the specific property
+                                return (
                                     <ToodeKaart
                                         key={toode.tooteNimi}
                                         tooteNimetus={toode.tooteNimi}
@@ -115,8 +117,10 @@ function LooOstukorv() {
                                         uhik={toode.ühik}
                                         soodus={toode.kasonSoodus}
                                         poodPilt={logod[toode.pood]}
+                                        toodeUrl={toode.toodePiltURL}
                                     />
-                                ))}
+                                );
+                            })}
                             </div>
                         </div>
                     </div>

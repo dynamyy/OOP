@@ -65,8 +65,11 @@ public class PrismaScraper extends WebScraper {
         // tkHind ja uhikuHind on tavakliendi hind ehk ilma säästukaardita
         // Kui säästukaardiga erihinda pole (enamasti pole), siis tavakliendi hind == kliendi hind
         double tkHind, uhikuHind = 0, tkHindKlient = 0, uhikuHindKlient = 0;
+        String tootePiltUrl;
         for (Element toode : lapsed) {
             tooteNimi = toode.select("[data-test-id='product-card__productName'] span").text();
+
+            tootePiltUrl = toode.select("[data-test-id='product-card__productImage'] > img").attr("srcset").split(" ")[0];
 
             // Elements tooted sisaldab mõningaid üleliigseid ridu, skipin need
             if (tooteNimi.isEmpty()) continue;
@@ -107,7 +110,8 @@ public class PrismaScraper extends WebScraper {
                     uhikuHindKlient,
                     poodRepository.findPoodByNimi("Prisma"),
                     uhikuHind,
-                    tkHind);
+                    tkHind,
+                    tootePiltUrl);
             tooted.add(uusToode);
         }
         return tooted;

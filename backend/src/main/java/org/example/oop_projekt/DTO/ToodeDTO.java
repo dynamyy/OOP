@@ -6,5 +6,6 @@ public record ToodeDTO(
     double tooteÜhikuHind,// Fronti võiks saata alati parima hinna
     String ühik,
     String kasonSoodus,
-    String pood
+    String pood,
+    String toodePiltURL
 ) { }

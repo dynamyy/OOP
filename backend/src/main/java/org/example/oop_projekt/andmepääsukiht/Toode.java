@@ -2,10 +2,13 @@ package org.example.oop_projekt.andmepääsukiht;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity(name = "Toode")
 @Table(name = "tooted")
-@Data
+@Getter
+@Setter
 public class Toode {
 
     @Id
@@ -58,6 +61,12 @@ public class Toode {
     )
     private double hulgaHindKliendi;
 
+    @Column(
+            name = "toote_pilt_url",
+            columnDefinition = "TEXT"
+    )
+    private String tootePiltURL;
+
     @ManyToOne
     @JoinColumn(name = "pood_id")
     private Pood pood;
@@ -68,7 +77,8 @@ public class Toode {
                  double hulgaHindKliendi,
                  Pood pood,
                  double hulgaHind,
-                 double tukiHind) {
+                 double tukiHind,
+                 String tootePiltURL) {
         this.nimetus = nimetus;
         this.yhik = yhik;
         this.hindKliendi = hindKliendi;
@@ -76,6 +86,7 @@ public class Toode {
         this.pood = pood;
         this.hulgaHind = hulgaHind;
         this.tukiHind = tukiHind;
+        this.tootePiltURL = tootePiltURL;
     }
 
     public Toode() {

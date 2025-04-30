@@ -3,11 +3,13 @@ import standardPilt from '../staatiline/standard/standard-toode.png';
 
 function ToodeKaart(props) {
 
+    console.log(props.toodeUrl)
+
     return (
         <div>
             <div className="toode-kaart-konteiner">
                 <div>
-                    <img src={props.toodeUrl ? props.toodeUrl : standardPilt} alt="pilt" className="toode-pilt" />
+                    <img src={props.toodeUrl ? props.toodeUrl : standardPilt} alt="pilt" className={props.toodeUrl ? "toode-pilt" : "toode-pilt-standard"} />
                     <span className="tume-tekst">{props.tooteNimetus}</span>
                     <img src={props.poodPilt} alt="logo" className="logo-pilt" />
                 </div>

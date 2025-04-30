@@ -2,12 +2,15 @@ package org.example.oop_projekt.andmepääsukiht;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
 @Entity(name = "Pood")
 @Table(name = "poed")
-@Data
+@Getter
+@Setter
 public class Pood {
 
     @Id

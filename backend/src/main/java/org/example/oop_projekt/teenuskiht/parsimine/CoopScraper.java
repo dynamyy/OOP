@@ -140,7 +140,8 @@ public class CoopScraper extends WebScraper {
                                     uhikuHindKlient,
                                     poodRepository.findPoodByNimi("Coop"),
                                     uhikuHind,
-                                    tkHind);
+                                    tkHind,
+                                    "");
             tooted.add(uusToode);
         }
 

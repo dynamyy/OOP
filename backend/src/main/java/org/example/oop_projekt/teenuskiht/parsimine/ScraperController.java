@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht.parsimine;
 
+import jakarta.transaction.Transactional;
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.andmepääsukiht.Toode;
 import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;
@@ -37,6 +38,7 @@ public class ScraperController{
      * Scrapeb kõik poed ja lisab saadud tooted andmebaasi
      * @throws IOException -
      */
+    @Transactional
     public void scrapeAll() throws IOException {
         WebDriver chromedriver = uusDriver();
         List<Toode> tooted;

@@ -8,6 +8,30 @@
     padding-top: 5rem;
 }
 
+
+#marksonad-konteiner > div:nth-child(2) > div {
+    display: flex;
+    gap: 2rem !important;
+}
+
+#marksonad-konteiner > div:nth-child(2) > div > div {
+    display: flex;
+    gap: 1rem;
+    max-height: 3rem;
+}
+
+#marksonad-konteiner > div:nth-child(2) input {
+    max-width: 5rem;
+}
+
+#marksonad-konteiner > div:nth-child(2) > div > div .nupp {
+    aspect-ratio: 1 / 1;
+    max-height: 3rem;
+}
+
+
+
+
 #marksonad-konteiner .teksti-paar {
     gap: 1rem;
 }
@@ -25,14 +49,13 @@
     min-width: 0;
 }
 
+#marksonad-konteiner input:first-child {
+    height: 2.75rem;
+}
+
 #marksonad-konteiner .nupp {
     margin: 0;
     font-size: large;
-}
-
-#ostukorv-konteiner {
-    height: 80%;
-    width: 0%;
 }
 
 .marksona-konteiner {
@@ -54,6 +77,14 @@
     cursor: pointer;
 }
 
+#marksonad-konteiner > div .teksti-paar:nth-child(2) > div {
+    min-height: 15rem;
+    height: fit-content;
+}
+
+
+
+
 #tooted-list-konteiner {
     display: flex;
     flex-direction: column;
@@ -65,7 +96,9 @@
 }
 
 #tooted-list-konteiner div.teksti-paar {
+    display: flex;
     gap: 1rem;
+    height: 100%;
 }
 
 #tooted-list-konteiner > div > span {
@@ -79,8 +112,8 @@
     padding: 1rem;
     padding-right: 1rem;
     overflow-y: auto;
-    height: 80vh;
     gap: 0.5rem;
+    flex-grow: 1;
 }
 
 #tooted-list > *:not(:last-child)::after {
@@ -116,11 +149,17 @@
     flex-grow: 1;
 }
 
-.toode-pilt {
+.toode-pilt-standard {
     height: 4rem;
     width: 4rem;
     object-fit: cover;
     opacity: 0.2;
+    margin: 1rem;
+}
+
+.toode-pilt {
+    height: 4rem;
+    object-fit: cover;
     margin: 1rem;
 }
 
@@ -131,6 +170,8 @@
 }
 
 #tooted-list-valimine {
+    display: flex;
+    height: 100%;
     border: #153448 solid 1px;
     padding-right: 0.5rem;
 }
@@ -153,4 +194,10 @@
     background: #3C5B6F;
     border-radius: 4px;
     width: 10px;
+}
+
+
+#ostukorv-konteiner {
+    height: 80%;
+    width: 0%;
 }
