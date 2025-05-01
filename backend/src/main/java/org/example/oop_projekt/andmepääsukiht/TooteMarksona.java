@@ -27,13 +27,17 @@ public class TooteMarksona {
     @Column(name = "marksona")
     private String marksona;
 
+    @Column(name = "varv")
+    private String varv;
+
     @ManyToOne
     @JoinColumn(name = "toode_ostukorvis_id")
     private ToodeOstukorvis toodeOstukorvis;
 
-    public TooteMarksona(String marksona, ToodeOstukorvis toodeOstukorvis) {
+    public TooteMarksona(String marksona, ToodeOstukorvis toodeOstukorvis, String varv) {
         this.marksona = marksona;
         this.toodeOstukorvis = toodeOstukorvis;
+        this.varv = varv;
     }
 
     public TooteMarksona() {

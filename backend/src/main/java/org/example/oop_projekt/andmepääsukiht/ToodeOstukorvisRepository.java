@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ToodeOstukorvisRepository extends JpaRepository<ToodeOstukorvis, Long> {
 
-    ToodeOstukorvis findToodeOstukorvisByToodeAndOstukorv(Toode toode, Ostukorv ostukorv);
-
 }

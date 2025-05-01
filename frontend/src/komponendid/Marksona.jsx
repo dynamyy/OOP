@@ -8,7 +8,7 @@ function Marksona(props) {
     return (
         <div className={`marksona-konteiner umar-nurk2 tume2 ${props.varv}`}>
             <span className='hele-tekst'>{props.marksona}</span>
-            <FontAwesomeIcon icon={faXmarkCircle} className='ikoon hele-tekst`' onClick={() => props.eemaldaMarksona(props.marksona)} />
+            <FontAwesomeIcon icon={faXmarkCircle} className='ikoon hele-tekst' onClick={() => props.eemaldaMarksona(props.marksona)} />
         </div>
     )
 }

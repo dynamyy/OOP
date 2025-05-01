@@ -1,13 +1,15 @@
 package org.example.oop_projekt.andmepääsukiht;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity(name = "ToodeOstukorvis")
 @Table(name = "tooted_ostukorvis")
-@Data
+@Getter
+@Setter
 public class ToodeOstukorvis {
 
     @Id
@@ -32,10 +34,33 @@ public class ToodeOstukorvis {
 
     @OneToOne
     @JoinColumn(
-            name = "toode_id",
-            nullable = false
+            name = "coop_toode_id"
     )
-    private Toode toode;
+    private Toode coopToode;
+
+    @OneToOne
+    @JoinColumn(
+            name = "prisma_toode_id"
+    )
+    private Toode prismaToode;
+
+    @OneToOne
+    @JoinColumn(
+            name = "barbora_toode_id"
+    )
+    private Toode barboraToode;
+
+    @OneToOne
+    @JoinColumn(
+            name = "rimi_toode_id"
+    )
+    private Toode rimiToode;
+
+    @OneToOne
+    @JoinColumn(
+            name = "selver_toode_id"
+    )
+    private Toode selverToode;
 
     @OneToMany(mappedBy = "toodeOstukorvis")
     private List<TooteMarksona> tooteMarksonad;
@@ -44,6 +69,9 @@ public class ToodeOstukorvis {
             name = "kogus"
     )
     private Integer kogus;
+
+    @OneToMany(mappedBy = "toodeOstukorvis")
+    private List<EbasobivToode> ebasobivadTooted;
 
     public ToodeOstukorvis(Ostukorv ostukorv,
                            List<TooteMarksona> tooteMarksonad,

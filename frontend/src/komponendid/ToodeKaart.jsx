@@ -3,8 +3,6 @@ import standardPilt from '../staatiline/standard/standard-toode.png';
 
 function ToodeKaart(props) {
 
-    console.log(props.toodeUrl)
-
     return (
         <div>
             <div className="toode-kaart-konteiner">

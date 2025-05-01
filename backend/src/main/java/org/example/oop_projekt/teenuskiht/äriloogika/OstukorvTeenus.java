@@ -1,13 +1,14 @@
 package org.example.oop_projekt.teenuskiht.äriloogika;
 
 import jakarta.transaction.Transactional;
-import org.example.oop_projekt.DTO.OstukorvDTO;
+import org.example.oop_projekt.DTO.EbasobivToodeDTO;
+import org.example.oop_projekt.DTO.MärksõnaDTO;
+import org.example.oop_projekt.DTO.ToodeOstukorvisDTO;
 import org.example.oop_projekt.andmepääsukiht.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 // Teenuseklass, mis sisaldab ostukorviga seotud äriloogikat
 @Service
@@ -16,12 +17,23 @@ public class OstukorvTeenus {
     // Sõltuvused: JPA repository'd, mida kasutatakse andmebaasiga suhtlemiseks
     private final OstukorvRepository ostukorvRepository;
     private final ToodeOstukorvisRepository toodeOstukorvisRepository;
+    private final TooteMarksonaRepository tooteMarksonaRepository;
+    private final ToodeRepository toodeRepository;
+    private final PoodRepository poodRepository;
+    private final ToodeTeenus toodeTeenus;
+    private final EbasobivToodeRepository ebasobivToodeRepository;
 
     // Konstruktoripõhine sõltuvuste süstimine (Spring süstib bean'id siia)
     public OstukorvTeenus(OstukorvRepository ostukorvRepository,
-                          ToodeOstukorvisRepository toodeOstukorvisRepository) {
+                          ToodeOstukorvisRepository toodeOstukorvisRepository, TooteMarksonaRepository tooteMarksonaRepository, ToodeRepository toodeRepository, PoodRepository poodRepository,
+                          ToodeTeenus toodeTeenus, EbasobivToodeRepository ebasobivToodeRepository) {
         this.ostukorvRepository = ostukorvRepository;
         this.toodeOstukorvisRepository = toodeOstukorvisRepository;
+        this.tooteMarksonaRepository = tooteMarksonaRepository;
+        this.toodeRepository = toodeRepository;
+        this.poodRepository = poodRepository;
+        this.toodeTeenus = toodeTeenus;
+        this.ebasobivToodeRepository = ebasobivToodeRepository;
     }
 
 //    // Meetod, mis lisab antud toote ostukorvi
@@ -72,39 +84,57 @@ public class OstukorvTeenus {
         }
     }
 
+    /**
+     * Loob uue ostukorvi koos toodete, märksõnade ja ebasobivate toodetega.
+     *
+     * @param tooted List {@link ToodeOstukorvisDTO} tüüpi andmeobjekte, mis sisaldavad kasutaja valitud tooteid ja nende seoseid.
+     * @return Salvestatud {@link Ostukorv} objekt koos kõigi seotud andmetega (tooted, märksõnad, ebasobivad tooted).
+     */
+    @Transactional
+    public Ostukorv looOstukorv(List<ToodeOstukorvisDTO> tooted) {
 
-    // Tagastab lõpliku ostukorvi elementidest, mis kasutaja on välja valinud
-    public Ostukorv looOstukorv(OstukorvDTO ostukorv) {
-        Ostukorv ostuKorv = new Ostukorv();
-        List<ToodeOstukorvis> tootedOstukorvis = new ArrayList<>();// See tuleb anda ostukorvile sisse
+        List<ToodeOstukorvis> tootedOstukorvis = new ArrayList<>(); // List, kuhu kõik uued tooted salvestatakse
+        Ostukorv ostuKorv = new Ostukorv(tootedOstukorvis);
 
-        // See meetod tuleb hiljem veidi ümber teha, siis, kui on täpselt teada, mida frontend backi saadab.
-        // Kuid ilmselt on selleks ostukorvis olevate toodete nimed, nende kogused ja märksõnad mida kasutati otsimisel
+        for (ToodeOstukorvisDTO toode : tooted) {
+            ToodeOstukorvis uusToodeOstukorvis = new ToodeOstukorvis();
 
-
-
-        // Ostukorv vajab List<ToodeOstukorvis> elementidest listi
-        // ToodeOstukorvis objekt vajab List<TooteMarksona> elemenditest listi
-        // TooteMarksona tahab toodet, mille kohta ta käib ja ühte märksõna selle toote kohta
-
-        for (String tootenimi : ostukorv.tooted()){
-            List<TooteMarksona> tooteMarksonad = new ArrayList<>();
-            ToodeOstukorvis toodeOstukorvis = new ToodeOstukorvis();
-            for(String tooteMarksona : ostukorv.märksõnad()){
-                //if (); ilmselt tuleks TooteMarksona objektile teha ka isendiväli, kas see taheti otsingusse panna või mitte
-
-                tooteMarksonad.add(new TooteMarksona(tooteMarksona, toodeOstukorvis));
+            // Kõik märksõnad lisatakse andmebaasi
+            for (MärksõnaDTO marksona : toode.marksonad()) {
+                TooteMarksona uusMarksona = new TooteMarksona(
+                        marksona.märksõna(),
+                        uusToodeOstukorvis,
+                        marksona.valikuVärv());
+                tooteMarksonaRepository.save(uusMarksona);
             }
-            tootedOstukorvis.add(new ToodeOstukorvis(ostuKorv, tooteMarksonad, toodeOstukorvis.getKogus()));//vajab ostukorvi, kuhu pannakse List TooteMarksonadest ja kogustest
+
+            // Kõik ebasobivad tooted lisatakse andmebaasi
+            for (EbasobivToodeDTO ebasobivToode : toode.ebasobivadTooted()) {
+                EbasobivToode uusEbasobivToode = new EbasobivToode(
+                        uusToodeOstukorvis,
+                        toodeRepository.findToodeByNimetusAndPood(
+                                ebasobivToode.nimetus(),
+                                poodRepository.findPoodByNimi(ebasobivToode.pood())
+                        )
+                );
+                ebasobivToodeRepository.save(uusEbasobivToode);
+            }
+
+            toodeOstukorvisRepository.save(uusToodeOstukorvis);
         }
 
-
-        ostuKorv.setTootedOstukorvis(tootedOstukorvis);
         ostukorvRepository.save(ostuKorv);
+        uuendaHindu(ostuKorv);
 
         return ostuKorv;
     }
 
+    @Transactional
+    public void uuendaHindu(Ostukorv ostukorv) {
 
+        List<Pood> poed = poodRepository.findAll();
+        List<Kliendikaardid> kliendikaardid = new ArrayList<>();
+
+    }
 }
 

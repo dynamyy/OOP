@@ -16,6 +16,7 @@ function LooOstukorv() {
     const [uusSisalduvus, setUusSisalduvus] = useState("roheline")
     const [tooteKogus, setTooteKogus] = useState(1)
     const [tooted, setTooted] = useState([])
+    const [ostukorv, setOstukorv] = useState({})
     const logod = {
         Prisma: prismaLogo,
         Selver: selverLogo,
@@ -73,7 +74,19 @@ function LooOstukorv() {
         }
     }
 
-    console.log(tooted)
+    function lisaOstukorvi(marksonad) {
+        const votmed = Object.keys(marksonad)
+
+        if (votmed.length > 0) {
+            setTooteKogus(1);
+            setTooted([]);
+            console.log(votmed)
+            setOstukorv({...ostukorv, [votmed[0]]: marksonad})
+            setMarksonad({})
+        }
+    }
+
+    console.log(ostukorv)
 
     return (
         <>
@@ -96,7 +109,7 @@ function LooOstukorv() {
                                 <input type="text" name='marksona' className='hele tume-tekst umar-nurk tume-piir' value={tooteKogus} onChange={e => setTooteKogus(parseInt(e.target.value))} />
                                 <button className='nupp hele-tekst tume2' id='sisalduvus' onClick={() => setTooteKogus(tooteKogus + 1)}>+</button>
                             </div>
-                            <button className='nupp hele-tekst tume' id='sisalduvus' onClick={() => lisaToode()}>Lisa toode</button>
+                            <button className='nupp hele-tekst tume' id='sisalduvus' onClick={() => lisaOstukorvi(marksonad)}>Lisa toode</button>
                         </div>
                     </div>
                 </div>
