@@ -2,7 +2,7 @@ package org.example.oop_projekt.teenuskiht.parsimine;
 
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
-import org.example.oop_projekt.andmepääsukiht.Toode;
+import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;

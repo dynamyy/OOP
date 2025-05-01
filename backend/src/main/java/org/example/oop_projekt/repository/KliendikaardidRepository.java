@@ -1,5 +1,7 @@
-package org.example.oop_projekt.andmepääsukiht;
+package org.example.oop_projekt.repository.andmepääsukiht;
 
+import org.example.oop_projekt.mudel.Kasutaja;
+import org.example.oop_projekt.mudel.Kliendikaardid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

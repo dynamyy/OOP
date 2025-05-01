@@ -1,7 +1,7 @@
 package org.example.oop_projekt;
 
-import org.example.oop_projekt.andmepääsukiht.PoodRepository;
-import org.example.oop_projekt.andmepääsukiht.ToodeRepository;
+import org.example.oop_projekt.repository.PoodRepository;
+import org.example.oop_projekt.repository.ToodeRepository;
 import org.example.oop_projekt.teenuskiht.parsimine.*;
 import org.example.oop_projekt.teenuskiht.äriloogika.PoodTeenus;
 import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;

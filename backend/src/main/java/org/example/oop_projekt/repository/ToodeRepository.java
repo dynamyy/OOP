@@ -1,6 +1,8 @@
-package org.example.oop_projekt.andmepääsukiht;
+package org.example.oop_projekt.repository.andmepääsukiht;
 
 import org.example.oop_projekt.DTO.ToodeDTO;
+import org.example.oop_projekt.mudel.Pood;
+import org.example.oop_projekt.mudel.Toode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

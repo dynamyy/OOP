@@ -1,8 +1,7 @@
 package org.example.oop_projekt.Conf;
 
-import org.example.oop_projekt.andmepääsukiht.Pood;
-import org.example.oop_projekt.andmepääsukiht.PoodRepository;
-import org.example.oop_projekt.andmepääsukiht.Toode;
+import org.example.oop_projekt.mudel.Pood;
+import org.example.oop_projekt.repository.PoodRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package org.example.oop_projekt.andmepääsukiht;
+package org.example.oop_projekt.mudel;
 
 import jakarta.persistence.*;
 import lombok.Getter;

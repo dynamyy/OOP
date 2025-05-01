@@ -1,12 +1,9 @@
 package org.example.oop_projekt.teenuskiht.äriloogika;
 
-import jakarta.transaction.Transactional;
-import org.example.oop_projekt.andmepääsukiht.Pood;
-import org.example.oop_projekt.andmepääsukiht.PoodRepository;
-import org.example.oop_projekt.andmepääsukiht.Toode;
+import org.example.oop_projekt.mudel.Pood;
+import org.example.oop_projekt.repository.andmepääsukiht.PoodRepository;
+import org.example.oop_projekt.mudel.Toode;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 public class PoodTeenus {

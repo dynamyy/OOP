@@ -4,7 +4,13 @@ import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.EbasobivToodeDTO;
 import org.example.oop_projekt.DTO.MärksõnaDTO;
 import org.example.oop_projekt.DTO.ToodeOstukorvisDTO;
-import org.example.oop_projekt.andmepääsukiht.*;
+import org.example.oop_projekt.mudel.*;
+import org.example.oop_projekt.repository.andmepääsukiht.EbasobivToodeRepository;
+import org.example.oop_projekt.repository.andmepääsukiht.OstukorvRepository;
+import org.example.oop_projekt.repository.andmepääsukiht.PoodRepository;
+import org.example.oop_projekt.repository.andmepääsukiht.ToodeOstukorvisRepository;
+import org.example.oop_projekt.repository.andmepääsukiht.ToodeRepository;
+import org.example.oop_projekt.repository.andmepääsukiht.TooteMarksonaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
