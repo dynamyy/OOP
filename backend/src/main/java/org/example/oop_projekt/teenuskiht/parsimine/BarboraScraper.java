@@ -1,7 +1,7 @@
 package org.example.oop_projekt.teenuskiht.parsimine;
 
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
-import org.example.oop_projekt.repository.andmepääsukiht.PoodRepository;
+import org.example.oop_projekt.repository.PoodRepository;
 import org.example.oop_projekt.mudel.Toode;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -121,53 +121,86 @@ public class BarboraScraper extends WebScraper {
                     }
 
                     String hindStr = hindElement.attr("content").replace(",", ".");
-                    double hind = Double.parseDouble(hindStr);
+                    double tykiHind = Double.parseDouble(hindStr);
 
                     Element nimiElement = kaart.selectFirst("span.tw-block");
-                    String nimi = nimiElement.text();
+                    String tooteNimi = nimiElement.text();
 
 
                     Element yhikuHindElement = kaart.selectFirst("div.tw-text-\\[10px\\]");
-                    String yhikuHind = yhikuHindElement != null ? yhikuHindElement.text() : "";
-                    String yhik = yhikuHind.split("/")[1];
+                    String hindKoosYhikuga = yhikuHindElement != null ? yhikuHindElement.text() : "";
+                    double yhikuHind = hindTekstist(hindKoosYhikuga.split("€")[0]);
+                    String yhik = hindKoosYhikuga.split("/")[1];
 
 
 
-                    String yhikuHindKlient = yhikuHind;
-                    double tykiHindKlient = hind;
+                    double kliendiYhikuHind = yhikuHind;
+                    double kliendiTykiHind = tykiHind;
 
 
+                    //Barbora leht veidi kahtlaselt üles ehitatud, kui tootel on kliendikaardi soodustus siis see pannakse html-s sinna,
+                    //kus muidu on tavahind ning tavahinnale tehakse oma div
                     try{
                         Element yhikuHindKlientElement = kaart.selectFirst("div.tw-relative.tw-text-\\[10px\\]");
-                        yhikuHind = yhikuHindKlientElement.text();//Ühikuhind peaks toimima
+                        yhikuHind = hindTekstist(yhikuHindKlientElement.text());
+
                         Element tykiHindKlientElementTaisosa = kaart.select("span.tw-pr-\\[2px\\]").get(1);
                         Element tykiHindKlientElementMurdosa = kaart.select("span.tw-pr-\\[1px\\]").get(1);
-                        System.out.println(tykiHindKlientElementTaisosa.text() + "." + tykiHindKlientElementMurdosa.text());
-                        hind = Double.parseDouble(tykiHindKlientElementTaisosa.text() + "." + tykiHindKlientElementMurdosa.text());
+                        tykiHind = Double.parseDouble(tykiHindKlientElementTaisosa.text() + "." + tykiHindKlientElementMurdosa.text());
 
                     }catch (Exception e){
-                        System.out.println("Puudub kliendihind" + e);
+                        System.out.println("Puudub kliendihind");
                     }
 
 
+                    Element piltElement = kaart.selectFirst("img");
+                    String pildiURL = "";
+                    if (piltElement != null) {
+                        pildiURL = piltElement.attr("src");
+                        if (pildiURL.isEmpty()) {
+                            pildiURL = piltElement.attr("data-srcset");
+                        }
+                    }
 
 
-                    System.out.println("Nimi: " + nimi +
-                            ", tükihind: " + hind +
+                    /*
+                    System.out.println("Nimi: " + tooteNimi +
+                            ", tükihind: " + tykiHind +
                             ", ühikuhind: " + yhikuHind +
-                            ", kliendihind: " + tykiHindKlient +
-                            ", kliendi ühikuhind: " + yhikuHindKlient +
-                            ", ühik: " + yhik);
-                    //Lisa andmed uue tootena (oma Toode klassi järgi kohenda vajadusel)
-                    //Toode toode = new Toode(nimi, yhik, tykiHindKlient, yhikuHindKlient, new HashSet<>(), yhikuHind, tykiHind);
-                    //toode.lisaPood(poodRepository.findPoodByNimi("Barbora")
+                            ", kliendihind: " + kliendiTykiHind +
+                            ", kliendi ühikuhind: " + kliendiYhikuHind +
+                            ", ühik: " + yhik +
+                            ", piltURL: " + pildiURL);
+                    */
+
+                    Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Maxima"), yhikuHind, tykiHind, pildiURL);
+                    tooted.add(uusToode);
+
+
                 }
 
                 vaheleht = url + "?page=" + i;
                 i++;
             }
-            break;//Vaatab ainult 1 alamkategooria, kustuta see ära kui päriselt scrapeda tahad
+            //break;//Vaatab ainult 1 alamkategooria, kustuta see ära kui päriselt scrapeda tahad
         }
-        return tooted;
+        return tooted;//Leht tuvastab scraperi, seega tuleks scrapemine teha osade kaupa või leida mõni muu lahendus
+    }
+
+    public static double hindTekstist(String hindStr) {
+        if (hindStr == null || hindStr.isEmpty()) {
+            return 0.0;
+        }
+
+        hindStr = hindStr.replaceAll("[^\\d,\\.]", "");
+
+        hindStr = hindStr.replace(",", ".");
+
+        try {
+            return Double.parseDouble(hindStr);
+        } catch (NumberFormatException e) {
+            System.err.println("Vigane hind: " + hindStr);
+            return 0.0;
+        }
     }
 }

@@ -1,7 +1,7 @@
 package org.example.oop_projekt.teenuskiht.parsimine;
 
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
-import org.example.oop_projekt.repository.andmepääsukiht.PoodRepository;
+import org.example.oop_projekt.repository.PoodRepository;
 import org.example.oop_projekt.mudel.Toode;
 import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
@@ -12,9 +12,13 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.*;
+
+import static java.lang.Math.round;
 
 @Service
 public class SelverScraper extends WebScraper {
@@ -135,7 +139,9 @@ public class SelverScraper extends WebScraper {
         int count = 0;
 
         for (String url : urlid){
-            String html = html(url);
+            //String html = html(url);
+
+            String html = html("https://www.selver.ee/valmistoidud/jahutatud-valmistoidud?limit=48");
 
             // Vigase urli korral tagastatakse 0 toodet
             if (html.isEmpty()) {
@@ -144,46 +150,86 @@ public class SelverScraper extends WebScraper {
 
             Document doc = Jsoup.parse(html);
 
-            Elements info = doc.select("div.ProductCard__info");
+            Elements info = doc.select("div.ProductCard");
 
             for(Element tooteInfo : info){
-                if (count == 10) return tooted;
+                //if (count == 10) return tooted;//Kui päris tööle paned asja võta see ära
 
-                Element elemendiNimi = tooteInfo.selectFirst("a.ProductCard__link");
-                String nimi = elemendiNimi.ownText().trim();
+                Element elemendiNimi = tooteInfo.selectFirst("div.ProductCard__name a.ProductCard__link");
+                String tooteNimi = elemendiNimi.text().trim();
 
                 Element elemendiTykiHind = tooteInfo.selectFirst("div.ProductPrice");
-                String tykihind = elemendiTykiHind.ownText().trim();
+                String tykihindStr = elemendiTykiHind.ownText().trim();
+                double tykiHind = hindTekstist(tykihindStr);
 
                 Element elemendiYhikuHind = tooteInfo.selectFirst("span.ProductPrice__unit-price");
-                String yhikuhind = elemendiYhikuHind.text().trim();
-                String yhik = yhikuhind.split("/")[1];
+                String hindKoosYhikuga = elemendiYhikuHind.text().trim();
+                double yhikuHind = hindTekstist(hindKoosYhikuga.split(" ")[0]);
+                String yhik = hindKoosYhikuga.split("/")[1];
 
 
-                String kliendiHind = "";
+                double kliendiTykiHind;
                 try {
                     Element elemendiKliendiHind = tooteInfo.selectFirst("span.ProductBadge__badge--label");
-                    kliendiHind = elemendiKliendiHind.text().trim();
+                    kliendiTykiHind = hindTekstist(elemendiKliendiHind.text().trim());
                 } catch (Exception e){
                     System.out.println("Puudub partnerkaardi soodustus");
+                    kliendiTykiHind = tykiHind;
                 }
 
-                String yhikuHindKlient;//Selle jaoks oleks vaja leida toote kogus
 
-                System.out.println("Nimi: " + nimi +
-                        ", tükihind: " + tykihind +
-                        ", ühikuhind: " + yhikuhind +
-                        ", kliendihind: " + kliendiHind +
-                        ", ühik: " + yhik);
 
-                count++;
+                Element imgElem = tooteInfo.selectFirst("div.ProductCard__image-wrapper img");
+                String pildiURL = "";
+                if (imgElem != null) {
+                    pildiURL = imgElem.hasAttr("data-src") ? imgElem.attr("data-src").trim() : imgElem.attr("src").trim();
+                }
 
-                //Toode toode = new Toode(nimi, yhik, tykiHindKlient, yhikuHindKlient, new HashSet<>(), yhikuHind, tykiHind);
-                //toode.lisaPood(poodRepository.findPoodByNimi("Selver");
-                //tooted.add(toode);
+
+                double kliendiYhikuHind = yhikuHind;
+
+                if (tykiHind != kliendiTykiHind){
+                    double protsent = kliendiTykiHind / tykiHind;
+                    kliendiYhikuHind = new BigDecimal(yhikuHind * protsent).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                }
+
+
+                /*
+                System.out.println("Nimi: " + tooteNimi +
+                        ", tükihind: " + tykiHind +
+                        ", ühikuhind: " + yhikuHind +
+                        ", kliendihind: " + kliendiTykiHind +
+                        ", kliendiühikuhind: " + kliendiYhikuHind +
+                        ", ühik: " + yhik +
+                        ", pildi URL: " + pildiURL);
+                 */
+
+
+                //count++;//Kui päriselt asja tööle paned võta see ära
+
+                Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Selver"), yhikuHind, tykiHind, pildiURL);
+                tooted.add(uusToode);
             }
         }
 
         return tooted;
     }
+
+    public static double hindTekstist(String hindStr) {
+        if (hindStr == null || hindStr.isEmpty()) {
+            return 0.0;
+        }
+
+        hindStr = hindStr.replaceAll("[^\\d,\\.]", "");
+
+        hindStr = hindStr.replace(",", ".");
+
+        try {
+            return Double.parseDouble(hindStr);
+        } catch (NumberFormatException e) {
+            System.err.println("Vigane hind: " + hindStr);
+            return 0.0;
+        }
+    }
+
 }

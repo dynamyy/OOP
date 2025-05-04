@@ -1,7 +1,7 @@
 package org.example.oop_projekt.teenuskiht.parsimine;
 
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
-import org.example.oop_projekt.repository.andmepääsukiht.PoodRepository;
+import org.example.oop_projekt.repository.PoodRepository;
 import org.example.oop_projekt.mudel.Toode;
 import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class RimiScraper extends WebScraper {
@@ -89,7 +91,6 @@ public class RimiScraper extends WebScraper {
     @Override
     List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException {
         setChromedriver(chromedriver);
-        int pageNr = 1;
         List<String> urlid = URLikirjed();
         List<Toode> tooted = new ArrayList<>();
 
@@ -98,9 +99,13 @@ public class RimiScraper extends WebScraper {
         }
 
 
+
         for (String url : urlid) {
+            System.out.println(url);
+            int pageNr = 1;
             while (true) {
-                String urliLisa = "?currentPage=" + pageNr + "&pageSize=80&query=%3Arelevance%3AallCategories%3ASH-19%3AassortmentStatus%3AinAssortment";
+                String nr = extractNumber(url);
+                String urliLisa = "?currentPage=" + pageNr + "&pageSize=80&query=%3Arelevance%3AallCategories%3ASH-" + nr + "%3AassortmentStatus%3AinAssortment";//6 asemele peab minema mingi teatud arv
                 String vaheleht = url + urliLisa;
 
                 String html = html(vaheleht);
@@ -134,9 +139,17 @@ public class RimiScraper extends WebScraper {
                     Element tooteNimiElement = toode.selectFirst("div.card__details p.card__name");
                     String tooteNimi = tooteNimiElement.text();
 
-                    Element yhikuHindElement = toode.selectFirst("p.card__price-per");
-                    String yhikuHind = yhikuHindElement.text();
-                    String yhik = yhikuHind.split("/")[1];
+                    double yhikuHind = 0;
+                    String yhik = "puudub";
+                    try{
+                        Element yhikuHindElement = toode.selectFirst("p.card__price-per");
+                        String hindKoosYhikuga = yhikuHindElement.text();
+                        yhikuHind = hindTekstist(hindKoosYhikuga.split(" ")[0]);
+                        yhik = hindKoosYhikuga.split("/")[1];
+                    }catch (Exception e){
+                        System.out.println("Puudub ühik");
+                    }
+
 
 
                     Element hindElement = toode.selectFirst("div.price-tag.card__price");
@@ -145,10 +158,10 @@ public class RimiScraper extends WebScraper {
                     String komakoht = hindElement.selectFirst("sup").text();
 
                     String hindStr = täisarvulineOsa + "." + komakoht;
-                    double hind = Double.parseDouble(hindStr);
+                    double tykiHind = Double.parseDouble(hindStr);
 
-                    double kliendiHind = hind;
-                    String kliendiYhikuhind = yhikuHind;
+                    double kliendiTykiHind = tykiHind;
+                    double kliendiYhikuHind = yhikuHind;
                     try{
                         Element kliendiHindElement = toode.selectFirst("div.price-label__price");
 
@@ -156,21 +169,37 @@ public class RimiScraper extends WebScraper {
                         String komad = kliendiHindElement.selectFirst("span.cents").text();
 
                         String hindSt = täisarv + "." + komad;
-                        kliendiHind = Double.parseDouble(hindSt);
+                        kliendiTykiHind = Double.parseDouble(hindSt);
 
                         Element yhikuhindElement = toode.selectFirst("div.price-per-unit");
 
-                        String yhikuHindStr = yhikuhindElement.text();
-                        kliendiYhikuhind = yhikuHindStr.replace(",", ".");
-
+                        //String yhikuHindStr = yhikuhindElement.text();
+                        kliendiYhikuHind = hindTekstist(yhikuhindElement.text());//enne oli replace.(",", ".")
                     }catch (Exception e){
-                        System.out.println("Puudub kliendihind");
+
                     }
 
 
-                    //Siin saab tooteid luua, rn ainult printimine
-                    System.out.println("Nimi: " + tooteNimi + " Tükihind: " + hind + " Ühikuhind: " + yhikuHind + ", Kliendihind: " + kliendiHind + " kliendiühikuhind: " + kliendiYhikuhind + " Ühik: " + yhik);
+                    Element imgElement = toode.selectFirst("img");
+                    String pildiURL = "";
+                    if (imgElement != null) {
+                        if (imgElement.hasAttr("data-src")) {
+                            pildiURL = imgElement.attr("data-src").trim();
+                        }
+                    }
+                    /*
+                    System.out.println("Nimi: " + tooteNimi +
+                            ", Tükihind: " + tykiHind +
+                            ", Ühikuhind: " + yhikuHind +
+                            ", Kliendihind: " + kliendiTykiHind +
+                            " kliendiühikuhind: " + kliendiYhikuHind +
+                            " Ühik: " + yhik +
+                            ", Pildi URL:" + pildiURL);
+                     */
+                    Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Rimi"), yhikuHind, tykiHind, pildiURL);
+                    tooted.add(uusToode);
                 }
+
 
                 if (katkesta) {
                     System.out.println("Lehel oli toode, mis polnud saadaval. Katkestan");
@@ -181,7 +210,7 @@ public class RimiScraper extends WebScraper {
                 pageNr++;
             }
 
-            break; // testimiseks ainult esimene kategooria
+            //break; // testimiseks ainult esimene kategooria
         }
 
 
@@ -190,4 +219,30 @@ public class RimiScraper extends WebScraper {
         return tooted;
     }
 
+    public static String extractNumber(String url) {
+        Pattern pattern = Pattern.compile("SH-(\\d+)$");
+        Matcher matcher = pattern.matcher(url);
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return null; // või viska erind, kui muster ei leidu
+        }
+    }
+
+    public static double hindTekstist(String hindStr) {
+        if (hindStr == null || hindStr.isEmpty()) {
+            return 0.0;
+        }
+
+        hindStr = hindStr.replaceAll("[^\\d,\\.]", "");
+
+        hindStr = hindStr.replace(",", ".");
+
+        try {
+            return Double.parseDouble(hindStr);
+        } catch (NumberFormatException e) {
+            System.err.println("Vigane hind: " + hindStr);
+            return 0.0;
+        }
+    }
 }

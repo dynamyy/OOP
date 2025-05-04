@@ -4,7 +4,7 @@ import org.example.oop_projekt.DTO.MärksõnaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
-import org.example.oop_projekt.repository.andmepääsukiht.ToodeRepository;
+import org.example.oop_projekt.repository.ToodeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
