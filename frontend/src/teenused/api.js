@@ -111,3 +111,24 @@ export const postMarksonad = async (marksonad) => {
         return {ok: false, marksonad: {}}
     }
 }
+
+export const postOstukorv = async (ostukorv) => {
+    try {
+        const vastus = await fetch(`${BAAS_URL}/ostukorv`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify(ostukorv)
+        })
+
+        const sonum = await vastus.json();
+
+        if (vastus.ok) {
+            return {ok: true, sonum: sonum}
+        } else {
+            return {ok: false, sonum: sonum}
+        }
+    } catch (viga) {
+        console.log("Viga ostukorvi saatmisel ", viga.message)
+        return {ok: false, ostukorv: "Ilmnes viga ostukorvi saatmisel"}
+    }
+}

@@ -29,7 +29,7 @@ public abstract class WebScraper{
 
     public void setChromedriver(WebDriver chromedriver) {
         this.chromedriver = chromedriver;
-        driverWait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
+        driverWait = new WebDriverWait(chromedriver, Duration.ofSeconds(60));
         jsExec = (JavascriptExecutor) chromedriver;
     }
 
@@ -48,6 +48,13 @@ public abstract class WebScraper{
      * Meetod scrape'imisloogika käivitamiseks
      */
     abstract List<Toode> scrape(WebDriver chromedriver) throws IOException;
+
+    /**
+     * Leiab lehelt kõik kategooriad, et neid ükshaaval läbi vaadata.
+     * @return List URL-dest
+     * @throws ScrapeFailedException Kui scrape ebaõnnestub
+     */
+    abstract List<String> URLiKirjed() throws ScrapeFailedException;
 
 
     /**

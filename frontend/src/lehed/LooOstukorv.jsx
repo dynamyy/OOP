@@ -1,7 +1,7 @@
-import { useState, React, useEffect } from 'react';
+import { useState, React, useEffect, use } from 'react';
 import Menuu from '../komponendid/Menuu';
 import ToodeKaart from '../komponendid/ToodeKaart';
-import { postMarksonad } from '../teenused/api';
+import { postMarksonad, postOstukorv } from '../teenused/api';
 import coopLogo from '../staatiline/logod/coop.png';
 import maximaLogo from '../staatiline/logod/maxima.png';
 import selverLogo from '../staatiline/logod/selver.png';
@@ -17,6 +17,7 @@ function LooOstukorv() {
     const [tooteKogus, setTooteKogus] = useState(1)
     const [tooted, setTooted] = useState([])
     const [ostukorv, setOstukorv] = useState({})
+    const [ebasobivadTooted, setEbasobivadTooted] = useState([])
     const logod = {
         Prisma: prismaLogo,
         Selver: selverLogo,
@@ -25,11 +26,13 @@ function LooOstukorv() {
         Rimi: rimiLogo
     }
 
-    async function fetchTooted(ms) {
+    async function fetchTooted() {
         const vastus = await postMarksonad(marksonad)
 
         if (vastus.ok) {
             setTooted(vastus.marksonad)
+        } else {
+            console.log("Märksõnade saatmine nurjus")
         }
     }
 
@@ -78,15 +81,24 @@ function LooOstukorv() {
         const votmed = Object.keys(marksonad)
 
         if (votmed.length > 0) {
-            setTooteKogus(1);
             setTooted([]);
             console.log(votmed)
-            setOstukorv({...ostukorv, [votmed[0]]: marksonad})
+            setOstukorv({...ostukorv, [votmed[0]]: {"marksonad": marksonad, "kogus": tooteKogus, "ebasobivadTooted": ebasobivadTooted}})
             setMarksonad({})
+            setTooteKogus(1);
+            setEbasobivadTooted([])
         }
     }
 
-    console.log(ostukorv)
+    function looOstukorv(ostukorv) {
+        const vastus = postOstukorv(ostukorv);
+
+        if (vastus.ok) {
+            console.log("Ostukorv loodud")
+        } else {
+            console.log("Ostukorvi loomine nurjus")
+        }
+    }
 
     return (
         <>
@@ -118,22 +130,18 @@ function LooOstukorv() {
                         <span className="tume-tekst">Leitud {tooted.length} toodet</span>
                         <div id="tooted-list-valimine" className="umar-nurk">
                             <div id="tooted-list">
-                            {tooted.map(toode => {
-                                console.log(toode); // Log the entire object
-                                console.log(toode.toodePiltURL); // Log the specific property
-                                return (
-                                    <ToodeKaart
-                                        key={toode.tooteNimi}
-                                        tooteNimetus={toode.tooteNimi}
-                                        tukiHind={toode.tooteTükihind}
-                                        uhikuHind={toode.tooteÜhikuHind}
-                                        uhik={toode.ühik}
-                                        soodus={toode.kasonSoodus}
-                                        poodPilt={logod[toode.pood]}
-                                        toodeUrl={toode.toodePiltURL}
-                                    />
-                                );
-                            })}
+                            {tooted.map(toode => (
+                                <ToodeKaart
+                                    key={toode.tooteNimi}
+                                    tooteNimetus={toode.tooteNimi}
+                                    tukiHind={toode.tooteTükihind}
+                                    uhikuHind={toode.tooteÜhikuHind}
+                                    uhik={toode.ühik}
+                                    soodus={toode.kasonSoodus}
+                                    poodPilt={logod[toode.pood]}
+                                    toodeUrl={toode.toodePiltURL}
+                                />
+                            ))}
                             </div>
                         </div>
                     </div>
