@@ -71,7 +71,7 @@ public class RimiScraper extends WebScraper {
     Urlide leidmiseks pean info saama button class="trigger gtm" klassist
     <button role="menuitem" class="trigger gtm" href="/epood/ee/tooted/puuviljad-koogiviljad-lilled/c/SH-12">
      */
-    public List<String> URLikirjed() throws ScrapeFailedException {
+    public List<String> URLiKirjed() throws ScrapeFailedException {
         List<String> info = new ArrayList<>();
         String s = hangiDynamicSource();
         Document doc = Jsoup.parse(s);
@@ -91,7 +91,7 @@ public class RimiScraper extends WebScraper {
     @Override
     List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException {
         setChromedriver(chromedriver);
-        List<String> urlid = URLikirjed();
+        List<String> urlid = URLiKirjed();
         List<Toode> tooted = new ArrayList<>();
 
         if (urlid == null) {

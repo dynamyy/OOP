@@ -60,7 +60,8 @@ public class BarboraScraper extends WebScraper {
 
 
     //Leian kõik URL-d
-    public List<String> URLikirjed() throws ScrapeFailedException {
+    @Override
+    public List<String> URLiKirjed() throws ScrapeFailedException {
         List<String> info = new ArrayList<>();
         String s = hangiDynamicSource();
 
@@ -90,7 +91,7 @@ public class BarboraScraper extends WebScraper {
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException {
         setChromedriver(chromedriver);
-        List<String> urlid = URLikirjed();
+        List<String> urlid = URLiKirjed();
         List<Toode> tooted = new ArrayList<>();
 
         // Vea korral tagastatakse tühi list.

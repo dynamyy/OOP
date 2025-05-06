@@ -101,6 +101,7 @@ public class SelverScraper extends WebScraper {
     /*
     Leian kõik URL-d
      */
+    @Override
     public List<String> URLiKirjed() throws ScrapeFailedException {
         List<String> info = new ArrayList<>();
         String s = hangiDynamicSource();

@@ -12,6 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +22,8 @@ public class PrismaScraper extends WebScraper {
 
     private final PoodRepository poodRepository;
     private String url;
+    private Document doc;
+    private WebDriver driver;
 
     public PrismaScraper(PoodRepository poodRepository) {
         super("Prisma");
@@ -43,19 +46,57 @@ public class PrismaScraper extends WebScraper {
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        scrolliLeheLoppu(100, "[data-test-id='product-list-item']");
+        scrolliLeheLoppu(toodeteArv, "[data-test-id='product-list-item']");
 
         return chromedriver.getPageSource();
     }
 
     @Override
+    List<String> URLiKirjed() throws ScrapeFailedException {
+
+        List<String> URLd = new ArrayList<>();
+
+//        Elements kategooriad = doc.select("[product-result-filter]");
+        List<WebElement> kategooriad = driver.findElements(By.cssSelector("[data-test-id='product-result-filter']"));
+
+        for (WebElement kategooria : kategooriad) {
+            System.out.println(kategooria.getText());
+            URLd.add(kategooria.getAttribute("href"));
+        }
+        System.out.println(URLd);
+        return URLd;
+    }
+
+    @Override
     public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
+        driver = chromedriver;
         List<Toode> tooted = new ArrayList<>();
-        String lahtekood = hangiDynamicSource();
+        scrapeRek(tooted, url, chromedriver);
+        return tooted;
+    }
 
-        // Saan lähtekoodist kõik toodete elemendid
-        Document doc = Jsoup.parse(lahtekood);
+    public void scrapeRek(List<Toode> tooted, String uusUrl, WebDriver chromedriver) {
+
+        getUrl(uusUrl);
+        ootaLeheLaadimist("[data-test-id='product-list'] > div");
+        WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector("[data-test-id='product-result-total']"));
+        int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
+
+        if (toodeteArv > 5000) {
+            List<String> URLd = URLiKirjed();
+
+            for (String u : URLd) {
+                scrapeRek(tooted, u, chromedriver);
+            }
+        } else {
+            url = uusUrl;
+            doc = Jsoup.parse(hangiDynamicSource());
+            scrapeLehekülg(tooted, doc);
+        }
+    }
+
+    public void scrapeLehekülg(List<Toode> tooted, Document doc) {
         Elements lapsed = Objects.requireNonNull(doc.select("[data-test-id='product-list'] > div").first()).children();
 
         // Ühik määrab, mis ühikutes peaks hiljem ühikuhinda kuvama (l / kg)
@@ -86,6 +127,8 @@ public class PrismaScraper extends WebScraper {
             tkHind = tkHindKlient = Double.parseDouble(tkHindProov
                     .text().split(" ")[0]
                     .replace("~", "")
+                    .replace("umbes", "")
+                            .replace("Umbes", "")
                     .replace(",", "."));
 
             Elements uhikuHindElement = hinnaInfo.select("[data-test-id='product-card__productPrice__comparisonPrice']");
@@ -114,6 +157,5 @@ public class PrismaScraper extends WebScraper {
                     tootePiltUrl);
             tooted.add(uusToode);
         }
-        return tooted;
     }
 }

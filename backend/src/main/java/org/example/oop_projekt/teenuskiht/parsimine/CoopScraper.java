@@ -147,4 +147,9 @@ public class CoopScraper extends WebScraper {
 
         return tooted;
     }
+
+    @Override
+    List<String> URLiKirjed() throws ScrapeFailedException {
+        return List.of();
+    }
 }
