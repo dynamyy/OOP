@@ -217,7 +217,8 @@ public class SelverScraper extends WebScraper {
                         poodRepository.findPoodByNimi("Selver"),
                         yhikuHind,
                         tykiHind,
-                        pildiURL);
+                        pildiURL,
+                        "");
                 tooted.add(uusToode);
 
             }

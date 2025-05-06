@@ -170,8 +170,7 @@ public class BarboraScraper extends WebScraper {
                             ", kliendi ühikuhind: " + kliendiYhikuHind +
                             ", ühik: " + yhik +
                             ", piltURL: " + pildiURL);
-
-                     */
+                    */
 
                     Toode uusToode = new Toode(tooteNimi,
                             yhik,
@@ -180,7 +179,8 @@ public class BarboraScraper extends WebScraper {
                             poodRepository.findPoodByNimi("Maxima"),
                             yhikuHind,
                             tykiHind,
-                            pildiURL);
+                            pildiURL,
+                            "");
                     tooted.add(uusToode);
 
                 }

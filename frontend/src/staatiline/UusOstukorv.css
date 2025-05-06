@@ -130,28 +130,34 @@
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     margin-bottom: 0.5rem;
+    padding-right: 1.5rem;
+    transition: 0.1s;
 }
 
-.toode-kaart-konteiner span {
-    font-size: medium;
-    width: 20%;
+.toode-kaart-hind-konteiner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    max-width: 18rem;
 }
 
-.toode-kaart-konteiner > div {
+.toode-kaart-pilt-konteiner {
     display: flex;
     align-items: center;
     width: 60%;
 }
 
-.toode-kaart-konteiner > div > span {
-    flex-grow: 1;
+.toode-kaart-konteiner > div > div {
+    display: flex;
+    align-items: center;
 }
 
 .toode-pilt-standard {
-    height: 4rem;
-    width: 4rem;
+    max-height: 4rem;
+    max-width: 4rem;
     object-fit: cover;
     opacity: 0.2;
     margin: 1rem;
@@ -159,8 +165,10 @@
 
 .toode-pilt {
     height: 4rem;
-    object-fit: cover;
+    width: 4rem;
+    object-fit: contain;
     margin: 1rem;
+    mix-blend-mode: multiply;
 }
 
 .logo-pilt {
@@ -174,6 +182,7 @@
     height: 100%;
     border: #153448 solid 1px;
     padding-right: 0.5rem;
+    overflow-y: auto;
 }
 
 .toode-kaart-konteiner > span:nth-child(1) {
@@ -200,4 +209,25 @@
 #ostukorv-konteiner {
     height: 80%;
     width: 0%;
+}
+
+.toode-kaart-ikoon {
+    font-size: xx-large;
+    color: #5050504b;
+    margin-left: 1rem;
+    transition: 0.3s;
+}
+
+.toode-kaart-ikoon:hover {
+    color: #153448;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.ebasobiv-toode {
+    background-color: #902c2c50;
+}
+
+.poora-45 {
+    transform: rotate(45deg) translateX(4px);
 }

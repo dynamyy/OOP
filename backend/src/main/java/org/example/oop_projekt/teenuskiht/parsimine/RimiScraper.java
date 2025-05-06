@@ -200,7 +200,7 @@ public class RimiScraper extends WebScraper {
                             " kliendiühikuhind: " + kliendiYhikuHind +
                             " Ühik: " + yhik +
                             ", Pildi URL:" + pildiURL);
-                            
+
                      */
 
 
@@ -211,7 +211,8 @@ public class RimiScraper extends WebScraper {
                             poodRepository.findPoodByNimi("Rimi"),
                             yhikuHind,
                             tykiHind,
-                            pildiURL);
+                            pildiURL,
+                            "");
                     tooted.add(uusToode);
 
 
