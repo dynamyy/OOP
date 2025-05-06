@@ -193,8 +193,6 @@ public class SelverScraper extends WebScraper {
                     double protsent = kliendiTykiHind / tykiHind;
                     kliendiYhikuHind = new BigDecimal(yhikuHind * protsent).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 }
-
-
                 /*
                 System.out.println("Nimi: " + tooteNimi +
                         ", tükihind: " + tykiHind +
@@ -203,10 +201,13 @@ public class SelverScraper extends WebScraper {
                         ", kliendiühikuhind: " + kliendiYhikuHind +
                         ", ühik: " + yhik +
                         ", pildi URL: " + pildiURL);
+
                  */
 
 
+
                 //count++;//Kui päriselt asja tööle paned võta see ära
+
 
 
                 Toode uusToode = new Toode(tooteNimi,
@@ -218,27 +219,10 @@ public class SelverScraper extends WebScraper {
                         tykiHind,
                         pildiURL);
                 tooted.add(uusToode);
+
             }
         }
 
         return tooted;
     }
-
-    public static double hindTekstist(String hindStr) {
-        if (hindStr == null || hindStr.isEmpty()) {
-            return 0.0;
-        }
-
-        hindStr = hindStr.replaceAll("[^\\d,\\.]", "");
-
-        hindStr = hindStr.replace(",", ".");
-
-        try {
-            return Double.parseDouble(hindStr);
-        } catch (NumberFormatException e) {
-            System.err.println("Vigane hind: " + hindStr);
-            return 0.0;
-        }
-    }
-
 }

@@ -117,8 +117,11 @@ public class ToodeTeenus {
 
     }
 
+    /*
     //Meetod, mille abil saab muuta toote hindu läbi frontendi
     public void muudaTooteHind(HinnaMuutusDTO hinnaMuutusDTO) {
         toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
     }
+
+     */
 }

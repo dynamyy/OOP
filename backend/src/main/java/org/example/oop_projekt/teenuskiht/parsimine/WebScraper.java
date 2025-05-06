@@ -131,4 +131,21 @@ public abstract class WebScraper{
             throw new ScrapeFailedException("\u001B[31mTekkis viga URLi laadimisel: " + url + "\u001B[0m");
         }
     }
+
+    public static double hindTekstist(String hindStr) {
+        if (hindStr == null || hindStr.isEmpty()) {
+            return 0.0;
+        }
+
+        hindStr = hindStr.replaceAll("[^\\d,\\.]", "");
+
+        hindStr = hindStr.replace(",", ".");
+
+        try {
+            return Double.parseDouble(hindStr);
+        } catch (NumberFormatException e) {
+            System.err.println("Vigane hind: " + hindStr);
+            return 0.0;
+        }
+    }
 }

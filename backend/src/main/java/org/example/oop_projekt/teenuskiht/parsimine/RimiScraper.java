@@ -192,7 +192,6 @@ public class RimiScraper extends WebScraper {
                             pildiURL = imgElement.attr("data-src").trim();
                         }
                     }
-
                     /*
                     System.out.println("Nimi: " + tooteNimi +
                             ", Tükihind: " + tykiHind +
@@ -201,8 +200,10 @@ public class RimiScraper extends WebScraper {
                             " kliendiühikuhind: " + kliendiYhikuHind +
                             " Ühik: " + yhik +
                             ", Pildi URL:" + pildiURL);
+                            
+                     */
 
-                    */
+
                     Toode uusToode = new Toode(tooteNimi,
                             yhik,
                             kliendiTykiHind,
@@ -212,6 +213,8 @@ public class RimiScraper extends WebScraper {
                             tykiHind,
                             pildiURL);
                     tooted.add(uusToode);
+
+
                 }
                 if (katkesta) {
                     System.out.println("Lehel oli toode, mis polnud saadaval. Katkestan");
@@ -235,23 +238,6 @@ public class RimiScraper extends WebScraper {
             return matcher.group(1);
         } else {
             return null; // või viska erind, kui muster ei leidu
-        }
-    }
-
-    public static double hindTekstist(String hindStr) {
-        if (hindStr == null || hindStr.isEmpty()) {
-            return 0.0;
-        }
-
-        hindStr = hindStr.replaceAll("[^\\d,\\.]", "");
-
-        hindStr = hindStr.replace(",", ".");
-
-        try {
-            return Double.parseDouble(hindStr);
-        } catch (NumberFormatException e) {
-            System.err.println("Vigane hind: " + hindStr);
-            return 0.0;
         }
     }
 }

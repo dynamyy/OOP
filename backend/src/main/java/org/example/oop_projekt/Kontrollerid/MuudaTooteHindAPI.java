@@ -22,10 +22,13 @@ public class MuudaTooteHindAPI {
         this.toodeTeenus = toodeTeenus;
     }
 
+    /*
     // Kasutame toote hinna vahetamiseks frontendi kaudu
     @PostMapping
     public ResponseEntity<String> kuvaTooted(@RequestBody HinnaMuutusDTO hinnaMuutusDTO){
         toodeTeenus.muudaTooteHind(hinnaMuutusDTO);
         return ResponseEntity.ok("Toote hind muudetud!");//Lisa siia ka toote nimi ja hind, mis sisestati andmebaasi
     }
+
+     */
 }

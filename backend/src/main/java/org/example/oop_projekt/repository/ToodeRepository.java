@@ -33,8 +33,11 @@ public interface ToodeRepository extends JpaRepository<Toode, Long>, JpaSpecific
     List<ToodeDTO> leiaToodeHinnaga(@Param("nimetus") String nimetus);
 
 
+    /*
     @Modifying
     @Transactional
-    //@Query("")
+    @Query("")
     void uuendaTooteHinda(@Param("uushind") double hind, @Param("id") int id);
+
+     */
 }

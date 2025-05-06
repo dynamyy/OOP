@@ -162,8 +162,6 @@ public class BarboraScraper extends WebScraper {
                             pildiURL = piltElement.attr("data-srcset");
                         }
                     }
-
-
                     /*
                     System.out.println("Nimi: " + tooteNimi +
                             ", tükihind: " + tykiHind +
@@ -172,7 +170,8 @@ public class BarboraScraper extends WebScraper {
                             ", kliendi ühikuhind: " + kliendiYhikuHind +
                             ", ühik: " + yhik +
                             ", piltURL: " + pildiURL);
-                    */
+
+                     */
 
                     Toode uusToode = new Toode(tooteNimi,
                             yhik,
@@ -184,7 +183,6 @@ public class BarboraScraper extends WebScraper {
                             pildiURL);
                     tooted.add(uusToode);
 
-
                 }
 
                 vaheleht = url + "?page=" + i;
@@ -193,22 +191,5 @@ public class BarboraScraper extends WebScraper {
             //break;//Vaatab ainult 1 alamkategooria, kustuta see ära kui päriselt scrapeda tahad
         }
         return tooted;//Leht tuvastab scraperi, seega tuleks scrapemine teha osade kaupa või leida mõni muu lahendus
-    }
-
-    public static double hindTekstist(String hindStr) {
-        if (hindStr == null || hindStr.isEmpty()) {
-            return 0.0;
-        }
-
-        hindStr = hindStr.replaceAll("[^\\d,\\.]", "");
-
-        hindStr = hindStr.replace(",", ".");
-
-        try {
-            return Double.parseDouble(hindStr);
-        } catch (NumberFormatException e) {
-            System.err.println("Vigane hind: " + hindStr);
-            return 0.0;
-        }
     }
 }
