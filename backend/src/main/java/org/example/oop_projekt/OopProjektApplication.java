@@ -56,7 +56,7 @@ public class OopProjektApplication {
         //scraperid.add(new PrismaScraper(this.poodRepository));
         //scraperid.add(new SelverScraper(this.poodRepository));
         //scraperid.add(new BarboraScraper(this.poodRepository));
-        //scraperid.add(new RimiScraper(this.poodRepository));
+        scraperid.add(new RimiScraper(this.poodRepository));
 
 
 

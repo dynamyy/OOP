@@ -99,13 +99,18 @@ public class RimiScraper extends WebScraper {
         }
 
 
-
         for (String url : urlid) {
-            System.out.println(url);
+
+            if (url.contains("teenused")){
+                System.out.println("Lõpetan Rimi töötlemise");
+                break;
+            }
+
             int pageNr = 1;
+            String nr = extractNumber(url);
             while (true) {
-                String nr = extractNumber(url);
-                String urliLisa = "?currentPage=" + pageNr + "&pageSize=80&query=%3Arelevance%3AallCategories%3ASH-" + nr + "%3AassortmentStatus%3AinAssortment";//6 asemele peab minema mingi teatud arv
+                String urliLisa = "?currentPage=" + pageNr + "&pageSize=80&query=%3Arelevance%3AallCategories%3ASH-" +
+                        nr + "%3AassortmentStatus%3AinAssortment";
                 String vaheleht = url + urliLisa;
 
                 String html = html(vaheleht);
@@ -187,6 +192,7 @@ public class RimiScraper extends WebScraper {
                             pildiURL = imgElement.attr("data-src").trim();
                         }
                     }
+
                     /*
                     System.out.println("Nimi: " + tooteNimi +
                             ", Tükihind: " + tykiHind +
@@ -195,21 +201,24 @@ public class RimiScraper extends WebScraper {
                             " kliendiühikuhind: " + kliendiYhikuHind +
                             " Ühik: " + yhik +
                             ", Pildi URL:" + pildiURL);
-                     */
-                    Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Rimi"), yhikuHind, tykiHind, pildiURL);
+
+                    */
+                    Toode uusToode = new Toode(tooteNimi,
+                            yhik,
+                            kliendiTykiHind,
+                            kliendiYhikuHind,
+                            poodRepository.findPoodByNimi("Rimi"),
+                            yhikuHind,
+                            tykiHind,
+                            pildiURL);
                     tooted.add(uusToode);
                 }
-
-
                 if (katkesta) {
                     System.out.println("Lehel oli toode, mis polnud saadaval. Katkestan");
                     break;
                 }
-
-
                 pageNr++;
             }
-
             //break; // testimiseks ainult esimene kategooria
         }
 

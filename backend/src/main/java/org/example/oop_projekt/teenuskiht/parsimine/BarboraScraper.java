@@ -149,7 +149,7 @@ public class BarboraScraper extends WebScraper {
                         tykiHind = Double.parseDouble(tykiHindKlientElementTaisosa.text() + "." + tykiHindKlientElementMurdosa.text());
 
                     }catch (Exception e){
-                        System.out.println("Puudub kliendihind");
+                        //System.out.println("Puudub kliendihind");
                     }
 
 
@@ -173,7 +173,14 @@ public class BarboraScraper extends WebScraper {
                             ", piltURL: " + pildiURL);
                     */
 
-                    Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Maxima"), yhikuHind, tykiHind, pildiURL);
+                    Toode uusToode = new Toode(tooteNimi,
+                            yhik,
+                            kliendiTykiHind,
+                            kliendiYhikuHind,
+                            poodRepository.findPoodByNimi("Maxima"),
+                            yhikuHind,
+                            tykiHind,
+                            pildiURL);
                     tooted.add(uusToode);
 
 
