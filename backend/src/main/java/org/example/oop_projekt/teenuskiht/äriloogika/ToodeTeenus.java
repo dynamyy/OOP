@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht.äriloogika;
 
+import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.MärksõnaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.mudel.Pood;
@@ -39,6 +40,7 @@ public class ToodeTeenus {
      * Lisab toote andmebaasi, kui seda seal veel ei ole.
      * @param tooted List toodetest, mis andmebaasi lisatakse.
      */
+    @Transactional
     public void lisaTootedAndmebaasi(List<Toode> tooted) {
 
         List<Toode> uuedTooted = new ArrayList<>();
@@ -46,7 +48,9 @@ public class ToodeTeenus {
         Pood pood = tooted.getFirst().getPood();
 
         for (Toode toode : tooted) {
-            Toode dbToode = toodeRepository.findToodeByNimetusAndPood(toode.getNimetus(), toode.getPood());
+            Toode dbToode = toode.getPood().getNimi().equalsIgnoreCase("prisma") ?
+                    toodeRepository.findToodeByTooteKood(toode.getTooteKood()) :
+                    toodeRepository.findToodeByNimetusAndPood(toode.getNimetus(), toode.getPood());
 
             if (dbToode == null) {
                 uuedTooted.add(toode);

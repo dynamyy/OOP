@@ -174,7 +174,7 @@ public class BarboraScraper extends WebScraper {
                             ", piltURL: " + pildiURL);
                     */
 
-                    Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Maxima"), yhikuHind, tykiHind, pildiURL);
+                    Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Maxima"), yhikuHind, tykiHind, pildiURL, "");
                     tooted.add(uusToode);
 
 

@@ -100,6 +100,22 @@ function LooOstukorv() {
         }
     }
 
+    function lisaEbasobivToode(e, toode) {
+        e.stopPropagation();
+        const nupp = e.currentTarget.closest(".toode-kaart-ikoon");
+        nupp.classList.toggle("poora-45")
+        const emaDiv = e.currentTarget.closest(".toode-kaart-konteiner");
+        emaDiv.classList.toggle("ebasobiv-toode");
+
+        setEbasobivadTooted(prev => {
+            if (prev.includes(toode)) {
+                return prev.filter(t => t !== toode);
+            } else {
+                return [...prev, toode];
+            }
+        })
+    }
+
     return (
         <>
             <Menuu />
@@ -140,6 +156,8 @@ function LooOstukorv() {
                                     soodus={toode.kasonSoodus}
                                     poodPilt={logod[toode.pood]}
                                     toodeUrl={toode.toodePiltURL}
+                                    lisaEbasobivToode={lisaEbasobivToode}
+                                    toode={toode.tooteNimi}
                                 />
                             ))}
                             </div>

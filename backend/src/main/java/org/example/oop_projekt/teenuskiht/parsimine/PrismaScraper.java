@@ -27,7 +27,7 @@ public class PrismaScraper extends WebScraper {
 
     public PrismaScraper(PoodRepository poodRepository) {
         super("Prisma");
-        url = "https://www.prismamarket.ee/tooted/";
+        url = "https://www.prismamarket.ee/tooted";
         this.poodRepository = poodRepository;
     }
 
@@ -106,11 +106,15 @@ public class PrismaScraper extends WebScraper {
         // tkHind ja uhikuHind on tavakliendi hind ehk ilma säästukaardita
         // Kui säästukaardiga erihinda pole (enamasti pole), siis tavakliendi hind == kliendi hind
         double tkHind, uhikuHind = 0, tkHindKlient = 0, uhikuHindKlient = 0;
-        String tootePiltUrl;
+        String tootePiltUrl, tooteKood;
         for (Element toode : lapsed) {
             tooteNimi = toode.select("[data-test-id='product-card__productName'] span").text();
 
-            tootePiltUrl = toode.select("[data-test-id='product-card__productImage'] > img").attr("srcset").split(" ")[0];
+            tootePiltUrl = toode
+                    .select("[data-test-id='product-card__productImage'] > img")
+                    .attr("srcset")
+                    .split(" ")[0];
+            tooteKood = toode.select("article").attr("data-product-id");
 
             // Elements tooted sisaldab mõningaid üleliigseid ridu, skipin need
             if (tooteNimi.isEmpty()) continue;
@@ -128,10 +132,10 @@ public class PrismaScraper extends WebScraper {
                     .text().split(" ")[0]
                     .replace("~", "")
                     .replace("umbes", "")
-                            .replace("Umbes", "")
+                    .replace("Umbes", "")
                     .replace(",", "."));
 
-            Elements uhikuHindElement = hinnaInfo.select("[data-test-id='product-card__productPrice__comparisonPrice']");
+            Elements uhikuHindElement = hinnaInfo.select("[data-test-id='product-card__product-price__comparisonPrice']");
             if (!uhikuHindElement.isEmpty() && uhikuHindElement.text().split(" ")[1].split("/").length > 1) {
                 String[] uhikuHinnaInfo = uhikuHindElement.text().split(" ");
                 uhikuHind = uhikuHindKlient = Double.parseDouble(uhikuHinnaInfo[0].replace(",", "."));
@@ -154,7 +158,8 @@ public class PrismaScraper extends WebScraper {
                     poodRepository.findPoodByNimi("Prisma"),
                     uhikuHind,
                     tkHind,
-                    tootePiltUrl);
+                    tootePiltUrl,
+                    tooteKood);
             tooted.add(uusToode);
         }
     }

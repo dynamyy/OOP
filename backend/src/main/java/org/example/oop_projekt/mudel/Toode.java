@@ -66,6 +66,11 @@ public class Toode {
     )
     private String tootePiltURL;
 
+    @Column(
+            name = "toote_kood"
+    )
+    private String tooteKood;
+
     @ManyToOne
     @JoinColumn(name = "pood_id")
     private Pood pood;
@@ -77,7 +82,8 @@ public class Toode {
                  Pood pood,
                  double hulgaHind,
                  double tukiHind,
-                 String tootePiltURL) {
+                 String tootePiltURL,
+                 String tooteKood) {
         this.nimetus = nimetus;
         this.yhik = yhik;
         this.hindKliendi = hindKliendi;
@@ -86,6 +92,7 @@ public class Toode {
         this.hulgaHind = hulgaHind;
         this.tukiHind = tukiHind;
         this.tootePiltURL = tootePiltURL;
+        this.tooteKood = tooteKood;
     }
 
     public Toode() {

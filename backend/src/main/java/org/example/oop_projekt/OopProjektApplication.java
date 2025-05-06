@@ -1,5 +1,6 @@
 package org.example.oop_projekt;
 
+import jakarta.transaction.Transactional;
 import org.example.oop_projekt.repository.PoodRepository;
 import org.example.oop_projekt.repository.ToodeRepository;
 import org.example.oop_projekt.teenuskiht.parsimine.*;
@@ -48,12 +49,13 @@ public class OopProjektApplication {
     }
 
     @EventListener(ApplicationReadyEvent.class)
+    @Transactional
     public void initializeApp() throws Exception {
 
         // Scraperite loomine
         List<WebScraper> scraperid = new ArrayList<>();
         //scraperid.add(new CoopScraper(this.poodRepository));
-        //scraperid.add(new PrismaScraper(this.poodRepository));
+//        scraperid.add(new PrismaScraper(this.poodRepository));
         //scraperid.add(new SelverScraper(this.poodRepository));
         //scraperid.add(new BarboraScraper(this.poodRepository));
         //scraperid.add(new RimiScraper(this.poodRepository));

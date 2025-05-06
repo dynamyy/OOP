@@ -196,7 +196,7 @@ public class RimiScraper extends WebScraper {
                             " Ühik: " + yhik +
                             ", Pildi URL:" + pildiURL);
                      */
-                    Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Rimi"), yhikuHind, tykiHind, pildiURL);
+                    Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Rimi"), yhikuHind, tykiHind, pildiURL, "");
                     tooted.add(uusToode);
                 }
 

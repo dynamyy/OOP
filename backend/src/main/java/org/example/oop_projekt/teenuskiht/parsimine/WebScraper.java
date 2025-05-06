@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht.parsimine;
 
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.mudel.Toode;
@@ -47,6 +48,7 @@ public abstract class WebScraper{
     /**
      * Meetod scrape'imisloogika käivitamiseks
      */
+    @Transactional
     abstract List<Toode> scrape(WebDriver chromedriver) throws IOException;
 
     /**
