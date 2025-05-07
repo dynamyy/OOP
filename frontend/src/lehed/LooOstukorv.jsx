@@ -81,9 +81,21 @@ function LooOstukorv() {
         const votmed = Object.keys(marksonad)
 
         if (votmed.length > 0) {
+            const voti = votmed.join("");
             setTooted([]);
             console.log(votmed)
-            setOstukorv({...ostukorv, [votmed[0]]: {"marksonad": marksonad, "kogus": tooteKogus, "ebasobivadTooted": ebasobivadTooted}})
+            if (voti in ostukorv) {
+                const uusKogus = ostukorv[voti].kogus + tooteKogus;
+                setOstukorv({...ostukorv, [voti]: {...ostukorv[voti], "kogus": uusKogus}})
+            }
+            else {
+                setOstukorv({...ostukorv, 
+                    [voti]: {
+                        "marksonad": marksonad, 
+                        "kogus": tooteKogus, 
+                        "ebasobivadTooted": ebasobivadTooted
+                    }})
+            }
             setMarksonad({})
             setTooteKogus(1);
             setEbasobivadTooted([])
@@ -99,6 +111,8 @@ function LooOstukorv() {
             console.log("Ostukorvi loomine nurjus")
         }
     }
+
+    console.log(ostukorv)
 
     function lisaEbasobivToode(e, toode) {
         e.stopPropagation();
@@ -148,7 +162,7 @@ function LooOstukorv() {
                             <div id="tooted-list">
                             {tooted.map(toode => (
                                 <ToodeKaart
-                                    key={toode.tooteNimi}
+                                    key={toode.id}
                                     tooteNimetus={toode.tooteNimi}
                                     tukiHind={toode.tooteTükihind}
                                     uhikuHind={toode.tooteÜhikuHind}
