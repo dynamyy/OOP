@@ -27,6 +27,7 @@ function LooOstukorv() {
     }
 
     async function fetchTooted() {
+
         const vastus = await postMarksonad(marksonad)
 
         if (vastus.ok) {
@@ -37,7 +38,11 @@ function LooOstukorv() {
     }
 
     useEffect(() => {
-        fetchTooted(marksonad)
+        console.log(marksonad)
+        if (Object.keys(marksonad).length > 0) {
+            console.log("Märksõnad saadetud")
+            fetchTooted(marksonad)
+        }
     }, [marksonad])
 
     function lisaMarksona(marksona) {
@@ -60,6 +65,7 @@ function LooOstukorv() {
             return uus;
         }, {});
         setMarksonad(eemaldatud)
+        setTooted([])
     }
 
     function muudaSisalduvust() {
