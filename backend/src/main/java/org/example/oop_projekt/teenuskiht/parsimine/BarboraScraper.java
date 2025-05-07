@@ -150,7 +150,7 @@ public class BarboraScraper extends WebScraper {
                         tykiHind = Double.parseDouble(tykiHindKlientElementTaisosa.text() + "." + tykiHindKlientElementMurdosa.text());
 
                     }catch (Exception e){
-                        System.out.println("Puudub kliendihind");
+                        //System.out.println("Puudub kliendihind");
                     }
 
 
@@ -162,8 +162,6 @@ public class BarboraScraper extends WebScraper {
                             pildiURL = piltElement.attr("data-srcset");
                         }
                     }
-
-
                     /*
                     System.out.println("Nimi: " + tooteNimi +
                             ", tükihind: " + tykiHind +
@@ -174,9 +172,16 @@ public class BarboraScraper extends WebScraper {
                             ", piltURL: " + pildiURL);
                     */
 
-                    Toode uusToode = new Toode(tooteNimi, yhik, kliendiTykiHind, kliendiYhikuHind, poodRepository.findPoodByNimi("Maxima"), yhikuHind, tykiHind, pildiURL, "");
+                    Toode uusToode = new Toode(tooteNimi,
+                            yhik,
+                            kliendiTykiHind,
+                            kliendiYhikuHind,
+                            poodRepository.findPoodByNimi("Maxima"),
+                            yhikuHind,
+                            tykiHind,
+                            pildiURL,
+                            "");
                     tooted.add(uusToode);
-
 
                 }
 
@@ -186,22 +191,5 @@ public class BarboraScraper extends WebScraper {
             //break;//Vaatab ainult 1 alamkategooria, kustuta see ära kui päriselt scrapeda tahad
         }
         return tooted;//Leht tuvastab scraperi, seega tuleks scrapemine teha osade kaupa või leida mõni muu lahendus
-    }
-
-    public static double hindTekstist(String hindStr) {
-        if (hindStr == null || hindStr.isEmpty()) {
-            return 0.0;
-        }
-
-        hindStr = hindStr.replaceAll("[^\\d,\\.]", "");
-
-        hindStr = hindStr.replace(",", ".");
-
-        try {
-            return Double.parseDouble(hindStr);
-        } catch (NumberFormatException e) {
-            System.err.println("Vigane hind: " + hindStr);
-            return 0.0;
-        }
     }
 }

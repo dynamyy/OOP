@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht.äriloogika;
 
+import org.example.oop_projekt.DTO.HinnaMuutusDTO;
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.MärksõnaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
@@ -7,6 +8,9 @@ import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.repository.ToodeRepository;
 import org.springframework.stereotype.Service;
+import org.example.oop_projekt.specifications.ToodeSpecification;
+
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -96,17 +100,32 @@ public class ToodeTeenus {
             punasedTooted.addAll(toodeRepository.leiaToodeNimega(punane));
         }
 
-        // Eemaldame roheliste hulgast need, mis on punastes
-        Set<String> punasteNimed = punasedTooted.stream()
-                .map(ToodeDTO::tooteNimi)
-                .collect(Collectors.toSet());
+        Specification<Toode> spec = Specification
+                .where(ToodeSpecification.nimetusSisaldabKõiki(rohelised))
+                .and(ToodeSpecification.nimetusEiSisaldaÜhtegi(punased));
 
-        List<ToodeDTO> lõplikudTooted = rohelisedTooted.stream()
-                .filter(toode -> !punasteNimed.contains(toode.tooteNimi()))
-                .collect(Collectors.toList());
+        List<Toode> tulemused = toodeRepository.findAll(spec);
 
-        return lõplikudTooted;
+        return tulemused.stream()
+                .map(toode -> new ToodeDTO(
+                        toode.getNimetus(),
+                        toode.getHindKliendi(),
+                        toode.getHulgaHindKliendi(),
+                        toode.getYhik(),
+                        toode.getHulgaHindKliendi() < toode.getHindKliendi() ? "true" : "false",
+                        toode.getPood().getNimi(),
+                        toode.getTootePiltURL()
+                ))
+                .distinct() // eemaldab korduvad elemendid
+                .toList();
 
     }
 
+    /*
+    //Meetod, mille abil saab muuta toote hindu läbi frontendi
+    public void muudaTooteHind(HinnaMuutusDTO hinnaMuutusDTO) {
+        toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
+    }
+
+     */
 }

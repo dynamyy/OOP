@@ -6,7 +6,6 @@ import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/tooted")
