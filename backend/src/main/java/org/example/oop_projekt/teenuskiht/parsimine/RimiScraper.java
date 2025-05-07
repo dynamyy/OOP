@@ -226,9 +226,6 @@ public class RimiScraper extends WebScraper {
             //break; // testimiseks ainult esimene kategooria
         }
 
-
-
-
         return tooted;
     }
 
