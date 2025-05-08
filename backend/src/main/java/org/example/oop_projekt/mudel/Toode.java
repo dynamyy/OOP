@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "Toode")
 @Table(name = "tooted")
 @Getter
@@ -75,6 +78,21 @@ public class Toode {
     @JoinColumn(name = "pood_id")
     private Pood pood;
 
+    @OneToMany(mappedBy = "barboraToode")
+    private List<ToodeOstukorvis> barboraOdavaimadTooted;
+
+    @OneToMany(mappedBy = "coopToode")
+    private List<ToodeOstukorvis> cooopOdavaimadTooted;
+
+    @OneToMany(mappedBy = "rimiToode")
+    private List<ToodeOstukorvis> rimiOdavaimadTooted;
+
+    @OneToMany(mappedBy = "prismaToode")
+    private List<ToodeOstukorvis> prismaOdavaimadTooted;
+
+    @OneToMany(mappedBy = "selverToode")
+    private List<ToodeOstukorvis> selverOdavaimadTooted;
+
     public Toode(String nimetus,
                  String yhik,
                  double hindKliendi,
@@ -85,14 +103,19 @@ public class Toode {
                  String tootePiltURL,
                  String tooteKood) {
         this.nimetus = nimetus;
+        this.tukiHind = tukiHind;
+        this.hulgaHind = hulgaHind;
         this.yhik = yhik;
         this.hindKliendi = hindKliendi;
         this.hulgaHindKliendi = hulgaHindKliendi;
-        this.pood = pood;
-        this.hulgaHind = hulgaHind;
-        this.tukiHind = tukiHind;
         this.tootePiltURL = tootePiltURL;
         this.tooteKood = tooteKood;
+        this.pood = pood;
+        this.barboraOdavaimadTooted = new ArrayList<>();
+        this.cooopOdavaimadTooted = new ArrayList<>();
+        this.rimiOdavaimadTooted = new ArrayList<>();
+        this.prismaOdavaimadTooted = new ArrayList<>();
+        this.selverOdavaimadTooted = new ArrayList<>();
     }
 
     public Toode() {

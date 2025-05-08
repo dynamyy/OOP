@@ -32,31 +32,31 @@ public class ToodeOstukorvis {
     @JoinColumn(name = "ostukorv_id")
     private Ostukorv ostukorv;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(
             name = "coop_toode_id"
     )
     private Toode coopToode;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(
             name = "prisma_toode_id"
     )
     private Toode prismaToode;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(
             name = "barbora_toode_id"
     )
     private Toode barboraToode;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(
             name = "rimi_toode_id"
     )
     private Toode rimiToode;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(
             name = "selver_toode_id"
     )

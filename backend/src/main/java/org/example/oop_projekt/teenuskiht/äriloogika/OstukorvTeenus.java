@@ -15,6 +15,7 @@ import org.example.oop_projekt.repository.TooteMarksonaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 // Teenuseklass, mis sisaldab ostukorviga seotud äriloogikat
@@ -120,9 +121,32 @@ public class OstukorvTeenus {
         List<Kliendikaardid> kliendikaardid = new ArrayList<>();
 
         for (Pood pood : poed) {
-
+            List<ToodeOstukorvis> tootedOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisByOstukorv(ostukorv);
+            for (ToodeOstukorvis ostukorviToode : tootedOstukorvis) {
+                List<MärksõnaDTO> marksonad = new ArrayList<>();
+                for (TooteMarksona tooteMarksona : ostukorviToode.getTooteMarksonad()) {
+                    marksonad.add(new MärksõnaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));
+                }
+                List<Toode> sobivadTooted = toodeTeenus.valitudTootedAndmebaasist(marksonad);
+                Toode odavaimToode = sobivadTooted
+                        .stream()
+                        .filter(t -> t.getPood()
+                                .equals(pood)).toList()
+                        .stream()
+                        .min(Comparator.comparingDouble(Toode::getTukiHind))
+                        .orElse(null);
+                if (odavaimToode != null) {
+                    switch (pood.getNimi().toLowerCase()) {
+                        case "coop" -> ostukorviToode.setCoopToode(odavaimToode);
+                        case "prisma" -> ostukorviToode.setPrismaToode(odavaimToode);
+                        case "barbora" -> ostukorviToode.setBarboraToode(odavaimToode);
+                        case "rimi" -> ostukorviToode.setRimiToode(odavaimToode);
+                        case "selver" -> ostukorviToode.setSelverToode(odavaimToode);
+                    }
+                }
+            }
         }
-
+        ostukorvRepository.save(ostukorv);
     }
 }
 

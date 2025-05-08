@@ -22,6 +22,6 @@ public class KuvaTootedAPI {
     // Kasutame toodete kuvamiseks kasutajale
     @PostMapping
     public List<ToodeDTO> kuvaTooted(@RequestBody List<MärksõnaDTO> märksõnad){
-        return toodeTeenus.valitudTootedAndmebaasist(märksõnad);
+        return toodeTeenus.tootedDTOdeks(toodeTeenus.valitudTootedAndmebaasist(märksõnad));
     }
 }

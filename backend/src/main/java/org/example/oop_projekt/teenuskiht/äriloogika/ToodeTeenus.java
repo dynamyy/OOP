@@ -1,6 +1,5 @@
 package org.example.oop_projekt.teenuskiht.äriloogika;
 
-import org.example.oop_projekt.DTO.HinnaMuutusDTO;
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.MärksõnaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
@@ -13,7 +12,6 @@ import org.example.oop_projekt.specifications.ToodeSpecification;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -75,7 +73,7 @@ public class ToodeTeenus {
     }
 
     // Meetod, mis kuvab kasutajale valitud märksõnaga tooted
-    public List<ToodeDTO> valitudTootedAndmebaasist(List<MärksõnaDTO> märksõnad) {
+    public List<Toode> valitudTootedAndmebaasist(List<MärksõnaDTO> märksõnad) {
         List<String> rohelised = new ArrayList<>();
         List<String> punased = new ArrayList<>();
 
@@ -106,7 +104,11 @@ public class ToodeTeenus {
 
         List<Toode> tulemused = toodeRepository.findAll(spec);
 
-        return tulemused.stream()
+        return tulemused;
+    }
+
+    public List<ToodeDTO> tootedDTOdeks(List<Toode> tooted) {
+        return tooted.stream()
                 .map(toode -> new ToodeDTO(
                         toode.getId(),
                         toode.getNimetus(),
@@ -119,7 +121,6 @@ public class ToodeTeenus {
                 ))
                 .distinct() // eemaldab korduvad elemendid
                 .toList();
-
     }
 
     /*

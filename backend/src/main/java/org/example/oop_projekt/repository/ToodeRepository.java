@@ -27,7 +27,6 @@ public interface ToodeRepository extends JpaRepository<Toode, Long>, JpaSpecific
 
     List<ToodeDTO> leiaToodeNimega(@Param("nimetus") String nimetus);
 
-
     /*
     @Modifying
     @Transactional
