@@ -205,12 +205,6 @@
     width: 10px;
 }
 
-
-#ostukorv-konteiner {
-    height: 80%;
-    width: 0%;
-}
-
 .toode-kaart-ikoon {
     font-size: xx-large;
     color: #5050504b;
@@ -230,4 +224,51 @@
 
 .poora-45 {
     transform: rotate(45deg) translateX(4px);
+}
+
+
+
+
+
+.ostukorv-konteiner-1 {
+    max-height: 100%;
+    width: fit-content;
+    min-width: 20rem;
+    padding: 1.5rem;
+}
+
+.ostukorv-konteiner-1 > span {
+    font-size: x-large;
+    font-weight: 700;
+}
+
+.ostukorv-list {
+    display: flex;
+    max-height: 40vh;
+    flex-direction: column;
+    padding: 1rem;
+    padding-left: 0.5rem;
+    overflow-y: auto;
+    gap: 1rem;
+}
+
+.ostukorv-list-toode {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: large;
+}
+
+.ostukorv-list-toode span:hover {
+    text-decoration: line-through;
+    cursor: pointer;
+    text-decoration-color: #DFD0B8;
+}
+
+.ostukorv-ikoon:hover {
+    cursor: pointer;
+    opacity: 0.8;
+    transform: scale(1.1);
+    transition: transform 0.2s;  
 }

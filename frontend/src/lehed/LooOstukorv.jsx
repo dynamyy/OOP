@@ -8,6 +8,7 @@ import selverLogo from '../staatiline/logod/selver.png';
 import rimiLogo from '../staatiline/logod/rimi.png';
 import prismaLogo from '../staatiline/logod/prisma.png';
 import MarksonadeLisamine from '../komponendid/MarksonadeLisamine';
+import OstukorviToodeKaart from '../komponendid/OstukorviToodeKaart';
 
 function LooOstukorv() {
 
@@ -38,7 +39,6 @@ function LooOstukorv() {
     }
 
     useEffect(() => {
-        console.log(marksonad)
         if (Object.keys(marksonad).length > 0) {
             console.log("Märksõnad saadetud")
             fetchTooted(marksonad)
@@ -89,7 +89,6 @@ function LooOstukorv() {
         if (votmed.length > 0) {
             const voti = votmed.join("");
             setTooted([]);
-            console.log(votmed)
             if (voti in ostukorv) {
                 const uusKogus = ostukorv[voti].kogus + tooteKogus;
                 setOstukorv({...ostukorv, [voti]: {...ostukorv[voti], "kogus": uusKogus}})
@@ -106,6 +105,20 @@ function LooOstukorv() {
             setTooteKogus(1);
             setEbasobivadTooted([])
         }
+    }
+
+    function eemaldaOstukorvist(voti) {
+        const uusOstukorv = {...ostukorv}
+        console.log(voti)
+        delete uusOstukorv[voti];
+        setOstukorv(uusOstukorv);
+    }
+
+    function muudaToode(toode) {
+        setMarksonad(toode.marksonad)
+        setTooteKogus(toode.kogus)
+        setEbasobivadTooted(toode.ebasobivadTooted)
+        eemaldaOstukorvist(Object.keys(toode.marksonad).join(""))
     }
 
     function looOstukorv(ostukorv) {
@@ -160,6 +173,22 @@ function LooOstukorv() {
                             <button className='nupp hele-tekst tume' id='sisalduvus' onClick={() => lisaOstukorvi(marksonad)}>Lisa toode</button>
                         </div>
                     </div>
+                    <div className="ostukorv-konteiner-1 tume umar-nurk">
+                        <span className="hele-tekst">Ostukorv</span>
+                        <div className="ostukorv-list">
+                            {Object.entries(ostukorv).map(([voti, toode]) => (
+                                <OstukorviToodeKaart
+                                    key={voti}
+                                    voti={voti}
+                                    toode={toode}
+                                    kogus={toode.kogus}
+                                    eemaldaOstukorvist={eemaldaOstukorvist}
+                                    muudaToode={muudaToode}
+                                />
+                            ))}
+                        </div>
+                        <button className='nupp hele-tekst tume2' onClick={() => looOstukorv(ostukorv)}>Loo ostukorv</button>
+                    </div>
                 </div>
                 <div id="tooted-list-konteiner">
                     <div className="teksti-paar">
@@ -183,9 +212,6 @@ function LooOstukorv() {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="ostukorv-konteiner">
-
                 </div>
             </div>
         </>

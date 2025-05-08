@@ -8,11 +8,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,8 +26,9 @@ public class PrismaScraper extends WebScraper {
 
     private final PoodRepository poodRepository;
     private String url;
-    private Document doc;
     private WebDriver driver;
+    private WebDriverWait driverWait;
+    private int toodeteArv;
 
     public PrismaScraper(PoodRepository poodRepository) {
         super("Prisma");
@@ -41,11 +46,6 @@ public class PrismaScraper extends WebScraper {
         // Ootan kuni leht laeb, et ei tekiks vigu
         ootaLeheLaadimist("[data-test-id='product-list'] > div");
 
-        // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
-        WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector("[data-test-id='product-result-total']"));
-        // Üleliigne tekst eemaldatakse split meetodiga
-        int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
-
         scrolliLeheLoppu(toodeteArv, "[data-test-id='product-list-item']");
 
         return chromedriver.getPageSource();
@@ -60,10 +60,8 @@ public class PrismaScraper extends WebScraper {
         List<WebElement> kategooriad = driver.findElements(By.cssSelector("[data-test-id='product-result-filter']"));
 
         for (WebElement kategooria : kategooriad) {
-            System.out.println(kategooria.getText());
             URLd.add(kategooria.getAttribute("href"));
         }
-        System.out.println(URLd);
         return URLd;
     }
 
@@ -72,26 +70,38 @@ public class PrismaScraper extends WebScraper {
         setChromedriver(chromedriver);
         driver = chromedriver;
         List<Toode> tooted = new ArrayList<>();
-        scrapeRek(tooted, url, chromedriver);
+        JavascriptExecutor jsExec = (JavascriptExecutor) chromedriver;
+        scrapeRek(tooted, url, chromedriver, jsExec);
         return tooted;
     }
 
-    public void scrapeRek(List<Toode> tooted, String uusUrl, WebDriver chromedriver) {
+    public void scrapeRek(List<Toode> tooted, String uusUrl, WebDriver chromedriver, JavascriptExecutor jsExec) {
 
         getUrl(uusUrl);
-        ootaLeheLaadimist("[data-test-id='product-list'] > div");
+        toodeteArv = 0;
+//        int algusPos = 0;
+//        int loppPos = 20;
+//        while (toodeteArv == 0) {
+//            jsExec.executeScript("window.scrollBy(0, )");
+//            ootaLeheLaadimist("[data-test-id='product-list'] > div");
+//        }
+        driverWait = new WebDriverWait(chromedriver, Duration.ofSeconds(60));
+        driverWait.until(driver -> !driver
+                .findElement(By.cssSelector("[data-test-id='product-result-total']"))
+                .getText().trim().isEmpty());
         WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector("[data-test-id='product-result-total']"));
-        int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
+        System.out.println(tootearvuSilt.getText());
+        toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
         if (toodeteArv > 5000) {
             List<String> URLd = URLiKirjed();
 
             for (String u : URLd) {
-                scrapeRek(tooted, u, chromedriver);
+                scrapeRek(tooted, u, chromedriver, jsExec);
             }
         } else {
             url = uusUrl;
-            doc = Jsoup.parse(hangiDynamicSource());
+            Document doc = Jsoup.parse(hangiDynamicSource());
             scrapeLehekülg(tooted, doc);
         }
     }
@@ -139,7 +149,7 @@ public class PrismaScraper extends WebScraper {
             if (!uhikuHindElement.isEmpty() && uhikuHindElement.text().split(" ")[1].split("/").length > 1) {
                 String[] uhikuHinnaInfo = uhikuHindElement.text().split(" ");
                 uhikuHind = uhikuHindKlient = Double.parseDouble(uhikuHinnaInfo[0].replace(",", "."));
-                uhik = uhikuHinnaInfo[1].split("/")[1];
+                uhik = uhikuHinnaInfo[1].split("/")[1].replace("Võrdlushind", "");
             }
 
             Elements soodukaTavahindElement = hinnaInfo.select("[data-test-id='product-price__lowest30DayPrice']");

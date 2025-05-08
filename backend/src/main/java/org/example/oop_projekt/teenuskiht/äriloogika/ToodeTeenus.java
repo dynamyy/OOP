@@ -108,6 +108,7 @@ public class ToodeTeenus {
 
         return tulemused.stream()
                 .map(toode -> new ToodeDTO(
+                        toode.getId(),
                         toode.getNimetus(),
                         toode.getHindKliendi(),
                         toode.getHulgaHindKliendi(),

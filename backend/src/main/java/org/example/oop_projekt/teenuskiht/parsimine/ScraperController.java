@@ -81,7 +81,7 @@ public class ScraperController{
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
 
-        //return new chromeDriver(options); //Peidetud
+        //return new ChromeDriver(options); //Peidetud
         return new ChromeDriver(); //Mittepeidetud
     }
 }

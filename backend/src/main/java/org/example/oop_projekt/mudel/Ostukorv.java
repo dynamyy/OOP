@@ -26,6 +26,12 @@ public class Ostukorv {
     )
     private long id;
 
+    @Column(
+            name = "nimi",
+            nullable = false
+    )
+    private String nimi;
+
     @ManyToOne
     @JoinColumn(name = "kasutaja_id")
     private Kasutaja kasutaja;

@@ -118,11 +118,8 @@ public class OstukorvTeenus {
             for (EbasobivToodeDTO ebasobivToode : toode.ebasobivadTooted()) {
                 EbasobivToode uusEbasobivToode = new EbasobivToode(
                         uusToodeOstukorvis,
-                        toodeRepository.findToodeByNimetusAndPood(
-                                ebasobivToode.nimetus(),
-                                poodRepository.findPoodByNimi(ebasobivToode.pood())
-                        )
-                );
+                        toodeRepository.findToodeById(ebasobivToode.id())
+                        );
                 ebasobivToodeRepository.save(uusEbasobivToode);
             }
 
