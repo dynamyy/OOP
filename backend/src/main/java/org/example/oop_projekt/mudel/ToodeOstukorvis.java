@@ -62,7 +62,7 @@ public class ToodeOstukorvis {
     )
     private Toode selverToode;
 
-    @OneToMany(mappedBy = "toodeOstukorvis")
+    @OneToMany(mappedBy = "toodeOstukorvis", cascade = CascadeType.ALL)
     private List<TooteMarksona> tooteMarksonad;
 
     @Column(
@@ -70,15 +70,35 @@ public class ToodeOstukorvis {
     )
     private Integer kogus;
 
-    @OneToMany(mappedBy = "toodeOstukorvis")
+    @ManyToMany(mappedBy = "tootedOstukorvis", cascade = CascadeType.ALL)
     private List<EbasobivToode> ebasobivadTooted;
 
-    public ToodeOstukorvis(Ostukorv ostukorv,
-                           List<TooteMarksona> tooteMarksonad,
-                           Integer kogus) {
+    public ToodeOstukorvis(
+            Ostukorv ostukorv,
+            Toode coopToode,
+            Toode prismaToode,
+            Toode barboraToode,
+            Toode rimiToode,
+            List<TooteMarksona> tooteMarksonad,
+            Integer kogus,
+            List<EbasobivToode> ebasobivadTooted,
+            Toode selverToode) {
+        this.ostukorv = ostukorv;
+        this.coopToode = coopToode;
+        this.prismaToode = prismaToode;
+        this.barboraToode = barboraToode;
+        this.rimiToode = rimiToode;
+        this.tooteMarksonad = tooteMarksonad;
+        this.kogus = kogus;
+        this.ebasobivadTooted = ebasobivadTooted;
+        this.selverToode = selverToode;
+    }
+
+    public ToodeOstukorvis(Ostukorv ostukorv, List<TooteMarksona> tooteMarksonad, Integer kogus, List<EbasobivToode> ebasobivadTooted) {
         this.ostukorv = ostukorv;
         this.tooteMarksonad = tooteMarksonad;
         this.kogus = kogus;
+        this.ebasobivadTooted = ebasobivadTooted;
     }
 
     public ToodeOstukorvis() {

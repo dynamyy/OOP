@@ -3,6 +3,7 @@ package org.example.oop_projekt.teenuskiht.äriloogika;
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.EbasobivToodeDTO;
 import org.example.oop_projekt.DTO.MärksõnaDTO;
+import org.example.oop_projekt.DTO.OstukorvDTO;
 import org.example.oop_projekt.DTO.ToodeOstukorvisDTO;
 import org.example.oop_projekt.mudel.*;
 import org.example.oop_projekt.repository.EbasobivToodeRepository;
@@ -42,31 +43,6 @@ public class OstukorvTeenus {
         this.ebasobivToodeRepository = ebasobivToodeRepository;
     }
 
-//    // Meetod, mis lisab antud toote ostukorvi
-//    @Transactional // Annotatsioon selleks, et kõik andmebaasi muudatused toimuksid korraga
-//    public void lisaToodeOstukorvi(Ostukorv ostukorv, Toode toode) {
-//
-//        // Võetakse olemasolev tootenimekiri ostukorvist
-//        List<ToodeOstukorvis> tootedOstukorvis = ostukorv.getTootedOstukorvis();
-//
-//        // Kontrollitakse, kas see toode on juba ostukorvis olemas
-//        ToodeOstukorvis toodeOstukorvis = toodeOstukorvisRepository
-//                .findToodeOstukorvisByToodeAndOstukorv(toode, ostukorv);
-//
-//        if (toodeOstukorvis == null) {
-//            // Kui toodet pole veel korvis: luuakse uus ToodeOstukorvis objekt
-//            ToodeOstukorvis uusToode = new ToodeOstukorvis(ostukorv, toode, 1);
-//            tootedOstukorvis.add(uusToode); // Lisatakse ostukorvi tootenimekirja
-//            ostukorv.setTootedOstukorvis(tootedOstukorvis); // Uuendatakse ostukorvi
-//            toodeOstukorvisRepository.save(uusToode); // Salvestatakse andmebaasi
-//        } else {
-//            // Kui toode on juba olemas, suurendatakse kogust
-//            Integer kogus = toodeOstukorvis.getKogus();
-//            toodeOstukorvis.setKogus(kogus + 1);
-//            toodeOstukorvisRepository.save(toodeOstukorvis); // Salvestatakse uuendatud kogus
-//        }
-//    }
-
     // Meetod, mis vähendab antud toodete arvu ostukorvis sisendarvu võrra
     @Transactional // Annotatsioon selleks, et kõik andmebaasi muudatused toimuksid korraga
     public void muudaKogust(Ostukorv ostukorv, ToodeOstukorvis toodeOstukorvis, int toodeteArv) {
@@ -90,42 +66,47 @@ public class OstukorvTeenus {
         }
     }
 
-    /**
-     * Loob uue ostukorvi koos toodete, märksõnade ja ebasobivate toodetega.
-     *
-     * @param tooted List {@link ToodeOstukorvisDTO} tüüpi andmeobjekte, mis sisaldavad kasutaja valitud tooteid ja nende seoseid.
-     * @return Salvestatud {@link Ostukorv} objekt koos kõigi seotud andmetega (tooted, märksõnad, ebasobivad tooted).
-     */
+
     @Transactional
-    public Ostukorv looOstukorv(List<ToodeOstukorvisDTO> tooted) {
+    public Ostukorv looOstukorv(OstukorvDTO ostukorv) {
 
         List<ToodeOstukorvis> tootedOstukorvis = new ArrayList<>(); // List, kuhu kõik uued tooted salvestatakse
-        Ostukorv ostuKorv = new Ostukorv(tootedOstukorvis);
+        Ostukorv ostuKorv = new Ostukorv(ostukorv.nimi(), tootedOstukorvis);
 
-        for (ToodeOstukorvisDTO toode : tooted) {
-            ToodeOstukorvis uusToodeOstukorvis = new ToodeOstukorvis();
+        for (ToodeOstukorvisDTO toode : ostukorv.tooted()) {
+            ToodeOstukorvis uusToodeOstukorvis = new ToodeOstukorvis(
+                    ostuKorv,
+                    new ArrayList<>(),
+                    Integer.valueOf(toode.tooteKogus()),
+                    new ArrayList<>());
+            ostuKorv.getTootedOstukorvis().add(uusToodeOstukorvis);
 
-            // Kõik märksõnad lisatakse andmebaasi
+            // Kõik uue toote märksõnad lisatakse andmebaasi
             for (MärksõnaDTO marksona : toode.marksonad()) {
                 TooteMarksona uusMarksona = new TooteMarksona(
                         marksona.märksõna(),
                         uusToodeOstukorvis,
                         marksona.valikuVärv());
-                tooteMarksonaRepository.save(uusMarksona);
+                uusToodeOstukorvis.getTooteMarksonad().add(uusMarksona);
             }
 
-            // Kõik ebasobivad tooted lisatakse andmebaasi
+            // Kõik uue toote ebasobivad tooted lisatakse andmebaasi
             for (EbasobivToodeDTO ebasobivToode : toode.ebasobivadTooted()) {
-                EbasobivToode uusEbasobivToode = new EbasobivToode(
-                        uusToodeOstukorvis,
-                        toodeRepository.findToodeById(ebasobivToode.id())
-                        );
-                ebasobivToodeRepository.save(uusEbasobivToode);
+                EbasobivToode dbEbasobivToode = ebasobivToodeRepository
+                        .findByToode(toodeRepository.findToodeById(Long.parseLong(ebasobivToode.id())));
+                if (dbEbasobivToode == null) {
+                    List<ToodeOstukorvis> tootedOstukorvisEST = new ArrayList<>();
+                    tootedOstukorvisEST.add(uusToodeOstukorvis);
+                    EbasobivToode uusEbasobivToode = new EbasobivToode(
+                            tootedOstukorvisEST,
+                            toodeRepository.findToodeById(Long.parseLong(ebasobivToode.id()))
+                    );
+                    uusToodeOstukorvis.getEbasobivadTooted().add(uusEbasobivToode);
+                } else {
+                    uusToodeOstukorvis.getEbasobivadTooted().add(dbEbasobivToode);
+                }
             }
-
-            toodeOstukorvisRepository.save(uusToodeOstukorvis);
         }
-
         ostukorvRepository.save(ostuKorv);
         uuendaHindu(ostuKorv);
 
@@ -137,6 +118,10 @@ public class OstukorvTeenus {
 
         List<Pood> poed = poodRepository.findAll();
         List<Kliendikaardid> kliendikaardid = new ArrayList<>();
+
+        for (Pood pood : poed) {
+
+        }
 
     }
 }

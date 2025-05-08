@@ -19,6 +19,7 @@ function LooOstukorv() {
     const [tooted, setTooted] = useState([])
     const [ostukorv, setOstukorv] = useState({})
     const [ebasobivadTooted, setEbasobivadTooted] = useState([])
+    const [ostukorviNimi, setOstukorviNimi] = useState('Ostukorv')
     const logod = {
         Prisma: prismaLogo,
         Selver: selverLogo,
@@ -90,14 +91,14 @@ function LooOstukorv() {
             const voti = votmed.join("");
             setTooted([]);
             if (voti in ostukorv) {
-                const uusKogus = ostukorv[voti].kogus + tooteKogus;
-                setOstukorv({...ostukorv, [voti]: {...ostukorv[voti], "kogus": uusKogus}})
+                const uusKogus = ostukorv[voti].tooteKogus + tooteKogus;
+                setOstukorv({...ostukorv, [voti]: {...ostukorv[voti], "tooteKogus": uusKogus}})
             }
             else {
                 setOstukorv({...ostukorv, 
                     [voti]: {
                         "marksonad": marksonad, 
-                        "kogus": tooteKogus, 
+                        "tooteKogus": tooteKogus, 
                         "ebasobivadTooted": ebasobivadTooted
                     }})
             }
@@ -109,20 +110,36 @@ function LooOstukorv() {
 
     function eemaldaOstukorvist(voti) {
         const uusOstukorv = {...ostukorv}
-        console.log(voti)
         delete uusOstukorv[voti];
         setOstukorv(uusOstukorv);
     }
 
     function muudaToode(toode) {
         setMarksonad(toode.marksonad)
-        setTooteKogus(toode.kogus)
+        setTooteKogus(toode.tooteKogus)
         setEbasobivadTooted(toode.ebasobivadTooted)
         eemaldaOstukorvist(Object.keys(toode.marksonad).join(""))
     }
 
-    function looOstukorv(ostukorv) {
-        const vastus = postOstukorv(ostukorv);
+    function looOstukorv(nimi, tooted) {
+
+        if (nimi === "" || Object.values(tooted).length === 0) {
+            console.log("Ostukorvi loomine nurjus")
+            return;
+        }
+
+        const vormindatudTooted = Object.values(tooted).map(toode => ({
+            ...toode,
+            marksonad: Object.entries(toode.marksonad).map(([märksõna, valikuVärv]) => ({
+                märksõna,
+                valikuVärv
+            })),
+            ebasobivadTooted: toode.ebasobivadTooted.map(id => ({
+                id
+            }))
+        }))
+
+        const vastus = postOstukorv(nimi, vormindatudTooted);
 
         if (vastus.ok) {
             console.log("Ostukorv loodud")
@@ -131,20 +148,20 @@ function LooOstukorv() {
         }
     }
 
-    console.log(ostukorv)
-
-    function lisaEbasobivToode(e, toode) {
+    function lisaEbasobivToode(e, toodeId) {
         e.stopPropagation();
         const nupp = e.currentTarget.closest(".toode-kaart-ikoon");
         nupp.classList.toggle("poora-45")
         const emaDiv = e.currentTarget.closest(".toode-kaart-konteiner");
         emaDiv.classList.toggle("ebasobiv-toode");
 
+        console.log(toodeId)
+        
         setEbasobivadTooted(prev => {
-            if (prev.includes(toode)) {
-                return prev.filter(t => t !== toode);
+            if (prev.includes(toodeId)) {
+                return prev.filter(t => t !== toodeId);
             } else {
-                return [...prev, toode];
+                return [...prev, toodeId];
             }
         })
     }
@@ -181,13 +198,13 @@ function LooOstukorv() {
                                     key={voti}
                                     voti={voti}
                                     toode={toode}
-                                    kogus={toode.kogus}
+                                    kogus={toode.tooteKogus}
                                     eemaldaOstukorvist={eemaldaOstukorvist}
                                     muudaToode={muudaToode}
                                 />
                             ))}
                         </div>
-                        <button className='nupp hele-tekst tume2' onClick={() => looOstukorv(ostukorv)}>Loo ostukorv</button>
+                        <button className='nupp hele-tekst tume2' onClick={() => looOstukorv(ostukorviNimi, ostukorv)}>Loo ostukorv</button>
                     </div>
                 </div>
                 <div id="tooted-list-konteiner">
@@ -198,6 +215,7 @@ function LooOstukorv() {
                             {tooted.map(toode => (
                                 <ToodeKaart
                                     key={toode.id}
+                                    id={toode.id}
                                     tooteNimetus={toode.tooteNimi}
                                     tukiHind={toode.tooteTükihind}
                                     uhikuHind={toode.tooteÜhikuHind}

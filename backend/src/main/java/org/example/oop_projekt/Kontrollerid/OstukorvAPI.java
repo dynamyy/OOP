@@ -1,6 +1,7 @@
 package org.example.oop_projekt.Kontrollerid;
 
 
+import org.example.oop_projekt.DTO.OstukorvDTO;
 import org.example.oop_projekt.DTO.ToodeOstukorvisDTO;
 import org.example.oop_projekt.teenuskiht.äriloogika.OstukorvTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/ostukorv")
-@CrossOrigin(origins = "http://localhost:5137")
+@CrossOrigin(origins = "http://localhost:5173")
 public class OstukorvAPI {
 
     private OstukorvTeenus ostukorvTeenus;
@@ -29,9 +30,9 @@ public class OstukorvAPI {
     //Selle kaudu saab lõpuks ostukorvi välja arvutada
     //Sisendiks on hetkel märksõnad ja nende tõeväärtus, ilmselt peab seda hiljem muutma Märksõnade DTO-ks
     @PostMapping
-    public ResponseEntity<?> getOstukorv(@RequestBody List<ToodeOstukorvisDTO> tootedOstukorvis){//Java teisendab automaatselt jsoni DTO-ks
+    public ResponseEntity<?> getOstukorv(@RequestBody OstukorvDTO ostukorv){//Java teisendab automaatselt jsoni DTO-ks
         try {
-            ostukorvTeenus.looOstukorv(tootedOstukorvis);
+            ostukorvTeenus.looOstukorv(ostukorv);
             return ResponseEntity.ok(Map.of("sonum", "Ostukorv edukalt loodud"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sonum", e.getMessage()));

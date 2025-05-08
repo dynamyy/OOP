@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "EbasobivToode")
 @Table(name = "ebasobivad_tooted")
 @Getter
@@ -26,9 +29,13 @@ public class EbasobivToode {
     )
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "toode_ostukorvis_id")
-    private ToodeOstukorvis toodeOstukorvis;
+    @ManyToMany
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "ebasobiv_toode_id"),
+            inverseJoinColumns = @JoinColumn(name = "toode_ostukorvis_id"),
+            name = "toode_ostukorvis_ebasobiv_toode_tabel"
+    )
+    private List<ToodeOstukorvis> tootedOstukorvis;
 
     @OneToOne
     @JoinColumn(
@@ -36,8 +43,8 @@ public class EbasobivToode {
     )
     private Toode toode;
 
-    public EbasobivToode(ToodeOstukorvis toodeOstukorvis, Toode toode) {
-        this.toodeOstukorvis = toodeOstukorvis;
+    public EbasobivToode(List<ToodeOstukorvis> tootedOstukorvis, Toode toode) {
+        this.tootedOstukorvis = tootedOstukorvis;
         this.toode = toode;
     }
 

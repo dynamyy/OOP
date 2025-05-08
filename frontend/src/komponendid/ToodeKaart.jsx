@@ -9,7 +9,7 @@ function ToodeKaart(props) {
         <div>
             <div className="toode-kaart-konteiner umar-nurk">
                 <div className="toode-kaart-pilt-konteiner">
-                    <FontAwesomeIcon icon={faXmarkCircle} className='ikoon toode-kaart-ikoon' onClick={(e) => props.lisaEbasobivToode(e, props.toode)} />
+                    <FontAwesomeIcon icon={faXmarkCircle} className='ikoon toode-kaart-ikoon' onClick={(e) => props.lisaEbasobivToode(e, props.id)} />
                     <div>
                         <img src={props.toodeUrl ? props.toodeUrl : standardPilt} alt="pilt" className={props.toodeUrl ? "toode-pilt" : "toode-pilt-standard"} />
                     </div>

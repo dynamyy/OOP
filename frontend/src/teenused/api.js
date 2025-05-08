@@ -112,12 +112,13 @@ export const postMarksonad = async (marksonad) => {
     }
 }
 
-export const postOstukorv = async (ostukorv) => {
+export const postOstukorv = async (nimi, tooted) => {
+    console.log({"nimi": nimi, "tooted": tooted})
     try {
         const vastus = await fetch(`${BAAS_URL}/ostukorv`, {
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            body: JSON.stringify(ostukorv)
+            body: JSON.stringify({"nimi": nimi, "tooted": tooted})
         })
 
         const sonum = await vastus.json();

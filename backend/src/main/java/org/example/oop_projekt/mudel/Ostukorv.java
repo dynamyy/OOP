@@ -36,10 +36,11 @@ public class Ostukorv {
     @JoinColumn(name = "kasutaja_id")
     private Kasutaja kasutaja;
 
-    @OneToMany(mappedBy = "ostukorv")
+    @OneToMany(mappedBy = "ostukorv", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ToodeOstukorvis> tootedOstukorvis;
 
-    public Ostukorv(List<ToodeOstukorvis> tootedOstukorvis) {
+    public Ostukorv(String nimi, List<ToodeOstukorvis> tootedOstukorvis) {
+        this.nimi = nimi;
         this.tootedOstukorvis = tootedOstukorvis;
     }
 
