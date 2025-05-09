@@ -1,40 +1,42 @@
 package org.example.oop_projekt.teenuskiht.parsimine;
 
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
+import org.example.oop_projekt.Erindid.TuhiElementideTagastusException;
 import org.example.oop_projekt.repository.PoodRepository;
 import org.example.oop_projekt.mudel.Toode;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * COOPi epoe scraper. Kuna COOP on vaikselt oma
  * epoe teenust teistele ettevõtetele nagu Bolt ja Wolt
  * üle kandnud, siis tuleb andmeid lugeda Hiiumaa epoest.
  * (Boltis ja Woltis pakutakse väga väheseid tooteid)
- *
  * Hiiumaa eCOOPi koduleht:
- * https://hiiumaa.ecoop.ee/et
+ * <a href="https://hiiumaa.ecoop.ee/et">https://hiiumaa.ecoop.ee/et</a>
  */
 @Service
 public class CoopScraper extends WebScraper {
 
     private final PoodRepository poodRepository;
     private final String url;
+    private final Logger logger;
 
     public CoopScraper(PoodRepository poodRepository) {
         super("COOP");
         url = "https://hiiumaa.ecoop.ee/et/tooted";
         this.poodRepository = poodRepository;
+        this.logger = LoggerFactory.getLogger(CoopScraper.class);
     }
 
     @Override
@@ -48,14 +50,15 @@ public class CoopScraper extends WebScraper {
         ootaLeheLaadimist("span.option:nth-child(1)");
 
         // Vajutab nuppu "Ühel lehel", et kuvataks kõik tooted
-        chromedriver.findElement(By.cssSelector("span.option:nth-child(1)")).click();
+        leiaElement("span.option:nth-child(1)").click();
 
         // Loeb mitu toodet lehel on, et teada kui kaua peaks lehel alla scrollima
-        WebElement tootearvuSilt = chromedriver.findElement(By.cssSelector(".count"));
+        WebElement tootearvuSilt = leiaElement(".count");
+
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        scrolliLeheLoppu(toodeteArv, "app-product-card.item");
+        scrolliLeheLoppu(300, "app-product-card.item");
 
         return chromedriver.getPageSource();
     }
@@ -69,7 +72,13 @@ public class CoopScraper extends WebScraper {
 
         // Saan lähtekoodist kõik toodete elemendid
         Document doc = Jsoup.parse(lahtekood);
-        Elements lapsed = Objects.requireNonNull(doc.select(".products-wrapper").first()).children();
+        Element toodeteWrapper = valiElement(doc, ".products-wrapper").first();
+        Elements lapsed;
+        if (toodeteWrapper != null) {
+            lapsed = toodeteWrapper.children();
+        } else {
+            throw new ScrapeFailedException("Toodete wrapperist ei leitud ühtegi toodet");
+        }
 
         // Ühik määrab, mis ühikutes peaks hiljem ühikuhinda kuvama (l / kg)
         String tooteNimi, uhik, lisaHind, pildiUrl;
@@ -79,29 +88,35 @@ public class CoopScraper extends WebScraper {
         // Kui säästukaardiga erihinda pole (enamasti pole), siis tavakliendi hind == kliendi hind
         double tkHind, uhikuHind, tkHindKlient, uhikuHindKlient;
         for (Element toode : lapsed) {
-            tooteNimi = toode.select(".product-name").text();
+            try {
+                tooteNimi = valiElement(toode, ".product-name").text();
+            } catch (TuhiElementideTagastusException e) {
+                // Elements tooted sisaldab mõningaid üleliigseid ridu, skipin need
+                continue;
+            }
 
-            // Elements tooted sisaldab mõningaid üleliigseid ridu, skipin need
-            if (tooteNimi.isEmpty()) continue;
-
-            pildiUrl = toode.select(".product-img-wp img").attr("src");
+            pildiUrl = valiElement(toode, ".product-img-wp img").attr("src");
 
             // Saan toote tükihinna ja ühikuhinna
             // See hind kehtib kindlasti säästukaardi omanikele.
             // Kui säästukaardiga pole sätestatud erihinda (enamasti pole),
             // siis tavakliendi hind == kliendi hind
-            hindadeList = toode.select("app-price-tag:nth-child(1) > div:nth-child(2)").text().split(" ");
+            hindadeList = valiElement(toode, "app-price-tag:nth-child(1) > div:nth-child(2)").text().split(" ");
 
             // Võimalike lehe muutuste püüdmine
             if (hindadeList.length < 7 && hindadeList.length != 3) {
-                System.out.println("Midagi on valesti. hindadelist liiga lühike");
-                System.out.println("\tToote nimi: " + tooteNimi);
-                System.out.println("\tSaadud hindadelist: " + java.util.Arrays.toString(hindadeList));
+                logger.warn("Midagi on valesti. hindadelist liiga lühike. toote nimi: {}; saadud hindadeList: {}",
+                            tooteNimi, java.util.Arrays.toString(hindadeList));
                 continue;
             }
 
-
-            tkHindKlient = tkHind = Double.parseDouble(hindadeList[0] + "." + hindadeList[1]);
+            try {
+                tkHindKlient = tkHind = Double.parseDouble(hindadeList[0] + "." + hindadeList[1]);
+            } catch (NullPointerException | NumberFormatException e) {
+                logger.warn("Ei saanud teisendada tükihinda arvuks. tootenimi:{}; tkHindKlient:{}; tkHind:{}",
+                        tooteNimi, hindadeList[0], hindadeList[1]);
+                continue;
+            }
 
             // On väga üksikud tooted, millel pole märgitud ühikuhinda
             // Sellisel juhul määran kõik hinnad samaks ja ühikuks tk
@@ -109,13 +124,20 @@ public class CoopScraper extends WebScraper {
                 uhikuHindKlient = uhikuHind = tkHind;
                 uhik = "tk";
             } else {
-                uhikuHindKlient = uhikuHind = Double.parseDouble(hindadeList[3]);
-                uhik = hindadeList[6];
+                try {
+                    uhikuHindKlient = uhikuHind = Double.parseDouble(hindadeList[3]);
+                    uhik = hindadeList[6];
+                }
+                catch (NullPointerException | NumberFormatException e) {
+                    logger.warn("Ei saanud teisendada ühikuhinda arvuks. tootenimi:{}; uhikuHind:{}",
+                            tooteNimi, hindadeList[3]);
+                    continue;
+                }
             }
 
 
             // Kui tootel on säästukaardiga erinev hind, siis tavakliendi hind on märgitud lisa hinnasilti
-            lisaHind = toode.select(".prices-info").text();
+            lisaHind = valiElement(toode, ".prices-info").text();
             if (!lisaHind.isEmpty()) {
                 lisaHindadeList = lisaHind.split(" ");
 
@@ -124,9 +146,8 @@ public class CoopScraper extends WebScraper {
                 if (!lisaHindadeList[1].equals("Pant")) {
                     // Võimalike lehe muutuste püüdmine
                     if (lisaHindadeList.length < 8) {
-                        System.out.println("Midagi on valesti. lisaHindadelist liiga lühike");
-                        System.out.println("\tToote nimi: " + tooteNimi);
-                        System.out.println("\tSaadud lisaHindadelist: " + java.util.Arrays.toString(lisaHindadeList));
+                        logger.warn("Midagi on valesti. lisahindadelist liiga lühike. toote nimi: {}; saadud hindadeList: {}",
+                                tooteNimi, java.util.Arrays.toString(lisaHindadeList));
                         continue;
                     }
 
