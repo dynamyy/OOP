@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface KliendikaardidRepository extends JpaRepository<Kliendikaardid, Long> {
     List<Kliendikaardid> findByKasutajaId(Kasutaja kasutaja);
+    void deleteAllByKasutaja(Kasutaja kasutaja);
 }

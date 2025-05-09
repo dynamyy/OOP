@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface KasutajaRepository extends JpaRepository<Kasutaja, Long> {
     Kasutaja findByEmail(String email);
+    void deleteByEmail(String email);
 }

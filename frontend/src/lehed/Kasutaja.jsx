@@ -10,6 +10,7 @@ function Kasutaja() {
     const [onSisselogitud, setOnSisseLogitud] = useState(false);
     const [kasutaja, setKasutaja] = useState('');
     const [parooliMuutmine, setParooliMuutmine] = useState(false);
+    const [kasutajaKustutamine, setKasutajaKustutamine] = useState(false);
     const [sisselogimiseTeade, setSisselogimiseTeade] = useState('');
     const [vanaParool, setVanaParool] = useState('');
     const[uusParool, setUusParool] = useState('');
@@ -93,6 +94,17 @@ function Kasutaja() {
         }
     }
 
+    async function kustutaKasutaja() {
+        const vastus = await authTeenus.kustutaKasutaja(vanaParool);
+        if (!vastus.ok) {
+            setSisselogimiseTeade(vastus.sonum);
+        } else {
+            setKasutajaKustutamine(false);
+            localStorage.removeItem('AuthToken');
+            setOnSisseLogitud(false);
+        }
+    }
+
     if (parooliMuutmine) {
         return (
         <>
@@ -115,6 +127,34 @@ function Kasutaja() {
                         <input type="password" name='uusParool' className='hele tume-tekst' value={uusParool} onChange={e => setUusParool(e.target.value)} />
                     </div>
                     <button className='nupp tume2 hele-tekst' onClick={() => uuendaParool()}><span>Muuda parool</span></button>
+                    <button className='nupp tume2 hele-tekst' onClick={() => {setParooliMuutmine(false); setVanaParool(""); setUusParool(""); setSisselogimiseTeade("");}}><span>Tagasi</span></button>
+                </div>
+            </div>
+        </>
+        )
+    }
+
+    if (kasutajaKustutamine) {
+        return (
+        <>
+            <Menuu />
+            <div id="sisu" className="hele">
+                <div className="tume umar-nurk hele-tekst" id="s-log">
+                    { sisselogimiseTeade && (
+                    <div className="teade">
+                    {sisselogimiseTeade.split('\n').map((line, i) => (
+                        <p key={i}>{line}</p>
+                    ))}
+                    </div>
+                    )}
+                    <div className="teksti-paar">
+                        <label>Kas oled kindel, et soovid oma kasutaja kustutada?</label>
+                        <label>Seda tegevust ei saa tagasi võtta.</label>
+                        <label>Parool:</label>
+                        <input type="password" name='vanaParool' className='hele tume-tekst' value={vanaParool} onChange={e => setVanaParool(e.target.value)} />
+                    </div>
+                    <button className='nupp punane hele-tekst' onClick={() => kustutaKasutaja()}><span>Kustuta kasutaja</span></button>
+                    <button className='nupp tume2 hele-tekst' onClick={() => {setKasutajaKustutamine(false); setVanaParool(""); setSisselogimiseTeade("");}}><span>Tagasi</span></button>
                 </div>
             </div>
         </>
@@ -140,7 +180,7 @@ function Kasutaja() {
 
                     <div className="samal-real">
                         <button className='nupp tume2 hele-tekst' onClick={() => setParooliMuutmine(prev => !prev)}><span>Muuda parooli</span></button>
-                        <button className='nupp tume2 hele-tekst' onClick={() => console.log("nupp")}><span>Kustuta konto</span></button>
+                        <button className='nupp tume2 hele-tekst' onClick={() => setKasutajaKustutamine(true)}><span>Kustuta konto</span></button>
                     </div>
                 </div>
             </div>

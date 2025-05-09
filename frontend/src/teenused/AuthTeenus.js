@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
-import { verifyToken, getKasutajaAndmed, setKasutajaAndmed } from '../teenused/api'
+import { verifyToken, getKasutajaAndmed, setKasutajaAndmed, kustutaKasutaja } from '../teenused/api'
 
 const AuthTeenus = {
     kasSisselogitud: async function() {
@@ -74,6 +74,11 @@ const AuthTeenus = {
             localStorage.removeItem('AuthToken');
             return {"ok": vastus.ok, "kliendikaardid": new Set()};
         }
+    },
+
+    kustutaKasutaja: async function(parool) {
+        const vastus = await kustutaKasutaja({token: localStorage.getItem('AuthToken'), parool: parool});
+        return {ok: vastus.ok, sonum: vastus.sonum};
     }
 };
 

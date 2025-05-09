@@ -1,9 +1,8 @@
 package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
-import org.example.oop_projekt.DTO.SisseLogimine;
+import org.example.oop_projekt.DTO.KasutajaKustutamineDTO;
 import org.example.oop_projekt.Erindid.AuthException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
-import org.example.oop_projekt.teenuskiht.autentimine.TokenHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,26 +11,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@RequestMapping(path = "/api/kustutaKasutaja")
 @CrossOrigin(origins = "http://localhost:5173")
-@RequestMapping(path = "api/sisse-logimine")
-public class SisseLogimineKontroller {
+public class KasutajaKustutamine {
     private final AuthTeenus authTeenus;
 
     @Autowired
-    public SisseLogimineKontroller(AuthTeenus authTeenus) {
+    public KasutajaKustutamine(AuthTeenus authTeenus) {
         this.authTeenus = authTeenus;
     }
 
     @PostMapping
-    public ResponseEntity<?> kuvaBroneering(@RequestBody SisseLogimine sisselogimisinfo) {
-
+    public ResponseEntity<?> kustuta(@RequestBody KasutajaKustutamineDTO kustutamisandmed) {
         try {
-            String token = authTeenus.logiKasutajaSisse(sisselogimisinfo);
-            return ResponseEntity.ok(Map.of("sonum", "Sisselogimine edukas", "token", token));
+            authTeenus.kustutaKasutaja(kustutamisandmed);
+            return ResponseEntity.ok(Map.of("sonum", "Kasutaja kustutamine edukas"));
         } catch (AuthException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sonum", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sonum", e.getMessage()));
         }
-
     }
-
 }
