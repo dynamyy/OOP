@@ -68,9 +68,11 @@ const AuthTeenus = {
     getKliendikaardid: async function() {
         const vastus = await getKasutajaAndmed(localStorage.getItem('AuthToken'), "kliendikaardid");
         if (vastus.ok) {
-            return new Set(vastus.sonum);
+            return {"ok": vastus.ok, "kliendikaardid": new Set(vastus.sonum)};
         } else {
             console.log("Kasutaja andmete hankimine ebaõnnestus: " + vastus.sonum);
+            localStorage.removeItem('AuthToken');
+            return {"ok": vastus.ok, "kliendikaardid": new Set()};
         }
     }
 };

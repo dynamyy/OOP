@@ -1,4 +1,4 @@
-package org.example.oop_projekt.teenuskiht.äriloogika;
+package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.repository.PoodRepository;

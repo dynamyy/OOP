@@ -4,7 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.mudel.Toode;
-import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;
+import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;

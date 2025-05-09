@@ -96,12 +96,12 @@ public class AuthTeenus {
      */
     public void logiKasutajaSisse(SisseLogimine dto) throws LoginFailException {
         // Sisselogimisandmete olemasolu kontroll
-        if (dto.getEmail().isEmpty() || dto.getParool().isEmpty()) {
+        if (dto.email().isEmpty() || dto.parool().isEmpty()) {
             throw new LoginFailException("Kõik väljad peavad olema täidetud");
         }
 
         // Kasutaja andmed andmebaasist
-        Kasutaja kasutaja = kasutajaRepository.findByEmail(dto.getEmail());
+        Kasutaja kasutaja = kasutajaRepository.findByEmail(dto.email());
 
         // Kui sellise meiliga kasutajat pole,
         // siis ei saa sisse logida
@@ -110,7 +110,7 @@ public class AuthTeenus {
         }
 
         // Parooli õigsuse kontroll ja tagastus
-        if (!encoder.matches(dto.getParool(), kasutaja.getParool())) {
+        if (!encoder.matches(dto.parool(), kasutaja.getParool())) {
             throw new LoginFailException("Sisselogimine ebaõnnestus. Vale parool");
         }
     }

@@ -1,14 +1,7 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.DTO.HinnaMuutusDTO;
-import org.example.oop_projekt.DTO.MärksõnaDTO;
-import org.example.oop_projekt.DTO.ToodeDTO;
-import org.example.oop_projekt.mudel.Toode;
-import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;
-import org.springframework.http.ResponseEntity;
+import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/muudatootehind")

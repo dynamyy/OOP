@@ -28,7 +28,7 @@ public class SisseLogimineKontroller {
         try {
             authTeenus.logiKasutajaSisse(sisselogimisinfo);
             return ResponseEntity.ok(Map.of("sonum", "Sisselogimine edukas",
-                    "token", TokenHandler.genereeriToken(sisselogimisinfo.getEmail())));
+                    "token", TokenHandler.genereeriToken(sisselogimisinfo.email())));
         } catch (LoginFailException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sonum", e.getMessage()));
         }

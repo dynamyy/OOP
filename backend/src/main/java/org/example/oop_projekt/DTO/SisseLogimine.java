@@ -1,18 +1,14 @@
 package org.example.oop_projekt.DTO;
 
-import lombok.Getter;
 
-@Getter
-public class SisseLogimine {
-
-    private String email;
-    private String parool;
-
+public record SisseLogimine (
+        String email,
+        String parool
+) {
+    /**
+     * Igaks-juhuks toString override, et ei väljastataks paroole
+     * @return kasutaja email
+     */
     @Override
-    public String toString() {
-        return "SisseLogimine{" +
-                "email='" + email + '\'' +
-                ", parool='" + parool + '\'' +
-                '}';
-    }
+    public String toString() { return email; }
 }

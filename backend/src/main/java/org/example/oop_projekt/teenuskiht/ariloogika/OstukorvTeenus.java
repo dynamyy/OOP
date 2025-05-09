@@ -1,8 +1,8 @@
-package org.example.oop_projekt.teenuskiht.äriloogika;
+package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.EbasobivToodeDTO;
-import org.example.oop_projekt.DTO.MärksõnaDTO;
+import org.example.oop_projekt.DTO.MarksonaDTO;
 import org.example.oop_projekt.DTO.OstukorvDTO;
 import org.example.oop_projekt.DTO.ToodeOstukorvisDTO;
 import org.example.oop_projekt.mudel.*;
@@ -83,11 +83,11 @@ public class OstukorvTeenus {
             ostuKorv.getTootedOstukorvis().add(uusToodeOstukorvis);
 
             // Kõik uue toote märksõnad lisatakse andmebaasi
-            for (MärksõnaDTO marksona : toode.marksonad()) {
+            for (MarksonaDTO marksona : toode.marksonad()) {
                 TooteMarksona uusMarksona = new TooteMarksona(
-                        marksona.märksõna(),
+                        marksona.marksona(),
                         uusToodeOstukorvis,
-                        marksona.valikuVärv());
+                        marksona.valikuVarv());
                 uusToodeOstukorvis.getTooteMarksonad().add(uusMarksona);
             }
 
@@ -123,9 +123,9 @@ public class OstukorvTeenus {
         for (Pood pood : poed) {
             List<ToodeOstukorvis> tootedOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisByOstukorv(ostukorv);
             for (ToodeOstukorvis ostukorviToode : tootedOstukorvis) {
-                List<MärksõnaDTO> marksonad = new ArrayList<>();
+                List<MarksonaDTO> marksonad = new ArrayList<>();
                 for (TooteMarksona tooteMarksona : ostukorviToode.getTooteMarksonad()) {
-                    marksonad.add(new MärksõnaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));
+                    marksonad.add(new MarksonaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));
                 }
                 List<Toode> sobivadTooted = toodeTeenus.valitudTootedAndmebaasist(marksonad);
                 Toode odavaimToode = sobivadTooted

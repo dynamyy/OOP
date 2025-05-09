@@ -2,15 +2,13 @@ package org.example.oop_projekt.Kontrollerid;
 
 
 import org.example.oop_projekt.DTO.OstukorvDTO;
-import org.example.oop_projekt.DTO.ToodeOstukorvisDTO;
-import org.example.oop_projekt.teenuskiht.äriloogika.OstukorvTeenus;
+import org.example.oop_projekt.teenuskiht.ariloogika.OstukorvTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,7 +16,7 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173")
 public class OstukorvAPI {
 
-    private OstukorvTeenus ostukorvTeenus;
+    private final OstukorvTeenus ostukorvTeenus;
 
     @Autowired
     public OstukorvAPI(OstukorvTeenus ostukorvTeenus){

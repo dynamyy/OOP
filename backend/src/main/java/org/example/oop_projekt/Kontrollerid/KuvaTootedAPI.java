@@ -1,8 +1,8 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.DTO.MärksõnaDTO;
+import org.example.oop_projekt.DTO.MarksonaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
-import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;
+import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class KuvaTootedAPI {
 
 
-    private ToodeTeenus toodeTeenus;
+    private final ToodeTeenus toodeTeenus;
 
     KuvaTootedAPI (ToodeTeenus toodeTeenus){
         this.toodeTeenus = toodeTeenus;
@@ -21,7 +21,7 @@ public class KuvaTootedAPI {
 
     // Kasutame toodete kuvamiseks kasutajale
     @PostMapping
-    public List<ToodeDTO> kuvaTooted(@RequestBody List<MärksõnaDTO> märksõnad){
-        return toodeTeenus.tootedDTOdeks(toodeTeenus.valitudTootedAndmebaasist(märksõnad));
+    public List<ToodeDTO> kuvaTooted(@RequestBody List<MarksonaDTO> marksonad){
+        return toodeTeenus.tootedDTOdeks(toodeTeenus.valitudTootedAndmebaasist(marksonad));
     }
 }

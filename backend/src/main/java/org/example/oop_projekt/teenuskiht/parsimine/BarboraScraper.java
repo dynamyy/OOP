@@ -12,19 +12,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
-import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class BarboraScraper extends WebScraper {
-    /**
-     * Seadistab chromedriveri
-     *
-     * @throws URISyntaxException
-     */
-
     private final PoodRepository poodRepository;
     private String url = "https://barbora.ee/";
 

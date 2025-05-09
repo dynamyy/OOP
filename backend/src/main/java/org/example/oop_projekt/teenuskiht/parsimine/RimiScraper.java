@@ -12,7 +12,6 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
-import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -21,15 +20,10 @@ import java.util.regex.Pattern;
 @Service
 public class RimiScraper extends WebScraper {
 
-
     private final PoodRepository poodRepository;
     private String url = "https://rimi.ee/epood";
-    /**
-     * Seadistab chromedriveri
-     *
-     * @throws URISyntaxException
-     */
-    public RimiScraper(PoodRepository poodRepository) throws URISyntaxException {
+
+    public RimiScraper(PoodRepository poodRepository) {
         super("Rimi");
         this.poodRepository = poodRepository;
     }

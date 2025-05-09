@@ -8,21 +8,21 @@ import java.util.List;
 
 public class ToodeSpecification {
 
-    public static Specification<Toode> nimetusSisaldabKõiki(List<String> märksõnad) {
+    public static Specification<Toode> nimetusSisaldabKoiki(List<String> marksonad) {
         return (root, query, cb) -> {
-            Predicate[] kõikSisaldavad = märksõnad.stream()
+            Predicate[] koikSisaldavad = marksonad.stream()
                     .map(m -> cb.like(cb.lower(root.get("nimetus")), "%" + m.toLowerCase() + "%"))
                     .toArray(Predicate[]::new);
-            return cb.and(kõikSisaldavad);
+            return cb.and(koikSisaldavad);
         };
     }
 
-    public static Specification<Toode> nimetusEiSisaldaÜhtegi(List<String> märksõnad) {
+    public static Specification<Toode> nimetusEiSisaldaUhtegi(List<String> marksonad) {
         return (root, query, cb) -> {
-            Predicate[] välistused = märksõnad.stream()
+            Predicate[] valistused = marksonad.stream()
                     .map(m -> cb.notLike(cb.lower(root.get("nimetus")), "%" + m.toLowerCase() + "%"))
                     .toArray(Predicate[]::new);
-            return cb.and(välistused);
+            return cb.and(valistused);
         };
     }
 }

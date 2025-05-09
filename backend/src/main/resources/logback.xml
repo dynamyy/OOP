@@ -40,13 +40,13 @@
         </encoder>
     </appender>
 
-    <logger name="org.example.oop_projekt.teenuskiht.äriloogika" level="DEBUG">
-        <appender-ref ref="Äriloogika-log"/>
+    <logger name="org.example.oop_projekt.teenuskiht.ariloogika" level="DEBUG">
+        <appender-ref ref="Ariloogika-log"/>
     </logger>
-    <appender name="Äriloogika-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/Äriloogika.log</file>
+    <appender name="Ariloogika-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/Ariloogika.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>log/Äriloogika-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>log/Ariloogika-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>

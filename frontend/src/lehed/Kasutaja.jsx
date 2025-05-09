@@ -23,8 +23,12 @@ function Kasutaja() {
             if (isLoggedIn) {
                 const kasutajaNimi = await authTeenus.getKasutaja();
                 setKasutaja(kasutajaNimi);
-                const poed = await authTeenus.getKliendikaardid();
-                setValitudPoed(poed);
+                const vastus = await authTeenus.getKliendikaardid();
+                if (vastus.ok) {
+                    setValitudPoed(vastus.kliendikaardid);
+                } else {
+                    setOnSisseLogitud(false);
+                }
             }
         };
 

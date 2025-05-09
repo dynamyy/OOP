@@ -1,12 +1,11 @@
-package org.example.oop_projekt.teenuskiht.äriloogika;
+package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
-import org.example.oop_projekt.DTO.MärksõnaDTO;
+import org.example.oop_projekt.DTO.MarksonaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.repository.ToodeRepository;
-import org.example.oop_projekt.teenuskiht.parsimine.ScraperController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -85,16 +84,16 @@ public class ToodeTeenus {
     }
 
     // Meetod, mis kuvab kasutajale valitud märksõnaga tooted
-    public List<Toode> valitudTootedAndmebaasist(List<MärksõnaDTO> märksõnad) {
+    public List<Toode> valitudTootedAndmebaasist(List<MarksonaDTO> marksonad) {
         List<String> rohelised = new ArrayList<>();
         List<String> punased = new ArrayList<>();
 
-        for (MärksõnaDTO märksõna : märksõnad) {
+        for (MarksonaDTO marksona : marksonad) {
 
-            if (märksõna.valikuVärv().equalsIgnoreCase("roheline")) {
-                rohelised.add("%" + märksõna.märksõna() + "%"); // % märk laseb võrrelda substringe
-            } else if (märksõna.valikuVärv().equalsIgnoreCase("punane")) {
-                punased.add("%" + märksõna.märksõna() + "%");
+            if (marksona.valikuVarv().equalsIgnoreCase("roheline")) {
+                rohelised.add("%" + marksona.marksona() + "%"); // % märk laseb võrrelda substringe
+            } else if (marksona.valikuVarv().equalsIgnoreCase("punane")) {
+                punased.add("%" + marksona.marksona() + "%");
             }
         }
 
@@ -111,8 +110,8 @@ public class ToodeTeenus {
         }
 
         Specification<Toode> spec = Specification
-                .where(ToodeSpecification.nimetusSisaldabKõiki(rohelised))
-                .and(ToodeSpecification.nimetusEiSisaldaÜhtegi(punased));
+                .where(ToodeSpecification.nimetusSisaldabKoiki(rohelised))
+                .and(ToodeSpecification.nimetusEiSisaldaUhtegi(punased));
 
         List<Toode> tulemused = toodeRepository.findAll(spec);
 
@@ -120,6 +119,9 @@ public class ToodeTeenus {
     }
 
     public List<ToodeDTO> tootedDTOdeks(List<Toode> tooted) {
+        for (Toode toode : tooted) {
+            System.out.println(toode.getNimetus() + " - " + toode.getHindKliendi() + " - " + toode.getHulgaHindKliendi());
+        }
         return tooted.stream()
                 .map(toode -> new ToodeDTO(
                         toode.getId(),
