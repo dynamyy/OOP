@@ -1,5 +1,6 @@
 package org.example.oop_projekt.teenuskiht.parsimine;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.mudel.Toode;
@@ -10,9 +11,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Component
@@ -20,17 +18,9 @@ public class ScraperController{
     private final List<WebScraper> scraperid;
     private final ToodeTeenus toodeTeenus;
 
-    public ScraperController(List<WebScraper> scraperid, ToodeTeenus toodeTeenus) throws URISyntaxException {
+    public ScraperController(List<WebScraper> scraperid, ToodeTeenus toodeTeenus) {
         this.scraperid = scraperid;
         this.toodeTeenus = toodeTeenus;
-
-        // Viitab chromedriver.exe failile resources kaustas
-        URL cdResource = WebScraper.class.getClassLoader().getResource("chromedriver.exe");
-        // Failitee teisendamine, et toetada utf-8 kaustade nimesid
-        assert cdResource != null;
-        String cdPath = Paths.get(cdResource.toURI()).toString();
-
-        System.setProperty("webdriver.chrome.driver", cdPath);
     }
 
 
@@ -81,6 +71,7 @@ public class ScraperController{
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
 
+        WebDriverManager.chromedriver().setup();
         //return new ChromeDriver(options); //Peidetud
         return new ChromeDriver(); //Mittepeidetud
     }
