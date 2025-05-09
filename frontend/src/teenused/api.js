@@ -87,9 +87,9 @@ export const setKasutajaAndmed = async (token, andmetuup, uusSoneTuup, uusListTu
 
 export const postMarksonad = async (marksonad) => {
     try {
-        const marksonadList = Object.entries(marksonad).map(([märksõna, valikuVärv]) => ({
-            märksõna,
-            valikuVärv
+        const marksonadList = Object.entries(marksonad).map(([marksona, valikuVarv]) => ({
+            marksona,
+            valikuVarv
         }));
 
         const vastus = await fetch(`${BAAS_URL}/tooted`, {

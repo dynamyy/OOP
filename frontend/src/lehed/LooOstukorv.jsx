@@ -130,9 +130,9 @@ function LooOstukorv() {
 
         const vormindatudTooted = Object.values(tooted).map(toode => ({
             ...toode,
-            marksonad: Object.entries(toode.marksonad).map(([märksõna, valikuVärv]) => ({
-                märksõna,
-                valikuVärv
+            marksonad: Object.entries(toode.marksonad).map(([marksona, valikuVarv]) => ({
+                marksona,
+                valikuVarv
             })),
             ebasobivadTooted: toode.ebasobivadTooted.map(id => ({
                 id
@@ -217,9 +217,9 @@ function LooOstukorv() {
                                     key={toode.id}
                                     id={toode.id}
                                     tooteNimetus={toode.tooteNimi}
-                                    tukiHind={toode.tooteTükihind}
-                                    uhikuHind={toode.tooteÜhikuHind}
-                                    uhik={toode.ühik}
+                                    tukiHind={toode.tooteTukihind}
+                                    uhikuHind={toode.tooteUhikuHind}
+                                    uhik={toode.uhik}
                                     soodus={toode.kasonSoodus}
                                     poodPilt={logod[toode.pood]}
                                     toodeUrl={toode.toodePiltURL}
