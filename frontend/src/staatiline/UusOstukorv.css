@@ -78,8 +78,12 @@
 }
 
 #marksonad-konteiner > div .teksti-paar:nth-child(2) > div {
-    min-height: 15rem;
+    min-height: 5rem;
     height: fit-content;
+}
+
+#marksonad-konteiner :nth-child(2) > div > div, #marksonad-konteiner :nth-child(2) > div > button {
+    height: 2.75rem;
 }
 
 
@@ -230,14 +234,20 @@
 
 
 
-.ostukorv-konteiner-1 {
+.ostukorv-konteiner {
     max-height: 100%;
     width: fit-content;
     min-width: 20rem;
     padding: 1.5rem;
 }
 
-.ostukorv-konteiner-1 > span {
+.ostukorv-konteiner > div:first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ostukorv-konteiner > div:first-child > span {
     font-size: x-large;
     font-weight: 700;
 }
@@ -271,4 +281,53 @@
     opacity: 0.8;
     transform: scale(1.1);
     transition: transform 0.2s;  
+}
+
+.ikoon-suur {
+    font-size: x-large;
+}
+
+
+.ostukorv-ikoon2-konteiner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    position: relative;
+}
+
+.ostukorv-ikoon2-konteiner:hover {
+    cursor: pointer;
+}
+
+.ostukorv-ikoon2 {
+    font-size: large;
+    transition: 0.3s;
+}
+
+@media (min-width: 1500px) { /*Kui ekraan on suur*/
+
+    .ostukorv-ikoon2-konteiner, .ikoon-suur {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1500px) { /*Kui ekraan on väike*/
+
+    .ostukorv-konteiner {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .suletud {
+        transform: translateY(20rem);
+    }
+
+    .ease {
+        transition: transform 0.3s ease-in-out;
+    }
 }
