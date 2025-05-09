@@ -5,14 +5,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.example.oop_projekt.DTO.KasutajaAndmedDTO;
-import org.example.oop_projekt.DTO.Registreerimine;
-import org.example.oop_projekt.DTO.SisseLogimine;
-import org.example.oop_projekt.DTO.TokenVerify;
+import org.example.oop_projekt.DTO.*;
 import org.example.oop_projekt.Erindid.AndmeteUuendusException;
 import org.example.oop_projekt.Erindid.LoginFailException;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
 import org.example.oop_projekt.Erindid.TokenKehtetuException;
+import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.Kasutaja;
 import org.example.oop_projekt.repository.KasutajaRepository;
 import org.example.oop_projekt.mudel.Kliendikaardid;
@@ -48,7 +46,8 @@ public class AuthTeenus {
     /**
      * Registreerib uue kasutaja
      * @param dto Kasutaja logimisinfo andmete objekt
-     * @throws RegistreerimineFailedException
+     * @throws RegistreerimineFailedException Viga kui kasutaja on olemas; meiliaadress
+     * või parool ei vasta nõuetele; kui sama meiliga kasutaja on juba olemas
      */
     public void registreeriKasutaja(Registreerimine dto) throws RegistreerimineFailedException {
         // Sisselogimisandmete olemasolu kontroll
@@ -117,7 +116,7 @@ public class AuthTeenus {
     }
 
     public void verifyToken(TokenVerify dto) throws TokenKehtetuException{
-        String token = dto.getToken();
+        String token = dto.token();
 
         try {
             Jws<Claims> claimJws = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
@@ -136,35 +135,24 @@ public class AuthTeenus {
         }
     }
 
+    @verifyToken
     public List<String> getKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws TokenKehtetuException{
-        // Tokeni check
-        String token = kasutajaAndmed.token();
-        verifyToken(new TokenVerify(token));
-
-        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
-        String kasutajaMeil = claim.getSubject();
-        Kasutaja kasutaja = kasutajaRepository.findByEmail(kasutajaMeil);
-
         // Kliendikaartide tagastamine
         if (kasutajaAndmed.andmetuup().equals("kliendikaardid")) {
-            return kasutaja.getKliendikaardid().stream().map(Kliendikaardid::getPoeNimi).toList();
+            return getKliendikaardid(kasutajaAndmed).stream().map(Kliendikaardid::getPoeNimi).toList();
         }
 
+        // Muid get päringuid pole implementeeritud
         return new ArrayList<>();
     }
 
+    @verifyToken
     public void setKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws TokenKehtetuException, AndmeteUuendusException{
-        // Tokeni check
-        String token = kasutajaAndmed.token();
-        verifyToken(new TokenVerify(token));
-
-        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
-        String kasutajaMeil = claim.getSubject();
-        Kasutaja kasutaja = kasutajaRepository.findByEmail(kasutajaMeil);
+        Kasutaja kasutaja = getKasutaja(kasutajaAndmed);
 
         // Kliendikaartide uuendus
         if (kasutajaAndmed.andmetuup().equals("kliendikaardid")) {
-            List<Kliendikaardid> vanadKaardid = kasutaja.getKliendikaardid();
+            List<Kliendikaardid> vanadKaardid = getKliendikaardid(kasutajaAndmed);
             List<String> uuedKaardid = kasutajaAndmed.uusListTuup();
 
             // Eemaldatud kliendikaartide andmebaasist kustutamine
@@ -197,5 +185,30 @@ public class AuthTeenus {
             kasutaja.setParool(encoder.encode(uusParool));
             kasutajaRepository.save(kasutaja);
         }
+    }
+
+    @verifyToken
+    public String getEmail(TokenDTO dto) {
+        String token = dto.token();
+        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        return claim.getSubject();
+    }
+
+    @verifyToken
+    public Kasutaja getKasutaja(TokenDTO dto) {
+        String token = dto.token();
+        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        String kasutajaMeil = claim.getSubject();
+        return kasutajaRepository.findByEmail(kasutajaMeil);
+    }
+
+    @verifyToken
+    public List<Kliendikaardid> getKliendikaardid(TokenDTO dto) {
+        String token = dto.token();
+        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        String kasutajaMeil = claim.getSubject();
+        Kasutaja kasutaja = kasutajaRepository.findByEmail(kasutajaMeil);
+
+        return kasutaja.getKliendikaardid();
     }
 }
