@@ -33,7 +33,7 @@ public class ToodeTeenus {
     public ToodeTeenus(ToodeRepository toodeRepository, PoodTeenus poodTeenus) {
         this.toodeRepository = toodeRepository;
         this.poodTeenus = poodTeenus;
-        this.logger = LoggerFactory.getLogger(ScraperController.class);
+        this.logger = LoggerFactory.getLogger(ToodeTeenus.class);
     }
 
     /**
