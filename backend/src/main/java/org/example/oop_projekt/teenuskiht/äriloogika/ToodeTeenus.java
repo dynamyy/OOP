@@ -9,6 +9,7 @@ import org.example.oop_projekt.repository.ToodeRepository;
 import org.example.oop_projekt.teenuskiht.parsimine.ScraperController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.example.oop_projekt.specifications.ToodeSpecification;
 
@@ -55,9 +56,15 @@ public class ToodeTeenus {
         Pood pood = tooted.getFirst().getPood();
 
         for (Toode toode : tooted) {
-            Toode dbToode = toode.getPood().getNimi().equalsIgnoreCase("prisma") ?
-                    toodeRepository.findToodeByTooteKood(toode.getTooteKood()) :
-                    toodeRepository.findToodeByNimetusAndPood(toode.getNimetus(), toode.getPood());
+            Toode dbToode;
+            try {
+                dbToode = toode.getPood().getNimi().equalsIgnoreCase("prisma") ?
+                        toodeRepository.findToodeByTooteKood(toode.getTooteKood()) :
+                        toodeRepository.findToodeByNimetusAndPood(toode.getNimetus(), toode.getPood());
+            } catch (IncorrectResultSizeDataAccessException e) {
+                logger.warn("Leidsin andmebaasist mitu vastet {} tootele {}, tootekood {}", toode.getPood(), toode.getNimetus(), toode.getTooteKood());
+                continue;
+            }
 
             if (dbToode == null) {
                 uuedTooted.add(toode);

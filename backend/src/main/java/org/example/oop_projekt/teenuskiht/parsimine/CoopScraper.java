@@ -12,9 +12,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -58,7 +55,7 @@ public class CoopScraper extends WebScraper {
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        scrolliLeheLoppu(300, "app-product-card.item");
+        scrolliLeheLoppu(toodeteArv, "app-product-card.item");
 
         return chromedriver.getPageSource();
     }
