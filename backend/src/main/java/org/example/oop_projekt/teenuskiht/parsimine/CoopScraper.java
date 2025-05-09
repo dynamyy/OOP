@@ -55,7 +55,7 @@ public class CoopScraper extends WebScraper {
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        scrolliLeheLoppu(toodeteArv, "app-product-card.item");
+        scrolliLeheLoppu(300, "app-product-card.item");
 
         return chromedriver.getPageSource();
     }
@@ -72,7 +72,7 @@ public class CoopScraper extends WebScraper {
         Elements lapsed = Objects.requireNonNull(doc.select(".products-wrapper").first()).children();
 
         // Ühik määrab, mis ühikutes peaks hiljem ühikuhinda kuvama (l / kg)
-        String tooteNimi, uhik, lisaHind;
+        String tooteNimi, uhik, lisaHind, pildiUrl;
         String[] hindadeList, lisaHindadeList;
         // Kliendihind on Coopi puhul hind säästukaardiga
         // tkHind ja uhikuHind on tavakliendi hind ehk ilma säästukaardita
@@ -84,12 +84,13 @@ public class CoopScraper extends WebScraper {
             // Elements tooted sisaldab mõningaid üleliigseid ridu, skipin need
             if (tooteNimi.isEmpty()) continue;
 
+            pildiUrl = toode.select(".product-img-wp img").attr("src");
+
             // Saan toote tükihinna ja ühikuhinna
             // See hind kehtib kindlasti säästukaardi omanikele.
             // Kui säästukaardiga pole sätestatud erihinda (enamasti pole),
             // siis tavakliendi hind == kliendi hind
             hindadeList = toode.select("app-price-tag:nth-child(1) > div:nth-child(2)").text().split(" ");
-
 
             // Võimalike lehe muutuste püüdmine
             if (hindadeList.length < 7 && hindadeList.length != 3) {
@@ -141,7 +142,7 @@ public class CoopScraper extends WebScraper {
                                     poodRepository.findPoodByNimi("Coop"),
                                     uhikuHind,
                                     tkHind,
-                                    "",
+                                    pildiUrl,
                                     "");
             tooted.add(uusToode);
         }

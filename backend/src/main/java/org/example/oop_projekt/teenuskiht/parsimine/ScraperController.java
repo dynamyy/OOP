@@ -67,12 +67,11 @@ public class ScraperController{
      * @return uus ChromeDriver objekt
      */
     private ChromeDriver uusDriver() {
-        // Sean chromedriveri jooksma peidetult
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
+        //options.addArguments("--headless"); // peidetult jooksmine
+        options.addArguments("window-size=1920,1080");
 
         WebDriverManager.chromedriver().setup();
-        //return new ChromeDriver(options); //Peidetud
-        return new ChromeDriver(); //Mittepeidetud
+        return new ChromeDriver(options);
     }
 }
