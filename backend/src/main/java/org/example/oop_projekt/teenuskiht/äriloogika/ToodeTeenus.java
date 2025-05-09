@@ -6,6 +6,9 @@ import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.repository.ToodeRepository;
+import org.example.oop_projekt.teenuskiht.parsimine.ScraperController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.example.oop_projekt.specifications.ToodeSpecification;
 
@@ -24,10 +27,12 @@ public class ToodeTeenus {
 
     private final ToodeRepository toodeRepository;
     private final PoodTeenus poodTeenus;
+    private final Logger logger;
 
     public ToodeTeenus(ToodeRepository toodeRepository, PoodTeenus poodTeenus) {
         this.toodeRepository = toodeRepository;
         this.poodTeenus = poodTeenus;
+        this.logger = LoggerFactory.getLogger(ScraperController.class);
     }
 
     /**

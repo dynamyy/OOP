@@ -8,6 +8,8 @@ import org.example.oop_projekt.teenuskiht.äriloogika.ToodeTeenus;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,10 +19,12 @@ import java.util.List;
 public class ScraperController{
     private final List<WebScraper> scraperid;
     private final ToodeTeenus toodeTeenus;
+    private final Logger logger;
 
     public ScraperController(List<WebScraper> scraperid, ToodeTeenus toodeTeenus) {
         this.scraperid = scraperid;
         this.toodeTeenus = toodeTeenus;
+        this.logger = LoggerFactory.getLogger(ScraperController.class);
     }
 
 
@@ -35,28 +39,27 @@ public class ScraperController{
 
         // Scrapib kõik poed ja lisab tooted andmebaasi
         for (WebScraper pood : scraperid) {
-            System.out.println("\u001B[32mAlustan " + pood.getPoeNimi() + " scrapemist\u001B[0m");
+
+            logger.info("Alustan {} scrapemist", pood.getPoeNimi());
 
             try {
                 tooted = pood.scrape(chromedriver);
 
                 if (!tooted.isEmpty()) {
-                    System.out.println("\u001B[32mSain " + pood.getPoeNimi() +
-                            " andmed, lisan andmebaasi (" + tooted.size() + ") toodet\u001B[0m");
+                    logger.info("Sain {} andmed, lisan andmebaasi ({}) toodet", pood.getPoeNimi(), tooted.size());
                     this.toodeTeenus.lisaTootedAndmebaasi(tooted);
                 } else {
-                    System.out.println("\u001B[31mScrape õnnestus, kuid ei saanud " + pood.getPoeNimi() + " andmeid (0 toodet)\u001B[0m");
+                    logger.warn("Scrape õnnestus, kuid ei saanud {} andmeid (0 toodet)", pood.getPoeNimi());
                 }
 
             } catch (ScrapeFailedException e) {
-                System.out.println("\u001B[31m" + pood.getPoeNimi() + " scrape failis.");
-                System.out.println(e.getMessage() + "\u001B[0m");
+                logger.error("{} scrape failis: {}", pood.getPoeNimi(), e.getMessage());
             }
 
 
         }
 
-        System.out.println("\u001B[32mKõik scrapetud ja andmebaasi lisatud\u001B[0m");
+        logger.info("Kõik scrapetud ja andmebaasi lisatud");
         chromedriver.quit();
     }
 
