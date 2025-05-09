@@ -13,6 +13,8 @@ import org.jsoup.select.Selector;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -27,8 +29,10 @@ public abstract class WebScraper{
     private WebDriver chromedriver;
     @Getter
     private final String poeNimi;
+    @Getter
     private WebDriverWait driverWait;
     private JavascriptExecutor jsExec;
+    private final Logger logger;
 
     public void setChromedriver(WebDriver chromedriver) {
         this.chromedriver = chromedriver;
@@ -38,6 +42,7 @@ public abstract class WebScraper{
 
     public WebScraper(String poeNimi) {
         this.poeNimi = poeNimi;
+        this.logger = LoggerFactory.getLogger(CoopScraper.class);
     }
 
     /**
@@ -69,18 +74,27 @@ public abstract class WebScraper{
      */
     void scrolliLeheLoppu(int oodatavLasteArv, String lapseCss) throws ScrapeFailedException {
         int lasteArv = chromedriver.findElements(By.cssSelector(lapseCss)).size();
+        int kordiProovitud = 0;
 
         // Scrollin nii kaua kuni kõik lapsed on laetud
         while (lasteArv < oodatavLasteArv) {
             // Scrollin lehe lõppu
             jsExec.executeScript("window.scrollBy(0,document.body.scrollHeight)");
 
+
             // Ootan, et elemendid laeks
             try {
                 driverWait.until(ExpectedConditions.numberOfElementsToBeMoreThan(
                         By.cssSelector(lapseCss), lasteArv
                 ));
+                kordiProovitud = 0;
             } catch (TimeoutException e) {
+                // Timeouti korral proovin kuni 3x uuesti
+                if (kordiProovitud < 3) {
+                    logger.warn("Lehe lõppu scrollimine ebaõnnestus liiga kaua ootamise tõttu. {}. viga, proovin uuesti laadida.\n\toodatavLasteArv:{}; Leidsin vaid:{}; lapseCss:{}", kordiProovitud + 1, oodatavLasteArv, lasteArv, lapseCss);
+                    kordiProovitud++;
+                    continue;
+                }
                 throw new ScrapeFailedException("Lehe lõppu scrollimine ebaõnnestus liiga kaua ootamise tõttu" +
                         "\n\toodatavLasteArv:" + oodatavLasteArv + "; Leidsin vaid:" + lasteArv +
                         "; lapseCss:" + lapseCss);
@@ -142,6 +156,21 @@ public abstract class WebScraper{
     }
 
     /**
+     * Leiab ja tagastab otsitavad elemendid kasutades chromedriverit
+     * @param cssSelector Elementide cssSelector
+     * @return List otsitud WebElementidest
+     * @throws ScrapeFailedException Viga kui elemente ei leita, sisend on vigane
+     * või on probleem chromedriveriga
+     */
+    List<WebElement> leiaElemendid(String cssSelector) throws ScrapeFailedException {
+        try {
+            return chromedriver.findElements(By.cssSelector(cssSelector));
+        } catch (WebDriverException e) {
+            throw new ScrapeFailedException("Viga elementide leidmisel chromedriverist. cssSelector " + cssSelector + ": " + e.getMessage());
+        }
+    }
+
+    /**
      * Leiab ja tagastab otsitavad elemendid võttes aluseks Element objekti
      * @param vanem Element, millest otsida
      * @param cssQuery otsitavate Elementide cssSelector
@@ -154,6 +183,30 @@ public abstract class WebScraper{
             Elements tulemus = vanem.select(cssQuery);
 
             if (tulemus.isEmpty()) {
+                throw new TuhiElementideTagastusException("Viga elemendi leidmisel vanema kaudu. Leiti 0 elementi. cssQuery: " + cssQuery);
+            }
+
+            return tulemus;
+
+        } catch (IllegalStateException e) {
+            throw new ScrapeFailedException("Viga elemendi leidmisel vanema kaudu. cssQuery " + cssQuery + ": " + e.getMessage());
+        }
+    }
+
+    /**
+     * Leiab ja tagastab otsitavad elemendid võttes aluseks Element objekti
+     * @param vanem Element, millest otsida
+     * @param cssQuery otsitavate Elementide cssSelector
+     * @param lubaNull Kas pidada tühja vastust veaks või mitte
+     * @return Otsitud Elements
+     * @throws ScrapeFailedException Viga kui elemente ei leita, sisend on vigane
+     * või on probleem chromedriveriga
+     */
+    Elements valiElement(Elements vanem, String cssQuery, boolean lubaNull) throws ScrapeFailedException{
+        try {
+            Elements tulemus = vanem.select(cssQuery);
+
+            if (!lubaNull && tulemus.isEmpty()) {
                 throw new TuhiElementideTagastusException("Viga elemendi leidmisel vanema kaudu. Leiti 0 elementi. cssQuery: " + cssQuery);
             }
 
