@@ -140,9 +140,8 @@ public class SelverScraper extends WebScraper {
         int count = 0;
 
         for (String url : urlid){
-            //String html = html(url);
+            String html = html(url);
 
-            String html = html("https://www.selver.ee/valmistoidud/jahutatud-valmistoidud?limit=48");
 
             // Vigase urli korral tagastatakse 0 toodet
             if (html.isEmpty()) {
@@ -193,6 +192,7 @@ public class SelverScraper extends WebScraper {
                     double protsent = kliendiTykiHind / tykiHind;
                     kliendiYhikuHind = new BigDecimal(yhikuHind * protsent).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 }
+
                 /*
                 System.out.println("Nimi: " + tooteNimi +
                         ", tükihind: " + tykiHind +
@@ -204,7 +204,10 @@ public class SelverScraper extends WebScraper {
 
                  */
 
+
+
                 //count++;//Kui päriselt asja tööle paned võta see ära
+
 
 
 
@@ -218,6 +221,8 @@ public class SelverScraper extends WebScraper {
                         pildiURL,
                         "");
                 tooted.add(uusToode);
+
+
 
             }
         }
