@@ -5,6 +5,7 @@ import org.example.oop_projekt.DTO.EbasobivToodeDTO;
 import org.example.oop_projekt.DTO.MarksonaDTO;
 import org.example.oop_projekt.DTO.OstukorvDTO;
 import org.example.oop_projekt.DTO.ToodeOstukorvisDTO;
+import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.*;
 import org.example.oop_projekt.repository.EbasobivToodeRepository;
 import org.example.oop_projekt.repository.OstukorvRepository;
@@ -12,6 +13,7 @@ import org.example.oop_projekt.repository.PoodRepository;
 import org.example.oop_projekt.repository.ToodeOstukorvisRepository;
 import org.example.oop_projekt.repository.ToodeRepository;
 import org.example.oop_projekt.repository.TooteMarksonaRepository;
+import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,11 +32,12 @@ public class OstukorvTeenus {
     private final PoodRepository poodRepository;
     private final ToodeTeenus toodeTeenus;
     private final EbasobivToodeRepository ebasobivToodeRepository;
+    private final AuthTeenus authTeenus;
 
     // Konstruktoripõhine sõltuvuste süstimine (Spring süstib bean'id siia)
     public OstukorvTeenus(OstukorvRepository ostukorvRepository,
                           ToodeOstukorvisRepository toodeOstukorvisRepository, TooteMarksonaRepository tooteMarksonaRepository, ToodeRepository toodeRepository, PoodRepository poodRepository,
-                          ToodeTeenus toodeTeenus, EbasobivToodeRepository ebasobivToodeRepository) {
+                          ToodeTeenus toodeTeenus, EbasobivToodeRepository ebasobivToodeRepository, AuthTeenus authTeenus) {
         this.ostukorvRepository = ostukorvRepository;
         this.toodeOstukorvisRepository = toodeOstukorvisRepository;
         this.tooteMarksonaRepository = tooteMarksonaRepository;
@@ -42,6 +45,7 @@ public class OstukorvTeenus {
         this.poodRepository = poodRepository;
         this.toodeTeenus = toodeTeenus;
         this.ebasobivToodeRepository = ebasobivToodeRepository;
+        this.authTeenus = authTeenus;
     }
 
     // Meetod, mis vähendab antud toodete arvu ostukorvis sisendarvu võrra
@@ -109,14 +113,17 @@ public class OstukorvTeenus {
             }
         }
         ostukorvRepository.save(ostuKorv);
-        uuendaHindu(ostuKorv);
+        if (!ostukorv.token().isEmpty()) {
+            uuendaHindu(ostuKorv, ostukorv);
+        }
     }
 
     @Transactional
-    public void uuendaHindu(Ostukorv ostukorv) {
+    @verifyToken
+    public void uuendaHindu(Ostukorv ostukorv, OstukorvDTO dto) {
 
         List<Pood> poed = poodRepository.findAll();
-        List<Kliendikaardid> kliendikaardid = new ArrayList<>();
+        List<Kliendikaardid> kliendikaardid = authTeenus.getKliendikaardid(dto);
 
         for (Pood pood : poed) {
             List<ToodeOstukorvis> tootedOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisByOstukorv(ostukorv);
