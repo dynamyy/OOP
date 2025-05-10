@@ -4,5 +4,6 @@ import java.util.List;
 
 public record OstukorvDTO(
         String nimi,
-        List<ToodeOstukorvisDTO> tooted
-) { }
+        List<ToodeOstukorvisDTO> tooted,
+        String token
+) implements TokenDTO { }
