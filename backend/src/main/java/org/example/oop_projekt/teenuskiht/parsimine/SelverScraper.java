@@ -209,8 +209,6 @@ public class SelverScraper extends WebScraper {
                 //count++;//Kui päriselt asja tööle paned võta see ära
 
 
-
-
                 Toode uusToode = new Toode(tooteNimi,
                         yhik,
                         kliendiTykiHind,
@@ -221,9 +219,6 @@ public class SelverScraper extends WebScraper {
                         pildiURL,
                         "");
                 tooted.add(uusToode);
-
-
-
             }
         }
 

@@ -124,10 +124,14 @@ public class OstukorvTeenus {
 
         ostukorv.setKasutaja(authTeenus.getKasutaja(dto));
         List<Pood> poed = poodRepository.findAll();
+
         List<Kliendikaardid> kliendikaardid = authTeenus.getKliendikaardid(dto);
 
         for (Pood pood : poed) {
-            List<ToodeOstukorvis> tootedOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisByOstukorv(ostukorv);
+
+            boolean omabKliendikaarti = kliendikaardid.stream().anyMatch(kliendikaart -> kliendikaart.getPoeNimi().toLowerCase().equals(pood.getNimi().toLowerCase()));
+
+            List<ToodeOstukorvis> tootedOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisByOstukorv(ostukorv);// See rida peaks toimima kohe alguses määrates
             for (ToodeOstukorvis ostukorviToode : tootedOstukorvis) {
                 List<MarksonaDTO> marksonad = new ArrayList<>();
                 for (TooteMarksona tooteMarksona : ostukorviToode.getTooteMarksonad()) {
@@ -139,7 +143,8 @@ public class OstukorvTeenus {
                         .filter(t -> t.getPood()
                         .equals(pood)).toList()
                         .stream()
-                        .min(Comparator.comparingDouble(Toode::getTukiHind))
+                        .min(Comparator.comparingDouble(t -> omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind()
+                        ))
                         .orElse(null);
                 if (odavaimToode != null) {
                     switch (pood.getNimi().toLowerCase()) {
