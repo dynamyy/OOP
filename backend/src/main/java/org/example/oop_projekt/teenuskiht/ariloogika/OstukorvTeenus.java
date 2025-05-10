@@ -69,7 +69,7 @@ public class OstukorvTeenus {
 
 
     @Transactional
-    public Ostukorv looOstukorv(OstukorvDTO ostukorv) {
+    public void looOstukorv(OstukorvDTO ostukorv) {
 
         List<ToodeOstukorvis> tootedOstukorvis = new ArrayList<>(); // List, kuhu kõik uued tooted salvestatakse
         Ostukorv ostuKorv = new Ostukorv(ostukorv.nimi(), tootedOstukorvis);
@@ -110,8 +110,6 @@ public class OstukorvTeenus {
         }
         ostukorvRepository.save(ostuKorv);
         uuendaHindu(ostuKorv);
-
-        return ostuKorv;
     }
 
     @Transactional
@@ -131,7 +129,7 @@ public class OstukorvTeenus {
                 Toode odavaimToode = sobivadTooted
                         .stream()
                         .filter(t -> t.getPood()
-                                .equals(pood)).toList()
+                        .equals(pood)).toList()
                         .stream()
                         .min(Comparator.comparingDouble(Toode::getTukiHind))
                         .orElse(null);

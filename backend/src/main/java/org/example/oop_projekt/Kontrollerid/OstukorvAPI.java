@@ -23,8 +23,6 @@ public class OstukorvAPI {
         this.ostukorvTeenus = ostukorvTeenus;
     }
 
-
-
     //Selle kaudu saab lõpuks ostukorvi välja arvutada
     //Sisendiks on hetkel märksõnad ja nende tõeväärtus, ilmselt peab seda hiljem muutma Märksõnade DTO-ks
     @PostMapping
