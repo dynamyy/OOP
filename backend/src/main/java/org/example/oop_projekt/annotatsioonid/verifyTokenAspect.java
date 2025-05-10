@@ -9,7 +9,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.example.oop_projekt.DTO.TokenDTO;
-import org.example.oop_projekt.Erindid.TokenKehtetuException;
+import org.example.oop_projekt.Erindid.Autentimine.TokenKehtetuException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ public class verifyTokenAspect {
     private String secret;
 
     @Before("@annotation(verifyToken)")
-    public void handleVerifyToken(JoinPoint joinPoint) {
+    public void handleVerifyToken(JoinPoint joinPoint) throws TokenKehtetuException{
         Object[] args = joinPoint.getArgs();
 
         for (Object arg : args) {

@@ -1,7 +1,7 @@
 package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
 import org.example.oop_projekt.DTO.TokenVerify;
-import org.example.oop_projekt.Erindid.TokenKehtetuException;
+import org.example.oop_projekt.Erindid.Autentimine.TokenKehtetuException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

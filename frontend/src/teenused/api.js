@@ -133,3 +133,18 @@ export const postOstukorv = async (nimi, tooted) => {
         return {ok: false, ostukorv: "Ilmnes viga ostukorvi saatmisel"}
     }
 }
+
+export const kustutaKasutaja = async (requestData) => {
+    try {
+        const vastus = await fetch(`${BAAS_URL}/kustutaKasutaja`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({"token": requestData.token, "parool": requestData.parool})
+        })
+
+        const vastuseData = await vastus.json();
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
+    } catch (viga) {
+        return {ok: false, sonum: "Viga kasutaja kustutamise päringu saatmisel"}
+    }
+}

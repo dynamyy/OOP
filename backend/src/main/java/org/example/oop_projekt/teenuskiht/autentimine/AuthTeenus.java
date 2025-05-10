@@ -5,11 +5,13 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.*;
 import org.example.oop_projekt.Erindid.AndmeteUuendusException;
-import org.example.oop_projekt.Erindid.LoginFailException;
+import org.example.oop_projekt.Erindid.Autentimine.LoginFailException;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
-import org.example.oop_projekt.Erindid.TokenKehtetuException;
+import org.example.oop_projekt.Erindid.Autentimine.TokenKehtetuException;
+import org.example.oop_projekt.annotatsioonid.verifyParool;
 import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.Kasutaja;
 import org.example.oop_projekt.repository.KasutajaRepository;
@@ -40,6 +42,13 @@ public class AuthTeenus {
         this.encoder = new BCryptPasswordEncoder();
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.kliendikaardidRepository = kliendikaardidRepository;
+
+        /*
+        sobivad kõik eesti tähestiku tähed.
+         - Peab olema 1 suurtäht ja 1 väiketäht
+         - Peab olema 1 number
+         - Peab olema vähemalt 8 tähemärki pikk
+         */
         this.pwRegex = "^(?=.*[a-zäöüõšž])(?=.*[A-ZÄÖÜÕŠŽ])(?=.*\\d)[\\p{L}\\d\\p{P}\\p{S}]{8,}$";
     }
 
@@ -58,13 +67,6 @@ public class AuthTeenus {
         if (kasutajaRepository.findByEmail(dto.email()) != null) {
             throw new RegistreerimineFailedException("Selle meiliaadressiga kasutaja on juba olemas");
         }
-
-        /*
-        sobivad kõik eesti tähestiku tähed.
-         - Peab olema 1 suurtäht ja 1 väiketäht
-         - Peab olema 1 number
-         - Peab olema vähemalt 8 tähemärki pikk
-         */
 
         if (!dto.parool().matches(pwRegex)) {
             throw new RegistreerimineFailedException("Parool ei vasta nõuetele");
@@ -94,7 +96,8 @@ public class AuthTeenus {
      * @throws LoginFailException Viga tekib, kui kasutajat
      * ei eksisteeri või parool on vale.
      */
-    public void logiKasutajaSisse(SisseLogimine dto) throws LoginFailException {
+    @verifyParool
+    public String logiKasutajaSisse(SisseLogimine dto) throws LoginFailException {
         // Sisselogimisandmete olemasolu kontroll
         if (dto.email().isEmpty() || dto.parool().isEmpty()) {
             throw new LoginFailException("Kõik väljad peavad olema täidetud");
@@ -109,10 +112,7 @@ public class AuthTeenus {
             throw new LoginFailException("Sisselogimine ebaõnnestus. Sellise meiliaadressiga kasutajat ei ole");
         }
 
-        // Parooli õigsuse kontroll ja tagastus
-        if (!encoder.matches(dto.parool(), kasutaja.getParool())) {
-            throw new LoginFailException("Sisselogimine ebaõnnestus. Vale parool");
-        }
+        return TokenHandler.genereeriToken(dto.email());
     }
 
     public void verifyToken(TokenVerify dto) throws TokenKehtetuException{
@@ -185,6 +185,17 @@ public class AuthTeenus {
             kasutaja.setParool(encoder.encode(uusParool));
             kasutajaRepository.save(kasutaja);
         }
+    }
+
+    @verifyToken
+    @verifyParool
+    @Transactional
+    public void kustutaKasutaja(KasutajaKustutamineDTO kustutamisAndmed) {
+        // Kõigepealt tuleb kustutada seosed
+        kliendikaardidRepository.deleteAllByKasutaja(getKasutaja(kustutamisAndmed));
+
+        // Seejärel saab kustutada kasutaja
+        kasutajaRepository.deleteByEmail(getEmail(kustutamisAndmed));
     }
 
     @verifyToken

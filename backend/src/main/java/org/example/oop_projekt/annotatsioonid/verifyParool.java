@@ -6,13 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Kontrollib authTokeni kehtivust enne meetodi käivitamist.
+ * Kontrollib parooli kehtivust enne meetodi käivitamist.
  * Meetod, millele annotatsioon lisatakse, peab võtma argumendiks dto
- * objekti, mis implementeerib TokenDTO liidest. Vastasel juhul tagastatakse
- * alati veateade.
- * Kui authToken ei kehti, siis visataske TokenKehtetuException
+ * objekti, mis implementeerib ParoolDTO liidest. Lisaks peab meetod
+ * võtma argumendiks kas TokenDTO või EmailDTO liidest implementeeriva
+ * objekti. Sama argument võib implementeerida ka mõlemat liidest.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface verifyToken {
+public @interface verifyParool {
 }
