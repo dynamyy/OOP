@@ -116,22 +116,29 @@ public class OstukorvTeenus {
     public void uuendaHindu(Ostukorv ostukorv) {
 
         List<Pood> poed = poodRepository.findAll();
-        List<Kliendikaardid> kliendikaardid = new ArrayList<>();
+        List<Kliendikaardid> kliendikaardid = ostukorv.getKasutaja().getKliendikaardid();
+
 
         for (Pood pood : poed) {
-            List<ToodeOstukorvis> tootedOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisByOstukorv(ostukorv);
+
+            boolean omabKliendikaarti = kliendikaardid.stream().anyMatch(kliendikaart -> kliendikaart.getPoeNimi().toLowerCase().equals(pood.getNimi().toLowerCase()));
+
+            List<ToodeOstukorvis> tootedOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisByOstukorv(ostukorv);// See rida peaks toimima kohe alguses määrates
             for (ToodeOstukorvis ostukorviToode : tootedOstukorvis) {
                 List<MarksonaDTO> marksonad = new ArrayList<>();
                 for (TooteMarksona tooteMarksona : ostukorviToode.getTooteMarksonad()) {
                     marksonad.add(new MarksonaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));
                 }
+
+
                 List<Toode> sobivadTooted = toodeTeenus.valitudTootedAndmebaasist(marksonad);
                 Toode odavaimToode = sobivadTooted
                         .stream()
                         .filter(t -> t.getPood()
                         .equals(pood)).toList()
                         .stream()
-                        .min(Comparator.comparingDouble(Toode::getTukiHind))
+                        .min(Comparator.comparingDouble(t -> omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind()
+                        ))
                         .orElse(null);
                 if (odavaimToode != null) {
                     switch (pood.getNimi().toLowerCase()) {
