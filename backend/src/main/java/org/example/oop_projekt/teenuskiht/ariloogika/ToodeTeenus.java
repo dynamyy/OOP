@@ -119,9 +119,9 @@ public class ToodeTeenus {
     }
 
     public List<ToodeDTO> tootedDTOdeks(List<Toode> tooted) {
-        for (Toode toode : tooted) {
-            System.out.println(toode.getNimetus() + " - " + toode.getHindKliendi() + " - " + toode.getHulgaHindKliendi());
-        }
+        //for (Toode toode : tooted) {
+        //    System.out.println(toode.getNimetus() + " - " + toode.getHindKliendi() + " - " + toode.getHulgaHindKliendi());
+        //}
         return tooted.stream()
                 .map(toode -> new ToodeDTO(
                         toode.getId(),

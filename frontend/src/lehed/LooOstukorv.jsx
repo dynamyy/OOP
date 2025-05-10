@@ -142,7 +142,7 @@ function LooOstukorv() {
             }))
         }))
 
-        const vastus = postOstukorv(nimi, vormindatudTooted);
+        const vastus = postOstukorv(nimi, vormindatudTooted, localStorage.getItem('AuthToken'));
 
         if (vastus.ok) {
             console.log("Ostukorv loodud")

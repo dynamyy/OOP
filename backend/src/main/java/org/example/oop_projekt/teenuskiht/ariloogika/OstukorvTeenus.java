@@ -122,6 +122,7 @@ public class OstukorvTeenus {
     @verifyToken
     public void uuendaHindu(Ostukorv ostukorv, OstukorvDTO dto) {
 
+        ostukorv.setKasutaja(authTeenus.getKasutaja(dto));
         List<Pood> poed = poodRepository.findAll();
         List<Kliendikaardid> kliendikaardid = authTeenus.getKliendikaardid(dto);
 
