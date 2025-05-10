@@ -9,6 +9,9 @@ import rimiLogo from '../staatiline/logod/rimi.png';
 import prismaLogo from '../staatiline/logod/prisma.png';
 import MarksonadeLisamine from '../komponendid/MarksonadeLisamine';
 import OstukorviToodeKaart from '../komponendid/OstukorviToodeKaart';
+import { FontAwesomeIcon as Font, FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
 function LooOstukorv() {
 
@@ -188,10 +191,30 @@ function LooOstukorv() {
                                 <button className='nupp hele-tekst tume2' id='sisalduvus' onClick={() => setTooteKogus(tooteKogus + 1)}>+</button>
                             </div>
                             <button className='nupp hele-tekst tume' id='sisalduvus' onClick={() => lisaOstukorvi(marksonad)}>Lisa toode</button>
+                            <div className="ostukorv-ikoon2-konteiner tume umar-nurk hele-tekst" onClick={() => {
+                                    const ostukorv = document.querySelector(".ostukorv-konteiner")
+                                    ostukorv.classList.toggle("suletud")
+                                    ostukorv.classList.add("ease")
+                                    setTimeout(() => {
+                                        ostukorv.classList.remove("ease")
+                                    }, 500)
+                                }}>
+                                <FontAwesomeIcon icon={faCartShopping} className="ostukorv-ikoon2" />
+                            </div>
                         </div>
                     </div>
-                    <div className="ostukorv-konteiner-1 tume umar-nurk">
-                        <span className="hele-tekst">Ostukorv</span>
+                    <div className="ostukorv-konteiner suletud tume umar-nurk">
+                        <div>
+                            <span className="hele-tekst">Ostukorv</span>
+                            <FontAwesomeIcon icon={faArrowDown} className="ostukorv-ikoon ikoon-suur hele-tekst" onClick={() => {
+                                const ostukorv = document.querySelector(".ostukorv-konteiner")
+                                ostukorv.classList.toggle("suletud")
+                                ostukorv.classList.add("ease")
+                                setTimeout(() => {
+                                    ostukorv.classList.remove("ease")
+                                }, 500)
+                            }}/>
+                        </div>
                         <div className="ostukorv-list">
                             {Object.entries(ostukorv).map(([voti, toode]) => (
                                 <OstukorviToodeKaart
@@ -204,7 +227,9 @@ function LooOstukorv() {
                                 />
                             ))}
                         </div>
-                        <button className='nupp hele-tekst tume2' onClick={() => looOstukorv(ostukorviNimi, ostukorv)}>Loo ostukorv</button>
+                        {Object.keys(ostukorv).length > 0 ? 
+                        <button className='nupp hele-tekst tume2' onClick={() => looOstukorv(ostukorviNimi, ostukorv)}>Loo ostukorv</button> :
+                        <span className="hele-tekst">Ostukorv on tühi</span>}
                     </div>
                 </div>
                 <div id="tooted-list-konteiner">

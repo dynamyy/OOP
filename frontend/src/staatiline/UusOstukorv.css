@@ -6,6 +6,7 @@
     width: 40%;
     padding: 3rem;
     padding-top: 5rem;
+    position: relative;
 }
 
 
@@ -27,6 +28,10 @@
 #marksonad-konteiner > div:nth-child(2) > div > div .nupp {
     aspect-ratio: 1 / 1;
     max-height: 3rem;
+}
+
+#marksonad-konteiner > :first-child {
+    flex-grow: 1;
 }
 
 
@@ -324,7 +329,7 @@
     }
 
     .suletud {
-        transform: translateY(20rem);
+        transform: translateY(40vh);
     }
 
     .ease {
