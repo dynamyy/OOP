@@ -118,7 +118,7 @@ export const postOstukorv = async (nimi, tooted, token) => {
         const vastus = await fetch(`${BAAS_URL}/ostukorv`, {
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            body: JSON.stringify({"nimi": nimi, "tooted": tooted, "token": token})
+            body: JSON.stringify({"nimi": nimi, "tooted": tooted, "token": token || ""})
         })
 
         const sonum = await vastus.json();
