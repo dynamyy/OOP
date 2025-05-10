@@ -14,6 +14,7 @@ import org.example.oop_projekt.specifications.ToodeSpecification;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -53,7 +54,9 @@ public class ToodeTeenus {
         List<Toode> uuedTooted = new ArrayList<>();
 
         Pood pood = tooted.getFirst().getPood();
+        LocalDateTime uuendusAeg = LocalDateTime.now();
 
+        int uuendatudToodeteArv = 0;
         for (Toode toode : tooted) {
             Toode dbToode;
             try {
@@ -65,7 +68,9 @@ public class ToodeTeenus {
                 continue;
             }
 
+
             if (dbToode == null) {
+                toode.setViimatiUuendatud(uuendusAeg);
                 uuedTooted.add(toode);
             } else {
                 dbToode.setHindKliendi(toode.getHindKliendi());
@@ -73,15 +78,25 @@ public class ToodeTeenus {
                 dbToode.setHulgaHindKliendi(toode.getHulgaHindKliendi());
                 dbToode.setTukiHind(toode.getTukiHind());
                 dbToode.setTootePiltURL(toode.getTootePiltURL());
+                dbToode.setViimatiUuendatud(uuendusAeg);
+                uuendatudToodeteArv++;
                 toodeRepository.save(dbToode);
             }
         }
+        logger.info("Uuendasin andmebaasis {} {} toodet", uuendatudToodeteArv, pood.getNimi());
 
         for (Toode uusToode : uuedTooted) {
             poodTeenus.lisaToode(pood, uusToode);
             toodeRepository.save(uusToode);
         }
+        logger.info("Lisasin andmebaasi {} uut {} toodet", uuedTooted.size(), pood.getNimi());
+
+        // Vanade toodete kustutamine, mis pole seotud ühegi kasutaja ostukorviga
+        List<Long> tootedKustutamiseks = toodeRepository.leiaTootedKustutamiseks(pood, uuendusAeg);
+        toodeRepository.deleteByIds(tootedKustutamiseks);
+        logger.info("Kustutasin andmebaasist {} aegunud {} toodet", tootedKustutamiseks.size(), pood.getNimi());
     }
+
 
     // Meetod, mis kuvab kasutajale valitud märksõnaga tooted
     public List<Toode> valitudTootedAndmebaasist(List<MarksonaDTO> marksonad) {

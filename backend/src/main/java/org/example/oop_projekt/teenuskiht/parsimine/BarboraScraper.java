@@ -173,7 +173,8 @@ public class BarboraScraper extends WebScraper {
                             yhikuHind,
                             tykiHind,
                             pildiURL,
-                            "");
+                            "",
+                            null);
                     tooted.add(uusToode);
 
                 }
