@@ -1,7 +1,7 @@
 package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
 import org.example.oop_projekt.DTO.KasutajaKustutamineDTO;
-import org.example.oop_projekt.Erindid.AuthException;
+import org.example.oop_projekt.Erindid.Autentimine.AuthException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

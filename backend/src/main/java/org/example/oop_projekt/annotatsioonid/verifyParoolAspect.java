@@ -6,8 +6,8 @@ import org.aspectj.lang.annotation.Before;
 import org.example.oop_projekt.DTO.EmailDTO;
 import org.example.oop_projekt.DTO.ParoolDTO;
 import org.example.oop_projekt.DTO.TokenDTO;
-import org.example.oop_projekt.Erindid.AuthException;
-import org.example.oop_projekt.Erindid.SobimatuParoolException;
+import org.example.oop_projekt.Erindid.Autentimine.AuthException;
+import org.example.oop_projekt.Erindid.Autentimine.SobimatuParoolException;
 import org.example.oop_projekt.mudel.Kasutaja;
 import org.example.oop_projekt.repository.KasutajaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class verifyParoolAspect {
     }
 
     @Before("@annotation(verifyParool)")
-    public void handleVerifyParool(JoinPoint joinPoint) {
+    public void handleVerifyParool(JoinPoint joinPoint) throws SobimatuParoolException{
         Object[] args = joinPoint.getArgs();
 
         Kasutaja kasutaja = null;

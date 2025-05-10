@@ -1,9 +1,8 @@
 package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
 import org.example.oop_projekt.DTO.SisseLogimine;
-import org.example.oop_projekt.Erindid.AuthException;
+import org.example.oop_projekt.Erindid.Autentimine.AuthException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
-import org.example.oop_projekt.teenuskiht.autentimine.TokenHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

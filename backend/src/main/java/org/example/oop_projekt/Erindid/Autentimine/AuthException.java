@@ -1,4 +1,4 @@
-package org.example.oop_projekt.Erindid;
+package org.example.oop_projekt.Erindid.Autentimine;
 
 public class AuthException extends RuntimeException {
     private final String message;

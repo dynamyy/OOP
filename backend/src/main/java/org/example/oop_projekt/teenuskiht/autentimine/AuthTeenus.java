@@ -8,9 +8,9 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.*;
 import org.example.oop_projekt.Erindid.AndmeteUuendusException;
-import org.example.oop_projekt.Erindid.LoginFailException;
+import org.example.oop_projekt.Erindid.Autentimine.LoginFailException;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
-import org.example.oop_projekt.Erindid.TokenKehtetuException;
+import org.example.oop_projekt.Erindid.Autentimine.TokenKehtetuException;
 import org.example.oop_projekt.annotatsioonid.verifyParool;
 import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.Kasutaja;
@@ -42,6 +42,13 @@ public class AuthTeenus {
         this.encoder = new BCryptPasswordEncoder();
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.kliendikaardidRepository = kliendikaardidRepository;
+
+        /*
+        sobivad kõik eesti tähestiku tähed.
+         - Peab olema 1 suurtäht ja 1 väiketäht
+         - Peab olema 1 number
+         - Peab olema vähemalt 8 tähemärki pikk
+         */
         this.pwRegex = "^(?=.*[a-zäöüõšž])(?=.*[A-ZÄÖÜÕŠŽ])(?=.*\\d)[\\p{L}\\d\\p{P}\\p{S}]{8,}$";
     }
 
@@ -60,13 +67,6 @@ public class AuthTeenus {
         if (kasutajaRepository.findByEmail(dto.email()) != null) {
             throw new RegistreerimineFailedException("Selle meiliaadressiga kasutaja on juba olemas");
         }
-
-        /*
-        sobivad kõik eesti tähestiku tähed.
-         - Peab olema 1 suurtäht ja 1 väiketäht
-         - Peab olema 1 number
-         - Peab olema vähemalt 8 tähemärki pikk
-         */
 
         if (!dto.parool().matches(pwRegex)) {
             throw new RegistreerimineFailedException("Parool ei vasta nõuetele");
