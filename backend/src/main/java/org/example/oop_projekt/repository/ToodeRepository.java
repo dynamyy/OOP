@@ -23,7 +23,7 @@ public interface ToodeRepository extends JpaRepository<Toode, Long>, JpaSpecific
 
     Toode findToodeById(Long id);
 
-    @Query("SELECT new org.example.oop_projekt.DTO.ToodeDTO(t.id, t.nimetus, t.hindKliendi, t.hulgaHindKliendi, t.yhik, CASE WHEN t.hulgaHindKliendi < t.hindKliendi THEN 'true' ELSE 'false' END, t.pood.nimi, t.tootePiltURL) " +
+    @Query("SELECT new org.example.oop_projekt.DTO.ToodeDTO(t.id, t.nimetus, t.hindKliendi, t.hulgaHindKliendi, t.yhik, CASE WHEN t.hulgaHindKliendi < t.hindKliendi THEN 'true' ELSE 'false' END, t.pood.nimi, t.tootePiltURL, t.viimatiUuendatud) " +
             "FROM Toode t " +
             "WHERE LOWER(t.nimetus) LIKE LOWER(:nimetus)" +
             "ORDER BY 1")

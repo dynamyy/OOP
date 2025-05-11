@@ -1,5 +1,9 @@
 package org.example.oop_projekt.DTO;
 
+import org.example.oop_projekt.mudel.Toode;
+
+import java.time.LocalDateTime;
+
 public record ToodeDTO(
     Long id,
     String tooteNimi,
@@ -8,5 +12,20 @@ public record ToodeDTO(
     String uhik,
     String kasonSoodus,
     String pood,
-    String toodePiltURL
-) { }
+    String toodePiltURL,
+    LocalDateTime viimatiUuendatud
+) {
+    public ToodeDTO(Toode toode) {
+        this(
+                toode.getId(),
+                toode.getNimetus(),
+                toode.getHindKliendi(),
+                toode.getHulgaHindKliendi(),
+                toode.getYhik(),
+                toode.getHulgaHindKliendi() < toode.getHindKliendi() ? "true" : "false",
+                toode.getPood().getNimi(),
+                toode.getTootePiltURL(),
+                toode.getViimatiUuendatud()
+        );
+    }
+}

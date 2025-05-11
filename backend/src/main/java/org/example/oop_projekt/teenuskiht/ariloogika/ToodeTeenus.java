@@ -134,22 +134,7 @@ public class ToodeTeenus {
     }
 
     public List<ToodeDTO> tootedDTOdeks(List<Toode> tooted) {
-        //for (Toode toode : tooted) {
-        //    System.out.println(toode.getNimetus() + " - " + toode.getHindKliendi() + " - " + toode.getHulgaHindKliendi());
-        //}
-        return tooted.stream()
-                .map(toode -> new ToodeDTO(
-                        toode.getId(),
-                        toode.getNimetus(),
-                        toode.getHindKliendi(),
-                        toode.getHulgaHindKliendi(),
-                        toode.getYhik(),
-                        toode.getHulgaHindKliendi() < toode.getHindKliendi() ? "true" : "false",
-                        toode.getPood().getNimi(),
-                        toode.getTootePiltURL()
-                ))
-                .distinct() // eemaldab korduvad elemendid
-                .toList();
+        return tooted.stream().map(ToodeDTO::new).distinct().toList();
     }
 
     /*

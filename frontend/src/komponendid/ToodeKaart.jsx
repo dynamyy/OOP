@@ -1,15 +1,27 @@
 import { useState, React } from 'react'
+import { useNavigate } from 'react-router-dom';
 import standardPilt from '../staatiline/standard/standard-toode.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmarkCircle } from '@fortawesome/free-regular-svg-icons'
+import '../staatiline/UusOStukorv.css'
 
 function ToodeKaart(props) {
+    const navigate = useNavigate();
+
+    const kaartVajutatud = () => {
+        navigate(`/Toode/${props.id}`);
+    }
+
+    const Xvajutatud = (e) => {
+        e.stopPropagation();
+        props.lisaEbasobivToode(e, props.id);
+    }
 
     return (
         <div>
-            <div className="toode-kaart-konteiner umar-nurk">
+            <div onClick={kaartVajutatud} className="toode-kaart-konteiner umar-nurk">
                 <div className="toode-kaart-pilt-konteiner">
-                    <FontAwesomeIcon icon={faXmarkCircle} className='ikoon toode-kaart-ikoon' onClick={(e) => props.lisaEbasobivToode(e, props.id)} />
+                    <FontAwesomeIcon icon={faXmarkCircle} className='ikoon toode-kaart-ikoon' onClick={Xvajutatud} />
                     <div>
                         <img src={props.toodeUrl ? props.toodeUrl : standardPilt} alt="pilt" className={props.toodeUrl ? "toode-pilt" : "toode-pilt-standard"} />
                     </div>

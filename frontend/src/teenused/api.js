@@ -148,3 +148,24 @@ export const kustutaKasutaja = async (requestData) => {
         return {ok: false, sonum: "Viga kasutaja kustutamise päringu saatmisel"}
     }
 }
+
+export const getToode = async (id) => {
+    try {
+        const vastus = await fetch(`${BAAS_URL}/toode/${id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify()
+        })
+
+        const vastuseData = await vastus.json();
+
+        if (vastus.ok) {
+            return {ok: vastus.ok, tooteAndmed: vastuseData.tooteAndmed};
+        }
+        
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
+        
+    } catch (viga) {
+        return {ok: false, sonum: "Viga tooteandmete hankimisel"}
+    }
+}
