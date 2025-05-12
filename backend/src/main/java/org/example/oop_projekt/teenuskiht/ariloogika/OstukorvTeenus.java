@@ -123,7 +123,6 @@ public class OstukorvTeenus {
     public void uuendaHindu(Ostukorv ostukorv, OstukorvDTO dto) {
 
         List<Pood> poed = poodRepository.findAll();
-
         List<Kliendikaardid> kliendikaardid = authTeenus.getKliendikaardid(dto);
 
         for (Pood pood : poed) {
