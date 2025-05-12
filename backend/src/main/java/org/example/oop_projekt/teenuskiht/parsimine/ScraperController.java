@@ -54,6 +54,8 @@ public class ScraperController{
 
             } catch (ScrapeFailedException e) {
                 logger.error("{} scrape failis: {}", pood.getPoeNimi(), e.getMessage());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
 
 

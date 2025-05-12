@@ -8,13 +8,22 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
+import java.awt.Robot;
+import java.awt.AWTException;
+
+
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class BarboraScraper extends WebScraper {
@@ -37,8 +46,10 @@ public class BarboraScraper extends WebScraper {
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
         wait.until(driver -> !driver.findElements(By.cssSelector(".category-item--title")).isEmpty());
 
+
         return chromedriver.getPageSource();
     }
+
 
     //Vahelehtede html leidmine
     public String html(String url) {
@@ -82,7 +93,7 @@ public class BarboraScraper extends WebScraper {
     //Kuna kõiki vahelehti ei saanud kohe alguses kätte, tuleb siin kasutada for loopi, et leida vahelehed, kus üldse tooted on.
     //Kui juhtub, et tooteid ei ole lehel või toodet pole hetkel valikus, võime loopi lõpetada sest mittesaadaval olevad tooted on viimased
     @Override
-    public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException {
+    public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException, InterruptedException {
         setChromedriver(chromedriver);
         List<String> urlid = URLiKirjed();
         List<Toode> tooted = new ArrayList<>();
@@ -95,11 +106,19 @@ public class BarboraScraper extends WebScraper {
         for (String url : urlid){
             int i = 2;
 
+            /*
+            Random random = new Random();
+            int sleepTime = 500 + random.nextInt(3500);
+            Thread.sleep(sleepTime);
+
+             */
+
             String vaheleht = url;
             while (true) {
 
                 String html = html(vaheleht);
                 Document doc = Jsoup.parse(html);
+
 
                 Elements kaardid = doc.select("li[data-testid^=product-card]");
 
@@ -119,6 +138,7 @@ public class BarboraScraper extends WebScraper {
 
                     Element nimiElement = kaart.selectFirst("span.tw-block");
                     String tooteNimi = nimiElement.text();
+
 
 
                     Element yhikuHindElement = kaart.selectFirst("div.tw-text-\\[10px\\]");
@@ -155,6 +175,7 @@ public class BarboraScraper extends WebScraper {
                             pildiURL = piltElement.attr("data-srcset");
                         }
                     }
+
                     /*
                     System.out.println("Nimi: " + tooteNimi +
                             ", tükihind: " + tykiHind +
@@ -163,7 +184,8 @@ public class BarboraScraper extends WebScraper {
                             ", kliendi ühikuhind: " + kliendiYhikuHind +
                             ", ühik: " + yhik +
                             ", piltURL: " + pildiURL);
-                    */
+
+                     */
 
                     Toode uusToode = new Toode(tooteNimi,
                             yhik,
@@ -181,9 +203,20 @@ public class BarboraScraper extends WebScraper {
 
                 vaheleht = url + "?page=" + i;
                 i++;
+                // Robot, et Barbora ei tuvastaks scraperit
+                Random random = new Random();
+                int randomX = 1 + random.nextInt(500); // 1–500
+                int randomY = 1 + random.nextInt(500); // 1–500
+
+                Actions actions = new Actions(chromedriver);
+                actions.moveByOffset(randomX, randomY).perform();
+                actions.moveByOffset(-randomX, -randomY).perform();
+                //Thread.sleep(sleepTime - 500);
             }
             //break;//Vaatab ainult 1 alamkategooria, kustuta see ära kui päriselt scrapeda tahad
         }
-        return tooted;//Leht tuvastab scraperi, seega tuleks scrapemine teha osade kaupa või leida mõni muu lahendus
+        return tooted;
     }
+
+
 }
