@@ -17,4 +17,4 @@ Funktsionaalsused:
 - Lisa backend kaustas backend kausta env.properties fail, kuhu lisa järgmised read:<br>
   `DB_USER=sinu postgreSQL kasutaja`<br>
   `DB_PW=sinu postgreSQL parool`<br>
-  `TOKEN_KEY=pikk suvaliste sümbolite jada`<br>
+  `TOKEN_KEY=vähemalt 32 tähemärki pikk  suvaliste sümbolite jada`<br>
