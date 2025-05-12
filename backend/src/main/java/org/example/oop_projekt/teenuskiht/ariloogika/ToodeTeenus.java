@@ -1,11 +1,15 @@
 package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
+import org.example.oop_projekt.DTO.HinnaMuutusDTO;
 import org.example.oop_projekt.DTO.MarksonaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
+import org.example.oop_projekt.annotatsioonid.verifyToken;
+import org.example.oop_projekt.mudel.Kasutaja;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.repository.ToodeRepository;
+import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -28,12 +32,14 @@ public class ToodeTeenus {
 
     private final ToodeRepository toodeRepository;
     private final PoodTeenus poodTeenus;
+    private final AuthTeenus authTeenus;
     private final Logger logger;
 
-    public ToodeTeenus(ToodeRepository toodeRepository, PoodTeenus poodTeenus) {
+    public ToodeTeenus(ToodeRepository toodeRepository, PoodTeenus poodTeenus, AuthTeenus authTeenus) {
         this.toodeRepository = toodeRepository;
         this.poodTeenus = poodTeenus;
         this.logger = LoggerFactory.getLogger(ToodeTeenus.class);
+        this.authTeenus = authTeenus;
     }
 
     /**
@@ -137,11 +143,19 @@ public class ToodeTeenus {
         return tooted.stream().map(ToodeDTO::new).distinct().toList();
     }
 
-    /*
+
     //Meetod, mille abil saab muuta toote hindu läbi frontendi
+    @verifyToken
     public void muudaTooteHind(HinnaMuutusDTO hinnaMuutusDTO) {
-        toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
+        ToodeDTO toode = hinnaMuutusDTO.toodeDTO();
+        Kasutaja kasutaja = authTeenus.getKasutaja(hinnaMuutusDTO);
+        logger.info("sain andmed {} uuendamiseks kasutajale {}", toode.tooteNimi(), kasutaja.getEmail());
+
+
+        // throw AndmeteUuendusException, kui sellist toodet pole andmebaasis vms
+
+        //toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
     }
 
-     */
+
 }
