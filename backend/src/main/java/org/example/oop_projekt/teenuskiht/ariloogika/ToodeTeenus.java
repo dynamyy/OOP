@@ -1,11 +1,15 @@
 package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
+import org.example.oop_projekt.DTO.HinnaMuutusDTO;
 import org.example.oop_projekt.DTO.MarksonaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
+import org.example.oop_projekt.annotatsioonid.verifyToken;
+import org.example.oop_projekt.mudel.Kasutaja;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.repository.ToodeRepository;
+import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -14,6 +18,7 @@ import org.example.oop_projekt.specifications.ToodeSpecification;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -27,12 +32,14 @@ public class ToodeTeenus {
 
     private final ToodeRepository toodeRepository;
     private final PoodTeenus poodTeenus;
+    private final AuthTeenus authTeenus;
     private final Logger logger;
 
-    public ToodeTeenus(ToodeRepository toodeRepository, PoodTeenus poodTeenus) {
+    public ToodeTeenus(ToodeRepository toodeRepository, PoodTeenus poodTeenus, AuthTeenus authTeenus) {
         this.toodeRepository = toodeRepository;
         this.poodTeenus = poodTeenus;
         this.logger = LoggerFactory.getLogger(ToodeTeenus.class);
+        this.authTeenus = authTeenus;
     }
 
     /**
@@ -53,7 +60,9 @@ public class ToodeTeenus {
         List<Toode> uuedTooted = new ArrayList<>();
 
         Pood pood = tooted.getFirst().getPood();
+        LocalDateTime uuendusAeg = LocalDateTime.now();
 
+        int uuendatudToodeteArv = 0;
         for (Toode toode : tooted) {
             Toode dbToode;
             try {
@@ -65,7 +74,9 @@ public class ToodeTeenus {
                 continue;
             }
 
+
             if (dbToode == null) {
+                toode.setViimatiUuendatud(uuendusAeg);
                 uuedTooted.add(toode);
             } else {
                 dbToode.setHindKliendi(toode.getHindKliendi());
@@ -73,15 +84,25 @@ public class ToodeTeenus {
                 dbToode.setHulgaHindKliendi(toode.getHulgaHindKliendi());
                 dbToode.setTukiHind(toode.getTukiHind());
                 dbToode.setTootePiltURL(toode.getTootePiltURL());
+                dbToode.setViimatiUuendatud(uuendusAeg);
+                uuendatudToodeteArv++;
                 toodeRepository.save(dbToode);
             }
         }
+        logger.info("Uuendasin andmebaasis {} {} toodet", uuendatudToodeteArv, pood.getNimi());
 
         for (Toode uusToode : uuedTooted) {
             poodTeenus.lisaToode(pood, uusToode);
             toodeRepository.save(uusToode);
         }
+        logger.info("Lisasin andmebaasi {} uut {} toodet", uuedTooted.size(), pood.getNimi());
+
+        // Vanade toodete kustutamine, mis pole seotud ühegi kasutaja ostukorviga
+        List<Long> tootedKustutamiseks = toodeRepository.leiaTootedKustutamiseks(pood, uuendusAeg);
+        toodeRepository.deleteByIds(tootedKustutamiseks);
+        logger.info("Kustutasin andmebaasist {} aegunud {} toodet", tootedKustutamiseks.size(), pood.getNimi());
     }
+
 
     // Meetod, mis kuvab kasutajale valitud märksõnaga tooted
     public List<Toode> valitudTootedAndmebaasist(List<MarksonaDTO> marksonad) {
@@ -119,29 +140,22 @@ public class ToodeTeenus {
     }
 
     public List<ToodeDTO> tootedDTOdeks(List<Toode> tooted) {
-        for (Toode toode : tooted) {
-            System.out.println(toode.getNimetus() + " - " + toode.getHindKliendi() + " - " + toode.getHulgaHindKliendi());
-        }
-        return tooted.stream()
-                .map(toode -> new ToodeDTO(
-                        toode.getId(),
-                        toode.getNimetus(),
-                        toode.getHindKliendi(),
-                        toode.getHulgaHindKliendi(),
-                        toode.getYhik(),
-                        toode.getHulgaHindKliendi() < toode.getHindKliendi() ? "true" : "false",
-                        toode.getPood().getNimi(),
-                        toode.getTootePiltURL()
-                ))
-                .distinct() // eemaldab korduvad elemendid
-                .toList();
+        return tooted.stream().map(ToodeDTO::new).distinct().toList();
     }
 
-    /*
+
     //Meetod, mille abil saab muuta toote hindu läbi frontendi
+    @verifyToken
     public void muudaTooteHind(HinnaMuutusDTO hinnaMuutusDTO) {
-        toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
+        ToodeDTO toode = hinnaMuutusDTO.toodeDTO();
+        Kasutaja kasutaja = authTeenus.getKasutaja(hinnaMuutusDTO);
+        logger.info("sain andmed {} uuendamiseks kasutajale {}", toode.tooteNimi(), kasutaja.getEmail());
+
+
+        // throw AndmeteUuendusException, kui sellist toodet pole andmebaasis vms
+
+        //toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
     }
 
-     */
+
 }

@@ -1,0 +1,58 @@
+#toode-konteiner {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100%;
+    width: 40%;
+    padding: 3rem;
+    padding-top: 6rem;
+    position: relative;
+}
+
+#toode-konteiner > span {
+    font-size: x-large;
+    font-weight: 700;
+}
+
+#toode-konteiner > div > span, #toode-konteiner > div > div > span {
+    font-size: x-large;
+    font-weight: 520;
+}
+
+#toode-andmed-konteiner {
+    display: flex;
+    flex-direction: column;
+    border: #153448 solid 1px;
+    height: 100%;
+    width: 100%;
+    padding: 3rem;
+}
+
+#pilt-konteiner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    padding-right: 20%;
+    height: 100%;
+    width: 60%;
+}
+
+.toode-pilt-suur {
+    height: 50%;
+    width: 50%;
+    object-fit: contain;
+    margin: 1rem;
+    mix-blend-mode: multiply;
+}
+
+#toode-konteiner > div > input {
+    background-color: #DFD0B8;
+    font-size: 1.5rem;
+    border: 2px solid #153448;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kuupaevaValik {
+    margin-left: 1rem;
+}

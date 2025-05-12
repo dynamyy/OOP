@@ -143,6 +143,11 @@
     margin-bottom: 0.5rem;
     padding-right: 1.5rem;
     transition: 0.1s;
+    cursor: pointer;
+}
+
+.toode-kaart-konteiner:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .toode-kaart-hind-konteiner {
@@ -244,6 +249,8 @@
     width: fit-content;
     min-width: 20rem;
     padding: 1.5rem;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
 }
 
 .ostukorv-konteiner > div:first-child {
@@ -299,6 +306,7 @@
     align-items: center;
     padding: 1rem;
     position: relative;
+    border-radius: 5px;
 }
 
 .ostukorv-ikoon2-konteiner:hover {

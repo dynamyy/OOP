@@ -9,7 +9,19 @@ function MarksonadeLisamine(props) {
             <div className="teksti-paar">
                 <label htmlFor="marksona" className="tume-tekst">Sisesta toote otsimiseks märksõna:</label>
                 <div className="tekst-nupp-konteiner">
-                    <input type="text" name='marksona' className='hele tume-tekst' value={props.uusMarksona} onChange={e => props.setUusMarksona(e.target.value)} />
+                    <input 
+                        type="text" 
+                            name='marksona' 
+                        className='hele tume-tekst' 
+                        value={props.uusMarksona} 
+                        onChange={e => props.setUusMarksona(e.target.value)}
+                        placeholder='Sisesta märksõna'
+                        onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                                props.lisaMarksona(props.uusMarksona)
+                            }
+                        }}
+                         />
                     <button className='nupp hele-tekst roheline' id='sisalduvus' onClick={() => props.muudaSisalduvust()}><span>Sisaldab</span></button>
                     <button className='nupp tume2 hele-tekst' onClick={() => props.lisaMarksona(props.uusMarksona)}><span>Lisa</span></button>
                 </div>

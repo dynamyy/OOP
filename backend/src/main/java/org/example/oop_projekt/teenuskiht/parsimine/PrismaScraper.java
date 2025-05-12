@@ -165,7 +165,8 @@ public class PrismaScraper extends WebScraper {
                     uhikuHind,
                     tkHind,
                     tootePiltUrl,
-                    tooteKood);
+                    tooteKood,
+                    null);
             tooted.add(uusToode);
         }
     }

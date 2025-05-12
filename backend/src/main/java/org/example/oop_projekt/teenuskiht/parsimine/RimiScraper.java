@@ -206,7 +206,8 @@ public class RimiScraper extends WebScraper {
                             yhikuHind,
                             tykiHind,
                             pildiURL,
-                            "");
+                            "",
+                            null);
                     tooted.add(uusToode);
 
 

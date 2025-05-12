@@ -32,7 +32,7 @@ function Menuu() {
                     <li><Link to="/ostukorvid" className='hele-tekst'>Ostukorvid</Link></li>
                     <li><Link to="/tooted" className='hele-tekst'>Tooted</Link></li>
                     {onSisselogitud && (
-                        <li><Link to="#" onClick={logiValja}>Logi välja</Link></li>
+                        <li><Link to="#" className='hele-tekst' onClick={logiValja}>Logi välja</Link></li>
                     )}
                 </ul>
             </nav>

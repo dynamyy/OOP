@@ -72,7 +72,7 @@ function Kasutaja() {
             return valitudPoed.has(pood) ? 'roheline roheline-hover-disabled' : 'punane punane-hover-disabled';
         }
 
-        return valitudPoed.has(pood) ? 'roheline' : 'punane';
+        return valitudPoed.has(pood) ? 'roheline vajutatav' : 'punane vajutatav';
     }
 
     async function uuendaParool() {

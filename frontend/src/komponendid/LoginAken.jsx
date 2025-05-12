@@ -84,11 +84,14 @@ function loginAken() {
                     { !kasutajaRegistreerimine ?  
                         (
                             <>
-                            <button className='nupp tume2 hele-tekst' onClick={() => logiSisse(email, parool)}><span>Logi sisse</span></button>
-                            <button className='nupp tume2 hele-tekst' onClick={() => {
-                                setKasutajaRegistreerimine(true);
-                                setSisselogimiseTeade('');
-                                }}><span>Registreeri uus kasutaja</span></button>
+                            <div className="samal-real">
+                                <button className='nupp tume2 hele-tekst' onClick={() => logiSisse(email, parool)}><span>Logi sisse</span></button>
+                                <button className='nupp tume2 hele-tekst' onClick={() => {
+                                    setKasutajaRegistreerimine(true);
+                                    setSisselogimiseTeade('');
+                                    }}><span>Registreeri uus kasutaja</span></button>
+                            </div>
+                            <button className='nupp tume2 hele-tekst' onClick={() => navigate("/ostukorvid")}><span>Jätka ilma kasutajata</span></button>
                             </>
                         ) : (
                             <>

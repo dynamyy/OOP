@@ -58,7 +58,7 @@ public class CoopScraper extends WebScraper {
         // Üleliigne tekst eemaldatakse split meetodiga
         int toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
 
-        scrolliLeheLoppu(toodeteArv, "app-product-card.item");
+        scrolliLeheLoppu(300, "app-product-card.item");
 
         return chromedriver.getPageSource();
     }
@@ -164,7 +164,8 @@ public class CoopScraper extends WebScraper {
                                     uhikuHind,
                                     tkHind,
                                     pildiUrl,
-                                    "");
+                                    "",
+                                    null);
             tooted.add(uusToode);
         }
 

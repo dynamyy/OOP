@@ -217,7 +217,8 @@ public class SelverScraper extends WebScraper {
                         yhikuHind,
                         tykiHind,
                         pildiURL,
-                        "");
+                        "",
+                        null);
                 tooted.add(uusToode);
             }
         }

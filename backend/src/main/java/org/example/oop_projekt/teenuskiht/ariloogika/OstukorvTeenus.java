@@ -1,10 +1,7 @@
 package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
-import org.example.oop_projekt.DTO.EbasobivToodeDTO;
-import org.example.oop_projekt.DTO.MarksonaDTO;
-import org.example.oop_projekt.DTO.OstukorvDTO;
-import org.example.oop_projekt.DTO.ToodeOstukorvisDTO;
+import org.example.oop_projekt.DTO.*;
 import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.*;
 import org.example.oop_projekt.repository.EbasobivToodeRepository;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // Teenuseklass, mis sisaldab ostukorviga seotud äriloogikat
 @Service
@@ -122,12 +120,13 @@ public class OstukorvTeenus {
     @verifyToken
     public void uuendaHindu(Ostukorv ostukorv, OstukorvDTO dto) {
 
+        ostukorv.setKasutaja(authTeenus.getKasutaja(dto));
         List<Pood> poed = poodRepository.findAll();
         List<Kliendikaardid> kliendikaardid = authTeenus.getKliendikaardid(dto);
 
         for (Pood pood : poed) {
 
-            boolean omabKliendikaarti = kliendikaardid.stream().anyMatch(kliendikaart -> kliendikaart.getPoeNimi().toLowerCase().equals(pood.getNimi().toLowerCase()));
+            boolean omabKliendikaarti = kliendikaardid.stream().anyMatch(kliendikaart -> kliendikaart.getPoeNimi().equalsIgnoreCase(pood.getNimi()));
 
             List<ToodeOstukorvis> tootedOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisByOstukorv(ostukorv);// See rida peaks toimima kohe alguses määrates
             for (ToodeOstukorvis ostukorviToode : tootedOstukorvis) {
@@ -156,6 +155,50 @@ public class OstukorvTeenus {
             }
         }
         ostukorvRepository.save(ostukorv);
+    }
+
+    private Toode leiaPoeToode(String pood, ToodeOstukorvis toodeOstukorvis) {
+        return switch (pood) {
+            case "coop" -> toodeOstukorvis.getCoopToode();
+            case "prisma" -> toodeOstukorvis.getPrismaToode();
+            case "barbora" -> toodeOstukorvis.getBarboraToode();
+            case "rimi" -> toodeOstukorvis.getRimiToode();
+            case "selver" -> toodeOstukorvis.getSelverToode();
+            default -> null;
+        };
+    }
+
+    @verifyToken
+    public OstukorvTootedDTO looOstukorviDTO(Ostukorv ostukorv, Token token) {
+
+        OstukorvTootedDTO ostukorvTootedDTO = new OstukorvTootedDTO(ostukorv.getNimi(), new ArrayList<>());
+
+        List<Pood> poed = poodRepository.findAll();
+        List<Kliendikaardid> kliendikaardid = authTeenus.getKliendikaardid(token);
+
+        for (Pood pood : poed) {
+            OstukorvPoodDTO poodDTO = new OstukorvPoodDTO(pood.getNimi(), new ArrayList<>());
+
+            boolean omabKliendikaarti = kliendikaardid
+                    .stream()
+                    .anyMatch(kliendikaart -> kliendikaart
+                            .getPoeNimi().equalsIgnoreCase(pood.getNimi()));
+
+            poodDTO.tooted().addAll(
+                    ostukorv.getTootedOstukorvis().stream().map(toode -> {
+                        Toode t = leiaPoeToode(pood.getNimi().toLowerCase(), toode);
+                        if (!(t == null)) {
+                            return new ToodeOStukorvisArvutatudDTO(
+                                    t.getNimetus(),
+                                    omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind(),
+                                    omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind(),
+                                    t.getTootePiltURL());
+                        }
+                        return null;
+                    }).toList());
+            ostukorvTootedDTO.poed().add(poodDTO);
+        }
+        return ostukorvTootedDTO;
     }
 }
 
