@@ -128,5 +128,27 @@ public class Toode {
 
     public Toode() {
     }
+
+    @Override
+    public String toString() {
+        return "Toode{" +
+                "id=" + id +
+                ", nimetus='" + nimetus + '\'' +
+                ", tukiHind=" + tukiHind +
+                ", hulgaHind=" + hulgaHind +
+                ", yhik='" + yhik + '\'' +
+                ", hindKliendi=" + hindKliendi +
+                ", hulgaHindKliendi=" + hulgaHindKliendi +
+                ", tootePiltURL='" + tootePiltURL + '\'' +
+                ", tooteKood='" + tooteKood + '\'' +
+                ", viimatiUuendatud=" + viimatiUuendatud +
+                ", pood=" + pood +
+                ", barboraOdavaimadTooted=" + barboraOdavaimadTooted +
+                ", cooopOdavaimadTooted=" + cooopOdavaimadTooted +
+                ", rimiOdavaimadTooted=" + rimiOdavaimadTooted +
+                ", prismaOdavaimadTooted=" + prismaOdavaimadTooted +
+                ", selverOdavaimadTooted=" + selverOdavaimadTooted +
+                '}';
+    }
 }
 

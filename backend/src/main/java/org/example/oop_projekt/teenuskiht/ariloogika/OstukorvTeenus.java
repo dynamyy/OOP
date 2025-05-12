@@ -159,28 +159,18 @@ public class OstukorvTeenus {
     }
 
     private Toode leiaPoeToode(String pood, ToodeOstukorvis toodeOstukorvis) {
-        switch (pood) {
-            case "coop" -> {
-                return toodeOstukorvis.getCoopToode();
-            }
-            case "prisma" -> {
-                return toodeOstukorvis.getPrismaToode();
-            }
-            case "barbora" -> {
-                return toodeOstukorvis.getBarboraToode();
-            }
-            case "rimi" -> {
-                return toodeOstukorvis.getRimiToode();
-            }
-            case "selver" -> {
-                return toodeOstukorvis.getSelverToode();
-            }
-        }
-        return null;
+        return switch (pood) {
+            case "coop" -> toodeOstukorvis.getCoopToode();
+            case "prisma" -> toodeOstukorvis.getPrismaToode();
+            case "barbora" -> toodeOstukorvis.getBarboraToode();
+            case "rimi" -> toodeOstukorvis.getRimiToode();
+            case "selver" -> toodeOstukorvis.getSelverToode();
+            default -> null;
+        };
     }
 
     @verifyToken
-    public OstukorvTootedDTO looOstukorviDTO(Ostukorv ostukorv, TokenDTO token) {
+    public OstukorvTootedDTO looOstukorviDTO(Ostukorv ostukorv, Token token) {
 
         OstukorvTootedDTO ostukorvTootedDTO = new OstukorvTootedDTO(ostukorv.getNimi(), new ArrayList<>());
 
@@ -197,12 +187,15 @@ public class OstukorvTeenus {
 
             poodDTO.tooted().addAll(
                     ostukorv.getTootedOstukorvis().stream().map(toode -> {
-                        Toode t = leiaPoeToode(pood.getNimi(), toode);
-                        return new ToodeOStukorvisArvutatudDTO(
-                                t.getNimetus(),
-                                omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind(),
-                                omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind(),
-                                t.getTootePiltURL());
+                        Toode t = leiaPoeToode(pood.getNimi().toLowerCase(), toode);
+                        if (!(t == null)) {
+                            return new ToodeOStukorvisArvutatudDTO(
+                                    t.getNimetus(),
+                                    omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind(),
+                                    omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind(),
+                                    t.getTootePiltURL());
+                        }
+                        return null;
                     }).toList());
             ostukorvTootedDTO.poed().add(poodDTO);
         }
