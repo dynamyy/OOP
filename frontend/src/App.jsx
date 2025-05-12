@@ -2,6 +2,7 @@ import LooOstukorv from "./lehed/LooOstukorv"
 import Kasutaja from "./lehed/Kasutaja"
 import Tooted from "./lehed/Tooted"
 import Toode from "./lehed/Toode"
+import OstukorvTulemus from "./lehed/OstukorvTulemus"
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './staatiline/App.css'
 import './staatiline/Ava.css'
@@ -18,6 +19,7 @@ function App() {
           <Route path="/tooted" element={<Tooted />} />
           <Route path="/kasutaja" element={<Kasutaja />} />
           <Route path="/Toode/:id" element={<Toode />} />
+          <Route path="/ostukorv/:id" element={<OstukorvTulemus />} />
         </Routes>
       </BrowserRouter>
     </>

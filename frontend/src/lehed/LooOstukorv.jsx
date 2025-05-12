@@ -53,7 +53,7 @@ function LooOstukorv() {
     function lisaMarksona(marksona) {
         if (marksona !== "" && marksona.trim() !== "" && !(marksona in marksonad)) {
             setMarksonad(vanadMarksonad => ({...vanadMarksonad, [marksona]: uusSisalduvus}))
-        }
+        }   
         setUusMarksona('')
         setUusSisalduvus("roheline")
         const nupp = document.getElementById('sisalduvus')
@@ -192,7 +192,7 @@ function LooOstukorv() {
                                 <button className='nupp hele-tekst tume2' id='sisalduvus' onClick={() => setTooteKogus(tooteKogus + 1)}>+</button>
                             </div>
                             <button className='nupp hele-tekst tume' id='sisalduvus' onClick={() => lisaOstukorvi(marksonad)}>Lisa toode</button>
-                            <div className="ostukorv-ikoon2-konteiner tume umar-nurk hele-tekst" onClick={() => {
+                            <div className="ostukorv-ikoon2-konteiner tume hele-tekst" onClick={() => {
                                     const ostukorv = document.querySelector(".ostukorv-konteiner")
                                     ostukorv.classList.toggle("suletud")
                                     ostukorv.classList.add("ease")

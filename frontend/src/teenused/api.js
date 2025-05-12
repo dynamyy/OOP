@@ -169,3 +169,24 @@ export const getToode = async (id) => {
         return {ok: false, sonum: "Viga tooteandmete hankimisel"}
     }
 }
+
+export const getOstukorvTulemus = async (id, token) => {
+    try {
+        const vastus = await fetch(`${BAAS_URL}/ostukorv/${id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({"token": token || ""})
+        })
+
+        const vastuseData = await vastus.json();
+
+        if (vastus.ok) {
+            return {ok: vastus.ok, ostukorvAndmed: vastuseData.ostukorvAndmed};
+        }
+        
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
+        
+    } catch (viga) {
+        return {ok: false, sonum: "Viga ostukorvi andmete hankimisel"}
+    }
+}
