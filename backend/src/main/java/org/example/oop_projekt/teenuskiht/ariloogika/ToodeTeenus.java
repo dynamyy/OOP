@@ -1,8 +1,10 @@
 package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
+import org.example.oop_projekt.DTO.HinnaMuutusDTO;
 import org.example.oop_projekt.DTO.MarksonaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
+import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.repository.ToodeRepository;
@@ -137,11 +139,18 @@ public class ToodeTeenus {
         return tooted.stream().map(ToodeDTO::new).distinct().toList();
     }
 
-    /*
+
     //Meetod, mille abil saab muuta toote hindu läbi frontendi
+    @verifyToken
     public void muudaTooteHind(HinnaMuutusDTO hinnaMuutusDTO) {
-        toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
+        ToodeDTO toode = hinnaMuutusDTO.toodeDTO();
+        logger.info("sain andmed {} uuendamiseks.", toode.tooteNimi());
+
+
+        // throw AndmeteUuendusException, kui sellist toodet pole andmebaasis vms
+
+        //toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
     }
 
-     */
+
 }

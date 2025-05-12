@@ -140,4 +140,27 @@
 .samal-real {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+}
+
+.vajutatav {
+    cursor: pointer
+}
+
+.kuupaevaValik {
+    background-color: #DFD0B8;
+    border: 2px solid #153448;
+    color: #153448;
+    border-radius: 10px;
+    padding: 0.5rem 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    outline: none;
+}
+
+.kuupaevaValik:hover {
+    border-color: #3C5B6F;
+    background-color: #E8DBC8;
 }

@@ -1,4 +1,7 @@
 package org.example.oop_projekt.DTO;
 
-public class HinnaMuutusDTO {
+public record HinnaMuutusDTO (
+        ToodeDTO toodeDTO,
+        String token
+) implements TokenDTO {
 }

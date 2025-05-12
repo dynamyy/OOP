@@ -169,3 +169,19 @@ export const getToode = async (id) => {
         return {ok: false, sonum: "Viga tooteandmete hankimisel"}
     }
 }
+
+export const uuendaTooteHind = async (tooteInfo, token) => {
+    try {
+        const vastus = await fetch(`${BAAS_URL}/toode/muuda`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({"token": token, "toodeDTO": tooteInfo})
+        })
+
+        const vastuseData = await vastus.json();
+
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
+    } catch (viga) {
+        return {ok: false, sonum: "Viga toote uuendamisel"}
+    }
+}
