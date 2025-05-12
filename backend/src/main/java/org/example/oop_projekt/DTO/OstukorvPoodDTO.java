@@ -1,4 +1,9 @@
 package org.example.oop_projekt.DTO;
 
-public record OstukorvPoodDTO() {
+import java.util.List;
+
+public record OstukorvPoodDTO(
+        String pood,
+        List<ToodeOStukorvisArvutatudDTO> tooted
+) {
 }
