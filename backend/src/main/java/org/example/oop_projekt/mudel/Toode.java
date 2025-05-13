@@ -38,12 +38,14 @@ public class Toode {
     private String nimetus;
 
     @Column(
-            name = "tyki_hind"
+            name = "tyki_hind",
+            columnDefinition = "NUMERIC(10, 2)"
     )
     private double tukiHind;
 
     @Column(
-            name = "hulga_hind"
+            name = "hulga_hind",
+            columnDefinition = "NUMERIC(10, 2)"
     )
     private double hulgaHind;
 
@@ -55,12 +57,14 @@ public class Toode {
     private String yhik;
 
     @Column(
-            name = "hind_kliendi"
+            name = "hind_kliendi",
+            columnDefinition = "NUMERIC(10, 2)"
     )
     private double hindKliendi;
 
     @Column(
-            name = "hulga_hind_kliendi"
+            name = "hulga_hind_kliendi",
+            columnDefinition = "NUMERIC(10, 2)"
     )
     private double hulgaHindKliendi;
 

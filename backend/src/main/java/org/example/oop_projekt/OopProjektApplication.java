@@ -2,9 +2,7 @@ package org.example.oop_projekt;
 
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.repository.PoodRepository;
-import org.example.oop_projekt.repository.ToodeRepository;
 import org.example.oop_projekt.teenuskiht.parsimine.*;
-import org.example.oop_projekt.teenuskiht.ariloogika.PoodTeenus;
 import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,26 +18,14 @@ import java.util.List;
 @EnableScheduling
 public class OopProjektApplication {
 
-    private ToodeTeenus toodeTeenus;
-    private PoodRepository poodRepository;
-    private ToodeRepository toodeRepository;
-    private PoodTeenus poodTeenus;
-    private ScraperController scraper;
-
-    @RequestMapping
-    public String index() {
-        return "index.html";
-    }
+    private final ToodeTeenus toodeTeenus;
+    private final PoodRepository poodRepository;
 
     @Autowired
     public OopProjektApplication(ToodeTeenus toodeTeenus,
-                                 PoodRepository poodRepository,
-                                 ToodeRepository toodeRepository,
-                                 PoodTeenus poodTeenus) {
+                                 PoodRepository poodRepository) {
         this.toodeTeenus = toodeTeenus;
         this.poodRepository = poodRepository;
-        this.toodeRepository = toodeRepository;
-        this.poodTeenus = poodTeenus;
     }
 
     public static void main(String[] args) {
@@ -61,10 +46,9 @@ public class OopProjektApplication {
         //scraperid.add(new RimiScraper(this.poodRepository));
 
 
-
-        scraper = new ScraperController(scraperid, this.toodeTeenus);
+        ScraperController scraper = new ScraperController(scraperid, this.toodeTeenus);
         long algus = System.currentTimeMillis();
-        scraper.scrapeAll();
+        //scraper.scrapeAll();
         long lopp = System.currentTimeMillis();
         System.out.println(lopp - algus);
     }

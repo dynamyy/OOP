@@ -9,11 +9,13 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.example.oop_projekt.DTO.TokenDTO;
+import org.example.oop_projekt.Erindid.Autentimine.PuudulikudAndmedException;
 import org.example.oop_projekt.Erindid.Autentimine.TokenKehtetuException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 
 
 @Aspect
@@ -29,6 +31,11 @@ public class verifyTokenAspect {
         for (Object arg : args) {
             if (arg instanceof TokenDTO dto) {
                 String token = dto.token();
+
+                if (token == null) {
+                    throw new PuudulikudAndmedException("Token väli on tühi");
+                }
+
                 try {
                     Jws<Claims> claimJws = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parseSignedClaims(token);
                     Claims claim = claimJws.getPayload();
@@ -49,6 +56,6 @@ public class verifyTokenAspect {
             }
         }
 
-        throw new TokenKehtetuException("Token on puudu.");
+        throw new PuudulikudAndmedException("Token on puudu.");
     }
 }

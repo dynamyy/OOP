@@ -47,8 +47,6 @@ public class RimiScraper extends WebScraper {
 
     }
 
-
-
     //Vahelehtede html leidmine
     public String html(String url) {
         WebDriver chromedriver = getChromedriver();

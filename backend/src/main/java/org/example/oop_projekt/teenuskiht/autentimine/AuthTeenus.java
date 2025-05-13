@@ -8,6 +8,8 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.*;
 import org.example.oop_projekt.Erindid.AndmeteUuendusException;
+import org.example.oop_projekt.Erindid.Autentimine.AuthException;
+import org.example.oop_projekt.Erindid.Autentimine.KasutajaPuudubException;
 import org.example.oop_projekt.Erindid.Autentimine.LoginFailException;
 import org.example.oop_projekt.Erindid.RegistreerimineFailedException;
 import org.example.oop_projekt.Erindid.Autentimine.TokenKehtetuException;
@@ -81,7 +83,7 @@ public class AuthTeenus {
 
 
 
-        Kasutaja kasutaja = new Kasutaja(dto.email(), hashedParool, new ArrayList<>());
+        Kasutaja kasutaja = new Kasutaja(dto.email(), hashedParool, new ArrayList<>(), new ArrayList<>());
         kasutajaRepository.save(kasutaja);
 
         for (String poeNimi : dto.kliendikaardid()) {
@@ -136,7 +138,7 @@ public class AuthTeenus {
     }
 
     @verifyToken
-    public List<String> getKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws TokenKehtetuException{
+    public List<String> getKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws AuthException {
         // Kliendikaartide tagastamine
         if (kasutajaAndmed.andmetuup().equals("kliendikaardid")) {
             return getKliendikaardid(kasutajaAndmed).stream().map(Kliendikaardid::getPoeNimi).toList();
@@ -147,7 +149,7 @@ public class AuthTeenus {
     }
 
     @verifyToken
-    public void setKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws TokenKehtetuException, AndmeteUuendusException{
+    public void setKasutajaAndmed(KasutajaAndmedDTO kasutajaAndmed) throws AuthException, AndmeteUuendusException{
         Kasutaja kasutaja = getKasutaja(kasutajaAndmed);
 
         // Kliendikaartide uuendus
@@ -199,26 +201,36 @@ public class AuthTeenus {
     }
 
     @verifyToken
-    public String getEmail(TokenDTO dto) {
+    public String getEmail(TokenDTO dto) throws AuthException {
         String token = dto.token();
         Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
         return claim.getSubject();
     }
 
     @verifyToken
-    public Kasutaja getKasutaja(TokenDTO dto) {
-        String token = dto.token();
-        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
-        String kasutajaMeil = claim.getSubject();
-        return kasutajaRepository.findByEmail(kasutajaMeil);
-    }
-
-    @verifyToken
-    public List<Kliendikaardid> getKliendikaardid(TokenDTO dto) {
+    public Kasutaja getKasutaja(TokenDTO dto) throws AuthException {
         String token = dto.token();
         Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
         String kasutajaMeil = claim.getSubject();
         Kasutaja kasutaja = kasutajaRepository.findByEmail(kasutajaMeil);
+
+        if (kasutaja == null) {
+            throw new KasutajaPuudubException("Ei leidnud kasutajat andmebaasist");
+        }
+
+        return kasutaja;
+    }
+
+    @verifyToken
+    public List<Kliendikaardid> getKliendikaardid(TokenDTO dto) throws AuthException {
+        String token = dto.token();
+        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        String kasutajaMeil = claim.getSubject();
+        Kasutaja kasutaja = kasutajaRepository.findByEmail(kasutajaMeil);
+
+        if (kasutaja == null) {
+            throw new KasutajaPuudubException("Ei saa leida kliendikaarte. Ei leidnud kasutajat andmebaasist.");
+        }
 
         return kasutaja.getKliendikaardid();
     }
