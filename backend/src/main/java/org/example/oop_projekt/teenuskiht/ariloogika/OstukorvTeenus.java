@@ -132,7 +132,7 @@ public class OstukorvTeenus {
             for (ToodeOstukorvis ostukorviToode : tootedOstukorvis) {
                 List<MarksonaDTO> marksonad = new ArrayList<>();
                 for (TooteMarksona tooteMarksona : ostukorviToode.getTooteMarksonad()) {
-                    marksonad.add(new MarksonaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));
+                    marksonad.add(new MarksonaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv(), dto.token()));
                 }
                 List<Toode> sobivadTooted = toodeTeenus.valitudTootedAndmebaasist(marksonad);
                 Toode odavaimToode = sobivadTooted

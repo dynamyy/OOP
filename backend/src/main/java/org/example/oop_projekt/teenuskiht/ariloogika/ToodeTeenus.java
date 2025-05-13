@@ -6,8 +6,10 @@ import org.example.oop_projekt.DTO.MarksonaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.Kasutaja;
+import org.example.oop_projekt.mudel.MuudetudToode;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
+import org.example.oop_projekt.repository.MuudetudTootedRepository;
 import org.example.oop_projekt.repository.ToodeRepository;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.slf4j.Logger;
@@ -31,12 +33,14 @@ import java.util.*;
 public class ToodeTeenus {
 
     private final ToodeRepository toodeRepository;
+    private final MuudetudTootedRepository muudetudTootedRepository;
     private final PoodTeenus poodTeenus;
     private final AuthTeenus authTeenus;
     private final Logger logger;
 
-    public ToodeTeenus(ToodeRepository toodeRepository, PoodTeenus poodTeenus, AuthTeenus authTeenus) {
+    public ToodeTeenus(ToodeRepository toodeRepository, MuudetudTootedRepository muudetudTootedRepository, PoodTeenus poodTeenus, AuthTeenus authTeenus) {
         this.toodeRepository = toodeRepository;
+        this.muudetudTootedRepository = muudetudTootedRepository;
         this.poodTeenus = poodTeenus;
         this.logger = LoggerFactory.getLogger(ToodeTeenus.class);
         this.authTeenus = authTeenus;
@@ -105,9 +109,11 @@ public class ToodeTeenus {
 
 
     // Meetod, mis kuvab kasutajale valitud märksõnaga tooted
+    @verifyToken
     public List<Toode> valitudTootedAndmebaasist(List<MarksonaDTO> marksonad) {
         List<String> rohelised = new ArrayList<>();
         List<String> punased = new ArrayList<>();
+        Kasutaja kasutaja = authTeenus.getKasutaja(marksonad.get(0));
 
         for (MarksonaDTO marksona : marksonad) {
 
@@ -121,7 +127,8 @@ public class ToodeTeenus {
         // Leiame kõik rohelised ja punased tooted
         List<ToodeDTO> rohelisedTooted = new ArrayList<>();
         for (String roheline : rohelised) {
-            rohelisedTooted.addAll(toodeRepository.leiaToodeNimega(roheline));
+            rohelisedTooted.addAll(toodeRepository.leiaToodeNimega(roheline)); // Siia panna kontroll,
+            // et kas toode on muudetud hindade tabelis ning ta ei ole aegunud
         }
 
         List<ToodeDTO> punasedTooted = new ArrayList<>();
@@ -147,8 +154,16 @@ public class ToodeTeenus {
     //Meetod, mille abil saab muuta toote hindu läbi frontendi
     @verifyToken
     public void muudaTooteHind(HinnaMuutusDTO hinnaMuutusDTO) {
+
         ToodeDTO toode = hinnaMuutusDTO.toodeDTO();
-        Kasutaja kasutaja = authTeenus.getKasutaja(hinnaMuutusDTO);
+        Kasutaja kasutaja = authTeenus.getKasutaja(hinnaMuutusDTO);// Kasutaja repo
+        muudetudTootedRepository.save(new MuudetudToode(
+                kasutaja,
+                toode.tooteUhikuHind(),
+                toode.tooteTukihind(),
+                toode.viimatiUuendatud(),
+                toode.id()
+        ));// Lisan toote muudetud toodete tabelisse
         logger.info("sain andmed {} uuendamiseks kasutajale {}", toode.tooteNimi(), kasutaja.getEmail());
 
 

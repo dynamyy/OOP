@@ -1,0 +1,87 @@
+package org.example.oop_projekt.mudel;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Entity(name = "Muudetudtoode")
+@Table(name = "muudetud_tooted")
+@Getter
+@Setter
+public class MuudetudToode {
+    @Id
+    @SequenceGenerator(
+            name = "toode_sequence",
+            sequenceName = "toode_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "toode_sequence"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
+    private long id;
+
+    @Column(
+            name = "yhikuhind",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
+    private double yhikuhind;
+
+    @Column(
+            name = "tykihind",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
+    private double tykihind;
+
+    @Column(
+            name = "muutmisaeg",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
+    private LocalDateTime muutmisAeg;
+
+    @Column(
+            name = "muudetudTooteID",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
+    private Long muudetudTooteID;
+
+    @ManyToOne
+    @JoinColumn(name="kasutaja")
+    private Kasutaja kasutaja;
+
+    public MuudetudToode (
+            Kasutaja kasutaja,
+            double yhikuhind,
+            double tykihind,
+            LocalDateTime muutmisAeg,
+            Long muudetudTooteID
+    ){
+        this.kasutaja = kasutaja;
+        this.yhikuhind = yhikuhind;
+        this.tykihind = tykihind;
+        this.muutmisAeg = muutmisAeg;
+        this.muudetudTooteID = muudetudTooteID;
+    }
+
+    public MuudetudToode() {
+    }
+
+
+    // Vaja on id-d(serial), kasutaja id-d, uus kilohind ja tükihind, kuupäev ning muudetud toote id-d
+
+    // Kui kasutajale kuvatakse kõik tooted, tuleks iga toote peal vaadata,
+    // ega selle hinda pole konkreetsel kasutajal muudetud ning ega tehtud muudatus pole aegunud
+    // Kui on, siis tuleks kuvada see toode uue hinnaga
+
+
+}

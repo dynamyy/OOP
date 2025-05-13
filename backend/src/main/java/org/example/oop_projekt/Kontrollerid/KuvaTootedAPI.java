@@ -1,5 +1,6 @@
 package org.example.oop_projekt.Kontrollerid;
 
+import org.example.oop_projekt.DTO.HinnaMuutusDTO;
 import org.example.oop_projekt.DTO.MarksonaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
