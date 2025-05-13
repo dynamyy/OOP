@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +20,6 @@ public class OopProjektApplication {
 
     private final ToodeTeenus toodeTeenus;
     private final PoodRepository poodRepository;
-
-    @RequestMapping
-    public String index() {
-        return "index.html";
-    }
 
     @Autowired
     public OopProjektApplication(ToodeTeenus toodeTeenus,
