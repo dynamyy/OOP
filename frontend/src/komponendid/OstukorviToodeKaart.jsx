@@ -6,7 +6,7 @@ function OstukorviToodeKaart(props) {
 
     return (
         <div key={props.voti} className="ostukorv-list-toode">
-            <span className="hele-tekst" onClick={() => props.eemaldaOstukorvist(props.voti)}>- {Object.keys(props.toode.marksonad).slice(0, 2).join(", ")} {props.toode.tooteKogus}   </span>
+            <span className="hele-tekst" onClick={() => props.eemaldaOstukorvist(props.voti)}>- {props.toode.tooteKogus} {Object.keys(props.toode.marksonad).slice(0, 2).join(", ")}</span>
             <FontAwesomeIcon icon={faPenToSquare} className="ostukorv-ikoon hele-tekst" onClick={() => props.muudaToode(props.toode)} />
         </div>
     )

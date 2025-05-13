@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Menuu() {
     const navigate = useNavigate();
-    const [onSisselogitud, setOnSisseLogitud] = useState(false);
+    const [onSisselogitud, setOnSisseLogitud] = useState(localStorage.getItem('AuthToken') !== null);
     
     useEffect(() => {
         const checkSisselogitud = async () => {

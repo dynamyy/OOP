@@ -249,8 +249,6 @@
     width: fit-content;
     min-width: 20rem;
     padding: 1.5rem;
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
 }
 
 .ostukorv-konteiner > div:first-child {
@@ -332,8 +330,8 @@
         right: 0;
         bottom: 0;
         z-index: 10;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
     }
 
     .suletud {
