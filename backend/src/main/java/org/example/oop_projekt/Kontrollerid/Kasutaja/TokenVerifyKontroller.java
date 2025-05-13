@@ -1,6 +1,7 @@
 package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
 import org.example.oop_projekt.DTO.TokenVerify;
+import org.example.oop_projekt.Erindid.Autentimine.AuthException;
 import org.example.oop_projekt.Erindid.Autentimine.TokenKehtetuException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class TokenVerifyKontroller {
         try {
             authTeenus.verifyToken(token);
             return ResponseEntity.ok(Map.of("sonum", "Token kehtiv"));
-        } catch (TokenKehtetuException e) {
+        } catch (AuthException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sonum", e.getMessage()));
         }
 
