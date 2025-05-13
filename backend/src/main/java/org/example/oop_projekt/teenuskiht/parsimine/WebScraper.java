@@ -56,7 +56,7 @@ public abstract class WebScraper{
      * Meetod scrape'imisloogika käivitamiseks
      */
     @Transactional
-    abstract List<Toode> scrape(WebDriver chromedriver) throws IOException;
+    abstract List<Toode> scrape(WebDriver chromedriver) throws IOException, InterruptedException;
 
     /**
      * Leiab lehelt kõik kategooriad, et neid ükshaaval läbi vaadata.
@@ -123,7 +123,7 @@ public abstract class WebScraper{
             throw new ScrapeFailedException("Ootamine kestis liiga kaua, cssSelector: " + cssSelector);
         } catch (WebDriverException e) {
             throw new ScrapeFailedException("Elemendi ootamine ebaõnnestus chromedriveri vea tõttu, cssSelector: "
-                                            + cssSelector + ": " + e.getMessage());
+                    + cssSelector + ": " + e.getMessage());
         }
     }
 

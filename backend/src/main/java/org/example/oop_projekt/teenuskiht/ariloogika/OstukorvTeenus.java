@@ -122,7 +122,6 @@ public class OstukorvTeenus {
 
         ostukorv.setKasutaja(authTeenus.getKasutaja(dto));
         List<Pood> poed = poodRepository.findAll();
-
         List<Kliendikaardid> kliendikaardid = authTeenus.getKliendikaardid(dto);
 
         for (Pood pood : poed) {
