@@ -192,7 +192,8 @@ public class OstukorvTeenus {
                                     t.getNimetus(),
                                     omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind(),
                                     omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind(),
-                                    t.getTootePiltURL());
+                                    t.getTootePiltURL(),
+                                    toode.getKogus());
                         }
                         return null;
                     }).toList());

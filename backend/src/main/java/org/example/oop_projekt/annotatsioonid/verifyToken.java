@@ -10,7 +10,9 @@ import java.lang.annotation.Target;
  * Meetod, millele annotatsioon lisatakse, peab võtma argumendiks dto
  * objekti, mis implementeerib TokenDTO liidest. Vastasel juhul tagastatakse
  * alati veateade.
- * Kui authToken ei kehti, siis visataske TokenKehtetuException
+ * Kui authToken ei kehti, siis visataske TokenKehtetuException.
+ * Kui ei leita TokenDTO liidest implementeerivat objekti või token väli on tühi,
+ * siis visatakse PuudulikudAndmedException.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

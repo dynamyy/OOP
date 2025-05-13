@@ -15,7 +15,7 @@ function MarksonadeLisamine(props) {
                         className='hele tume-tekst' 
                         value={props.uusMarksona} 
                         onChange={e => props.setUusMarksona(e.target.value)}
-                        placeholder='Sisesta märksõna'
+                        placeholder='Märksõna'
                         onKeyDown={e => {
                             if (e.key === 'Enter') {
                                 props.lisaMarksona(props.uusMarksona)
