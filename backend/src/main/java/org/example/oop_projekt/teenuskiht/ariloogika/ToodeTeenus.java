@@ -4,8 +4,10 @@ import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.*;
 import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.Kasutaja;
+import org.example.oop_projekt.mudel.MuudetudToode;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
+import org.example.oop_projekt.repository.MuudetudTootedRepository;
 import org.example.oop_projekt.repository.ToodeRepository;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.slf4j.Logger;
@@ -32,12 +34,14 @@ import java.util.*;
 public class ToodeTeenus {
 
     private final ToodeRepository toodeRepository;
+    private final MuudetudTootedRepository muudetudTootedRepository;
     private final PoodTeenus poodTeenus;
     private final AuthTeenus authTeenus;
     private final Logger logger;
 
-    public ToodeTeenus(ToodeRepository toodeRepository, PoodTeenus poodTeenus, AuthTeenus authTeenus) {
+    public ToodeTeenus(ToodeRepository toodeRepository, MuudetudTootedRepository muudetudTootedRepository, PoodTeenus poodTeenus, AuthTeenus authTeenus) {
         this.toodeRepository = toodeRepository;
+        this.muudetudTootedRepository = muudetudTootedRepository;
         this.poodTeenus = poodTeenus;
         this.logger = LoggerFactory.getLogger(ToodeTeenus.class);
         this.authTeenus = authTeenus;
@@ -106,11 +110,13 @@ public class ToodeTeenus {
 
 
     // Meetod, mis kuvab kasutajale valitud märksõnaga tooted
-    public List<Toode> valitudTootedAndmebaasist(List<MarksonaDTO> marksonad) {
+    @verifyToken
+    public List<Toode> valitudTootedAndmebaasist(TokenMarkSonaDTO tokeniMarkSona) {
         List<String> rohelised = new ArrayList<>();
         List<String> punased = new ArrayList<>();
+        Kasutaja kasutaja = authTeenus.getKasutaja(tokeniMarkSona);
 
-        for (MarksonaDTO marksona : marksonad) {
+        for (MarksonaDTO marksona : tokeniMarkSona.marksonad()) {
 
             if (marksona.valikuVarv().equalsIgnoreCase("roheline")) {
                 rohelised.add("%" + marksona.marksona() + "%"); // % märk laseb võrrelda substringe
@@ -119,23 +125,28 @@ public class ToodeTeenus {
             }
         }
 
-        // Leiame kõik rohelised ja punased tooted
-        List<ToodeDTO> rohelisedTooted = new ArrayList<>();
-        for (String roheline : rohelised) {
-            rohelisedTooted.addAll(toodeRepository.leiaToodeNimega(roheline));
-        }
-
-        List<ToodeDTO> punasedTooted = new ArrayList<>();
-
-        for (String punane : punased) {
-            punasedTooted.addAll(toodeRepository.leiaToodeNimega(punane));
-        }
-
         Specification<Toode> spec = Specification
                 .where(ToodeSpecification.nimetusSisaldabKoiki(rohelised))
                 .and(ToodeSpecification.nimetusEiSisaldaUhtegi(punased));
 
         List<Toode> tulemused = toodeRepository.findAll(spec);
+
+        List<MuudetudToode> muudetudTooted = muudetudTootedRepository
+                .leiaKehtivadMuudetudTooted(kasutaja.getId(), LocalDateTime.now());
+
+        Map<Long, MuudetudToode> muudetudMap = new HashMap<>();
+        for (MuudetudToode mt : muudetudTooted) {
+            muudetudMap.put(mt.getMuudetudTooteID(), mt);
+        }
+
+        // Siin tuleks ka vana info ära kustutada
+        for (Toode toode : tulemused) {
+            MuudetudToode muudetud = muudetudMap.get(toode.getId());
+            if (muudetud != null) {
+                toode.setHindKliendi(muudetud.getTykihind());
+                toode.setHulgaHindKliendi(muudetud.getYhikuhind());
+            }
+        }
 
         return tulemused;
     }
@@ -178,14 +189,52 @@ public class ToodeTeenus {
     //Meetod, mille abil saab muuta toote hindu läbi frontendi
     @verifyToken
     public void muudaTooteHind(HinnaMuutusDTO hinnaMuutusDTO) {
+
         ToodeDTO toode = hinnaMuutusDTO.toodeDTO();
         Kasutaja kasutaja = authTeenus.getKasutaja(hinnaMuutusDTO);
+        muudetudTootedRepository.save(new MuudetudToode(
+                kasutaja,
+                toode.tooteUhikuHind(),
+                toode.tooteTukihind(),
+                toode.viimatiUuendatud(),
+                toode.id()
+        ));// Lisan toote muudetud toodete tabelisse
         logger.info("sain andmed {} uuendamiseks kasutajale {}", toode.tooteNimi(), kasutaja.getEmail());
 
 
         // throw AndmeteUuendusException, kui sellist toodet pole andmebaasis vms
 
         //toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
+    }
+
+    @verifyToken
+    public Toode leiaÜksikToode(Long id, TokenVerify token) {
+        Kasutaja kasutaja = authTeenus.getKasutaja(token);
+        System.out.println(id);
+
+        Optional<Toode> optionalToode = toodeRepository.findById(id);
+        if (optionalToode.isEmpty()) {
+            throw new NoSuchElementException("Toodet ID-ga " + id + " ei leitud.");
+        }
+
+        Toode toode = optionalToode.get();
+
+        try {
+            MuudetudToode muudetud = muudetudTootedRepository.leiaKehtivMuudetudToodeKonkreetne(
+                    kasutaja.getId(),
+                    id.toString(),
+                    LocalDateTime.now()
+            );
+
+            if (muudetud != null) {
+                toode.setHindKliendi(muudetud.getTykihind());
+                toode.setHulgaHindKliendi(muudetud.getYhikuhind());
+            }
+        } catch (Exception e) {
+            // ignore if nothing found
+        }
+
+        return toode;
     }
 
 

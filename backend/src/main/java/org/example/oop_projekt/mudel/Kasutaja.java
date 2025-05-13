@@ -46,11 +46,15 @@ public class Kasutaja {
     @OneToMany(mappedBy = "kasutaja")
     private List<Kliendikaardid> kliendikaardid;
 
-    public Kasutaja(String email, String parool, List<Ostukorv> ostukorvid) {
+    @OneToMany(mappedBy = "kasutaja") // KEVIN LISAS
+    List<MuudetudToode> muudetudTooted; // KEVIN LISAS
+
+    public Kasutaja(String email, String parool, List<Ostukorv> ostukorvid, List<MuudetudToode> muudetudTooted ) { // KEVIN LISAS muudetudTooted
         this.email = email;
         this.parool = parool;
         this.ostukorvid = ostukorvid;
         this.kliendikaardid = new ArrayList<>();
+        this.muudetudTooted = muudetudTooted; // KEVIN LISAS
     }
 
     public Kasutaja() {

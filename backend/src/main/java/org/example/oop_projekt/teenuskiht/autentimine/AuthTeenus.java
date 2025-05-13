@@ -83,7 +83,7 @@ public class AuthTeenus {
 
 
 
-        Kasutaja kasutaja = new Kasutaja(dto.email(), hashedParool, new ArrayList<>());
+        Kasutaja kasutaja = new Kasutaja(dto.email(), hashedParool, new ArrayList<>(), new ArrayList<>());
         kasutajaRepository.save(kasutaja);
 
         for (String poeNimi : dto.kliendikaardid()) {

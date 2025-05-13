@@ -30,9 +30,6 @@ public class MuudaTooteHindAPI {
         } catch (AuthException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sonum",
                     ("Ei saanud hinda muuta. Pole sisse logitud: " + e.getMessage())));
-        } catch (AndmeteUuendusException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sonum",
-                    ("Ei saanud hinda muuta: " + e.getMessage())));
         }
     }
 }
