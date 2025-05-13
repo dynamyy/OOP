@@ -1,9 +1,7 @@
 package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
-import org.example.oop_projekt.DTO.HinnaMuutusDTO;
-import org.example.oop_projekt.DTO.MarksonaDTO;
-import org.example.oop_projekt.DTO.ToodeDTO;
+import org.example.oop_projekt.DTO.*;
 import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.Kasutaja;
 import org.example.oop_projekt.mudel.MuudetudToode;
@@ -110,12 +108,12 @@ public class ToodeTeenus {
 
     // Meetod, mis kuvab kasutajale valitud märksõnaga tooted
     @verifyToken
-    public List<Toode> valitudTootedAndmebaasist(List<MarksonaDTO> marksonad) {
+    public List<Toode> valitudTootedAndmebaasist(TokenMarkSonaDTO tokeniMarkSona) {
         List<String> rohelised = new ArrayList<>();
         List<String> punased = new ArrayList<>();
-        Kasutaja kasutaja = authTeenus.getKasutaja(marksonad.get(0));
+        Kasutaja kasutaja = authTeenus.getKasutaja(tokeniMarkSona);
 
-        for (MarksonaDTO marksona : marksonad) {
+        for (MarksonaDTO marksona : tokeniMarkSona.marksonad()) {
 
             if (marksona.valikuVarv().equalsIgnoreCase("roheline")) {
                 rohelised.add("%" + marksona.marksona() + "%"); // % märk laseb võrrelda substringe
@@ -124,24 +122,28 @@ public class ToodeTeenus {
             }
         }
 
-        // Leiame kõik rohelised ja punased tooted
-        List<ToodeDTO> rohelisedTooted = new ArrayList<>();
-        for (String roheline : rohelised) {
-            rohelisedTooted.addAll(toodeRepository.leiaToodeNimega(roheline)); // Siia panna kontroll,
-            // et kas toode on muudetud hindade tabelis ning ta ei ole aegunud
-        }
-
-        List<ToodeDTO> punasedTooted = new ArrayList<>();
-
-        for (String punane : punased) {
-            punasedTooted.addAll(toodeRepository.leiaToodeNimega(punane));
-        }
-
         Specification<Toode> spec = Specification
                 .where(ToodeSpecification.nimetusSisaldabKoiki(rohelised))
                 .and(ToodeSpecification.nimetusEiSisaldaUhtegi(punased));
 
         List<Toode> tulemused = toodeRepository.findAll(spec);
+
+        List<MuudetudToode> muudetudTooted = muudetudTootedRepository
+                .leiaKehtivadMuudetudTooted(kasutaja.getId(), LocalDateTime.now());
+
+        Map<Long, MuudetudToode> muudetudMap = new HashMap<>();
+        for (MuudetudToode mt : muudetudTooted) {
+            muudetudMap.put(mt.getMuudetudTooteID(), mt);
+        }
+
+        // Siin tuleks ka vana info ära kustutada
+        for (Toode toode : tulemused) {
+            MuudetudToode muudetud = muudetudMap.get(toode.getId());
+            if (muudetud != null) {
+                toode.setHindKliendi(muudetud.getTykihind());
+                toode.setHulgaHindKliendi(muudetud.getYhikuhind());
+            }
+        }
 
         return tulemused;
     }
@@ -156,7 +158,7 @@ public class ToodeTeenus {
     public void muudaTooteHind(HinnaMuutusDTO hinnaMuutusDTO) {
 
         ToodeDTO toode = hinnaMuutusDTO.toodeDTO();
-        Kasutaja kasutaja = authTeenus.getKasutaja(hinnaMuutusDTO);// Kasutaja repo
+        Kasutaja kasutaja = authTeenus.getKasutaja(hinnaMuutusDTO);
         muudetudTootedRepository.save(new MuudetudToode(
                 kasutaja,
                 toode.tooteUhikuHind(),
@@ -170,6 +172,36 @@ public class ToodeTeenus {
         // throw AndmeteUuendusException, kui sellist toodet pole andmebaasis vms
 
         //toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
+    }
+
+    @verifyToken
+    public Toode leiaÜksikToode(Long id, TokenVerify token) {
+        Kasutaja kasutaja = authTeenus.getKasutaja(token);
+        System.out.println(id);
+
+        Optional<Toode> optionalToode = toodeRepository.findById(id);
+        if (optionalToode.isEmpty()) {
+            throw new NoSuchElementException("Toodet ID-ga " + id + " ei leitud.");
+        }
+
+        Toode toode = optionalToode.get();
+
+        try {
+            MuudetudToode muudetud = muudetudTootedRepository.leiaKehtivMuudetudToodeKonkreetne(
+                    kasutaja.getId(),
+                    id.toString(),
+                    LocalDateTime.now()
+            );
+
+            if (muudetud != null) {
+                toode.setHindKliendi(muudetud.getTykihind());
+                toode.setHulgaHindKliendi(muudetud.getYhikuhind());
+            }
+        } catch (Exception e) {
+            // ignore if nothing found
+        }
+
+        return toode;
     }
 
 

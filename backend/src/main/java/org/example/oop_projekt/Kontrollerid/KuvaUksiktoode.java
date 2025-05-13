@@ -1,8 +1,10 @@
 package org.example.oop_projekt.Kontrollerid;
 
+import org.example.oop_projekt.DTO.TokenVerify;
 import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.repository.ToodeRepository;
+import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +18,18 @@ import java.util.Map;
 public class KuvaUksiktoode {
 
     private final ToodeRepository toodeRepository;
+    private final ToodeTeenus toodeTeenus;
 
-    KuvaUksiktoode (ToodeRepository toodeRepository){
+    KuvaUksiktoode (ToodeRepository toodeRepository, ToodeTeenus toodeTeenus){
         this.toodeRepository = toodeRepository;
+        this.toodeTeenus = toodeTeenus;
     }
 
     // Kasutame toodete kuvamiseks kasutajale
     @PostMapping
-    public ResponseEntity<Object> getToode(@PathVariable("id") Long id){
-        Toode toode = toodeRepository.findToodeById(id);
+    public ResponseEntity<Object> getToode(@PathVariable("id") Long id, @RequestBody TokenVerify tokenVerify){
+        Toode toode = toodeTeenus.leiaÜksikToode(id, tokenVerify);
+
 
         if (toode != null) {
             return ResponseEntity.ok().body(

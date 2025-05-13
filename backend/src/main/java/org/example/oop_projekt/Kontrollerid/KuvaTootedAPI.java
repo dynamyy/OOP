@@ -2,6 +2,7 @@ package org.example.oop_projekt.Kontrollerid;
 
 import org.example.oop_projekt.DTO.HinnaMuutusDTO;
 import org.example.oop_projekt.DTO.MarksonaDTO;
+import org.example.oop_projekt.DTO.TokenMarkSonaDTO;
 import org.example.oop_projekt.DTO.ToodeDTO;
 import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class KuvaTootedAPI {
 
     // Kasutame toodete kuvamiseks kasutajale
     @PostMapping
-    public List<ToodeDTO> kuvaTooted(@RequestBody List<MarksonaDTO> marksonad){
-        return toodeTeenus.tootedDTOdeks(toodeTeenus.valitudTootedAndmebaasist(marksonad));
+    public List<ToodeDTO> kuvaTooted(@RequestBody TokenMarkSonaDTO tokenMarkSona){
+        return toodeTeenus.tootedDTOdeks(toodeTeenus.valitudTootedAndmebaasist(tokenMarkSona));
     }
 }

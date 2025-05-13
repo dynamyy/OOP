@@ -29,34 +29,30 @@ public class MuudetudToode {
 
     @Column(
             name = "yhikuhind",
-            nullable = false,
-            columnDefinition = "TEXT"
+            nullable = false
     )
     private double yhikuhind;
 
     @Column(
             name = "tykihind",
-            nullable = false,
-            columnDefinition = "TEXT"
+            nullable = false
     )
     private double tykihind;
 
     @Column(
             name = "muutmisaeg",
-            nullable = false,
-            columnDefinition = "TEXT"
+            nullable = false
     )
     private LocalDateTime muutmisAeg;
 
     @Column(
             name = "muudetudTooteID",
-            nullable = false,
-            columnDefinition = "TEXT"
+            nullable = false
     )
     private Long muudetudTooteID;
 
     @ManyToOne
-    @JoinColumn(name="kasutaja")
+    @JoinColumn(name = "kasutaja_id", nullable = false)
     private Kasutaja kasutaja;
 
     public MuudetudToode (
@@ -75,7 +71,6 @@ public class MuudetudToode {
 
     public MuudetudToode() {
     }
-
 
     // Vaja on id-d(serial), kasutaja id-d, uus kilohind ja tükihind, kuupäev ning muudetud toote id-d
 

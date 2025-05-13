@@ -31,7 +31,7 @@ public class verifyTokenAspect {
             if (arg instanceof TokenDTO dto) {
                 String token = dto.token();
 
-                if (token.isEmpty()) {
+                if (token == null) {
                     throw new PuudulikudAndmedException("Token väli on tühi");
                 }
 
