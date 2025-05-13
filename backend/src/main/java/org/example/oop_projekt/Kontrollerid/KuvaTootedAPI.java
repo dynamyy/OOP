@@ -1,11 +1,10 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.DTO.MarksonaDTO;
-import org.example.oop_projekt.DTO.ToodeDTO;
+import org.example.oop_projekt.DTO.KuvaTootedDTO;
+import org.example.oop_projekt.DTO.KuvaTootedParingDTO;
 import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/tooted")
@@ -21,7 +20,7 @@ public class KuvaTootedAPI {
 
     // Kasutame toodete kuvamiseks kasutajale
     @PostMapping
-    public List<ToodeDTO> kuvaTooted(@RequestBody List<MarksonaDTO> marksonad){
-        return toodeTeenus.tootedDTOdeks(toodeTeenus.valitudTootedAndmebaasist(marksonad));
+    public ResponseEntity<KuvaTootedDTO> kuvaTooted(@RequestBody KuvaTootedParingDTO toodeteParing){
+        return ResponseEntity.ok().body(toodeTeenus.getNToodet(toodeteParing));
     }
 }

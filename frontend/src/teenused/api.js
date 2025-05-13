@@ -85,7 +85,7 @@ export const setKasutajaAndmed = async (token, andmetuup, uusSoneTuup, uusListTu
     }
 }
 
-export const postMarksonad = async (marksonad) => {
+export const postMarksonad = async (marksonad, nihe) => {
     try {
         const marksonadList = Object.entries(marksonad).map(([marksona, valikuVarv]) => ({
             marksona,
@@ -95,15 +95,15 @@ export const postMarksonad = async (marksonad) => {
         const vastus = await fetch(`${BAAS_URL}/tooted`, {
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            body: JSON.stringify(marksonadList)
+            body: JSON.stringify({"marksonad": marksonadList, "nihe": nihe})
         })
 
         const vastuseAndmed = await vastus.json();
 
         if (vastus.ok) {
-            return {ok: true, marksonad: vastuseAndmed}
+            return {ok: true, kuvaTootedDTO: vastuseAndmed}
         } else {
-            return {ok: false, marksonad: {}}
+            return {ok: false, kuvaTootedDTO: {}}
         }
        
     } catch (viga) {

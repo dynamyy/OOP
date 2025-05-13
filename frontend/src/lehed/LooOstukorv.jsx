@@ -1,4 +1,4 @@
-import { useState, React, useEffect, use } from 'react';
+import { useState, React, useEffect, useRef } from 'react';
 import Menuu from '../komponendid/Menuu';
 import ToodeKaart from '../komponendid/ToodeKaart';
 import { postMarksonad, postOstukorv } from '../teenused/api';
@@ -24,6 +24,9 @@ function LooOstukorv() {
     const [ostukorv, setOstukorv] = useState({})
     const [ebasobivadTooted, setEbasobivadTooted] = useState([])
     const [ostukorviNimi, setOstukorviNimi] = useState('Ostukorv')
+    const [tooteidKokku, setTooteidKokku] = useState(0);
+    const [uuteToodeteLaadimine, setUuteToodeteLaadimine] = useState(false);
+    const elmRef = useRef(null);
     const logod = {
         Prisma: prismaLogo,
         Selver: selverLogo,
@@ -32,21 +35,27 @@ function LooOstukorv() {
         Rimi: rimiLogo
     }
 
-    async function fetchTooted() {
+    async function fetchTooted(nihe) {
 
-        const vastus = await postMarksonad(marksonad)
+        const vastus = await postMarksonad(marksonad, nihe)
 
         if (vastus.ok) {
-            setTooted(vastus.marksonad)
+            setTooted(prev => [...prev, ...vastus.kuvaTootedDTO.tooted]);
+            if (nihe === 0) {
+                setTooteidKokku(vastus.kuvaTootedDTO.tooteidKokku);
+            }
         } else {
             console.log("Märksõnade saatmine nurjus")
         }
+
+        setUuteToodeteLaadimine(false);
     }
 
     useEffect(() => {
         if (Object.keys(marksonad).length > 0) {
-            console.log("Märksõnad saadetud")
-            fetchTooted(marksonad)
+            console.log("Märksõnad saadetud");
+            setTooted([]);
+            fetchTooted(0);
         }
     }, [marksonad])
 
@@ -170,6 +179,17 @@ function LooOstukorv() {
         })
     }
 
+    const dynamicScroll = () => {
+        const elm = elmRef.current;
+        if (!elm || uuteToodeteLaadimine || tooted.length === tooteidKokku) return;
+
+        const scrollPohjas = elm.scrollTop + elm.clientHeight >= elm.scrollHeight - 10;
+        if (scrollPohjas) {
+            setUuteToodeteLaadimine(true);
+            fetchTooted(tooted.length);
+        }
+    }
+
     return (
         <>
             <Menuu />
@@ -235,9 +255,10 @@ function LooOstukorv() {
                 </div>
                 <div id="tooted-list-konteiner">
                     <div className="teksti-paar">
-                        <span className="tume-tekst">Leitud {tooted.length} toodet</span>
+                        <span className="tume-tekst">Leitud {tooteidKokku} toodet</span>
+                        <span className="tume-tekst">Kuvatud {tooted.length}/{tooteidKokku}</span>
                         <div id="tooted-list-valimine" className="umar-nurk">
-                            <div id="tooted-list">
+                            <div id="tooted-list" ref={elmRef} onScroll={dynamicScroll}>
                             {tooted.map(toode => (
                                 <ToodeKaart
                                     key={toode.id}

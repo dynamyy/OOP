@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 
 
 @Aspect
@@ -31,7 +32,7 @@ public class verifyTokenAspect {
             if (arg instanceof TokenDTO dto) {
                 String token = dto.token();
 
-                if (token.isEmpty()) {
+                if (token == null) {
                     throw new PuudulikudAndmedException("Token väli on tühi");
                 }
 
