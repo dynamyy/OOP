@@ -142,7 +142,7 @@ public class ToodeTeenus {
             muudetudMap.put(mt.getMuudetudTooteID(), mt);
         }
 
-        // Siin tuleks ka vana info ära kustutada
+
         for (Toode toode : tulemused) {
             MuudetudToode muudetud = muudetudMap.get(toode.getId());
             if (muudetud != null) {
@@ -223,15 +223,31 @@ public class ToodeTeenus {
 
         ToodeDTO toode = hinnaMuutusDTO.toodeDTO();
         Kasutaja kasutaja = authTeenus.getKasutaja(hinnaMuutusDTO);
-        muudetudTootedRepository.save(new MuudetudToode(
+
+        // Kustutame vana kehtiva muudetud toote, kui see eksisteerib
+        MuudetudToode vanaMuutus = muudetudTootedRepository.leiaKehtivMuudetudToodeKonkreetne(
+                kasutaja.getId(),
+                String.valueOf(toode.id()),
+                LocalDateTime.now()
+        );
+
+        if (vanaMuutus != null) {
+            muudetudTootedRepository.delete(vanaMuutus);
+        }
+
+        // Lisame uue muudetud toote
+        MuudetudToode uusMuutus = new MuudetudToode(
                 kasutaja,
                 toode.tooteUhikuHind(),
                 toode.tooteTukihind(),
                 toode.viimatiUuendatud(),
                 toode.id()
-        ));// Lisan toote muudetud toodete tabelisse
-        logger.info("sain andmed {} uuendamiseks kasutajale {}", toode.tooteNimi(), kasutaja.getEmail());
+        );
+        muudetudTootedRepository.save(uusMuutus);
+
+        logger.info("Uuendasin toote '{}' hinda kasutajale '{}'", toode.tooteNimi(), kasutaja.getEmail());
     }
+
 
 
     public Toode leiaÜksikToode(Long id, TokenVerify token) {
@@ -254,6 +270,7 @@ public class ToodeTeenus {
             if (muudetud != null) {
                 toode.setHindKliendi(muudetud.getTykihind());
                 toode.setHulgaHindKliendi(muudetud.getYhikuhind());
+                toode.setViimatiUuendatud(muudetud.getMuutmisAeg());
             }
         } catch (AuthException ignore) {}
 

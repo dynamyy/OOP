@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 public class MuudetudToode {
     @Id
     @SequenceGenerator(
-            name = "toode_sequence",
-            sequenceName = "toode_sequence",
+            name = "muudetudtoode_sequence",
+            sequenceName = "muudetudtoode_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "toode_sequence"
+            generator = "muudetudtoode_sequence"
     )
     @Column(
             name = "id",
@@ -65,7 +65,7 @@ public class MuudetudToode {
         this.kasutaja = kasutaja;
         this.yhikuhind = yhikuhind;
         this.tykihind = tykihind;
-        this.muutmisAeg = muutmisAeg;
+        this.muutmisAeg = muutmisAeg; //Halb muutujanimi, siia salvestatakse hinnamuutuse kehtivusaeg
         this.muudetudTooteID = muudetudTooteID;
     }
 
