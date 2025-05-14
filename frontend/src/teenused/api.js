@@ -85,27 +85,25 @@ export const setKasutajaAndmed = async (token, andmetuup, uusSoneTuup, uusListTu
     }
 }
 
-export const postMarksonad = async (marksonad, token) => {
+export const postMarksonad = async (marksonad, nihe) => {
     try {
         const marksonadList = Object.entries(marksonad).map(([marksona, valikuVarv]) => ({
             marksona,
             valikuVarv
         }));
 
-
-        
         const vastus = await fetch(`${BAAS_URL}/tooted`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({"marksonad": marksonadList, "token": token})
-        });
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({"marksonad": marksonadList, "nihe": nihe})
+        })
 
         const vastuseAndmed = await vastus.json();
 
         if (vastus.ok) {
-            return {ok: true, marksonad: vastuseAndmed}
+            return {ok: true, kuvaTootedDTO: vastuseAndmed}
         } else {
-            return {ok: false, marksonad: {}}
+            return {ok: false, kuvaTootedDTO: {}}
         }
        
     } catch (viga) {
@@ -151,12 +149,12 @@ export const kustutaKasutaja = async (requestData) => {
     }
 }
 
-export const getToode = async (id, token) => {
+export const getToode = async (id) => {
     try {
         const vastus = await fetch(`${BAAS_URL}/toode/${id}`, {
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            body: JSON.stringify({token})
+            body: JSON.stringify()
         })
 
         const vastuseData = await vastus.json();

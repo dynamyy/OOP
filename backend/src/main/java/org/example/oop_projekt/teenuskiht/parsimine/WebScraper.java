@@ -135,8 +135,11 @@ public abstract class WebScraper{
     void getUrl(String url) throws ScrapeFailedException {
         try {
             chromedriver.get(url);
+            Thread.sleep(1000);
         } catch (WebDriverException e) {
             throw new ScrapeFailedException("Tekkis viga URLi laadimisel: " + url);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

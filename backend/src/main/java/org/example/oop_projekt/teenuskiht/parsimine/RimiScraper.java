@@ -33,7 +33,7 @@ public class RimiScraper extends WebScraper {
     String hangiDynamicSource() throws ScrapeFailedException {
         WebDriver chromedriver = getChromedriver();
 
-        getUrl(url);
+        getUrl(url); // Lisa siia ootamine
 
         // Ootan kuni leht laeb, et ei tekiks vigu. Siia pole teda otseselt vaja
         /*
@@ -89,7 +89,6 @@ public class RimiScraper extends WebScraper {
         if (urlid == null) {
             return tooted;
         }
-
 
         for (String url : urlid) {
 
@@ -184,7 +183,7 @@ public class RimiScraper extends WebScraper {
                             pildiURL = imgElement.attr("data-src").trim();
                         }
                     }
-                    /*
+
                     System.out.println("Nimi: " + tooteNimi +
                             ", Tükihind: " + tykiHind +
                             ", Ühikuhind: " + yhikuHind +
@@ -193,9 +192,9 @@ public class RimiScraper extends WebScraper {
                             " Ühik: " + yhik +
                             ", Pildi URL:" + pildiURL);
 
-                     */
 
 
+                    /*
                     Toode uusToode = new Toode(tooteNimi,
                             yhik,
                             kliendiTykiHind,
@@ -207,6 +206,8 @@ public class RimiScraper extends WebScraper {
                             "",
                             null);
                     tooted.add(uusToode);
+
+                     */
 
 
                 }

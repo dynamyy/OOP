@@ -13,6 +13,9 @@ import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.example.oop_projekt.specifications.ToodeSpecification;
 
@@ -148,8 +151,38 @@ public class ToodeTeenus {
         return tulemused;
     }
 
-    public List<ToodeDTO> tootedDTOdeks(List<Toode> tooted) {
-        return tooted.stream().map(ToodeDTO::new).distinct().toList();
+
+    /**
+     * Pärib andmebaasist 50 toodet alates etteantud nihkest
+     * @param paring Sisaldab märksõnade listi ja nihet
+     * @return 50 toodet alates etteantud nihkest
+     */
+    public KuvaTootedDTO getNToodet(KuvaTootedParingDTO paring) {
+        List<String> rohelised = new ArrayList<>();
+        List<String> punased = new ArrayList<>();
+
+        for (MarksonaDTO marksona : paring.marksonad()) {
+
+            if (marksona.valikuVarv().equalsIgnoreCase("roheline")) {
+                rohelised.add("%" + marksona.marksona() + "%"); // % märk laseb võrrelda substringe
+            } else if (marksona.valikuVarv().equalsIgnoreCase("punane")) {
+                punased.add("%" + marksona.marksona() + "%");
+            }
+        }
+
+        int tooteidLehel = 50;
+        int kusitavLeht = paring.nihe() / tooteidLehel;
+        PageRequest pagerequest = PageRequest.of(kusitavLeht, tooteidLehel, Sort.by("id").ascending());
+
+        Specification<Toode> spec = Specification
+                .where(ToodeSpecification.nimetusSisaldabKoiki(rohelised))
+                .and(ToodeSpecification.nimetusEiSisaldaUhtegi(punased));
+
+        Page<Toode> leht = toodeRepository.findAll(spec, pagerequest);
+        List<ToodeDTO> tootedDTOdena = leht.getContent().stream().map(ToodeDTO::new).distinct().toList();
+        long toodeteKoguarv = leht.getTotalElements();
+
+        return new KuvaTootedDTO(tootedDTOdena, toodeteKoguarv);
     }
 
 

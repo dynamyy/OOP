@@ -8,6 +8,7 @@ import maximaLogo from '../staatiline/logod/maxima.png';
 import selverLogo from '../staatiline/logod/selver.png';
 import rimiLogo from '../staatiline/logod/rimi.png';
 import prismaLogo from '../staatiline/logod/prisma.png';
+import OstukorvPoodToodeKaart from '../komponendid/OstukorvPoodToodeKaart';
 
 function OstukorvTulemus() {
     const { id } = useParams();
@@ -20,6 +21,8 @@ function OstukorvTulemus() {
             Rimi: rimiLogo
         };
     const [tulbad, setTulbad] = useState({});
+    const [aktiivnePood, setAktiivnePood] = useState({});
+
 
     useEffect(() => {
         const getOstukorv = async () => {
@@ -36,6 +39,20 @@ function OstukorvTulemus() {
     }, []);
 
     useEffect(() => {
+        if (Object.keys(ostukorv).length > 0) {
+            setAktiivnePood(ostukorv.poed.find(poodObj => poodObj.pood === 'Coop'));
+            setTimeout(() => {
+                const kast = document.getElementById("ostukorv-pood-tooted");
+                const kast2 = document.getElementById("ostukorv-tooted-sisemine");
+                if (kast) kast.style.maxHeight = "60vh"
+                if (kast2) kast2.style.overflowY = "auto"
+            }, 200)
+        }
+    }, [ostukorv.poed])
+
+    console.log(aktiivnePood)
+
+    useEffect(() => {
         const uuedTulbad = {
             Prisma: 0,
             Selver: 0,
@@ -46,7 +63,7 @@ function OstukorvTulemus() {
         if (!ostukorv.poed) return;
         ostukorv.poed.forEach(poodObj => {
             uuedTulbad[poodObj.pood] = (poodObj.tooted || [])
-                .map(toode => toode === null ? 0 : toode.tukiHind * 1)
+                .map(toode => toode === null ? 0 : toode.tukiHind * toode.kogus)
                 .reduce((a, b) => a + b, 0);
         });
         const suurim = Math.max(...Object.values(uuedTulbad));
@@ -60,11 +77,54 @@ function OstukorvTulemus() {
     return (
         <>
             <Menuu />
-            <div id='sisu' className='hele'>
+            <div id='sisu' className='hele ostukorv-sisu'>
+                <h1 className='tume-tekst ostukorv-pealkiri'>{ostukorv.nimi}</h1>
                 <div id="ostukorv-tulemused-konteiner">
-                    {(ostukorv.poed || []).map((pood) => (
-                        <OstukorvPoodTulp key={pood.pood} pood={pood} logo={logod[pood.pood]} korgus={tulbad[pood.pood]} />
-                    ))}
+                    <div className="ostukorv-tulemus-diagramm">
+                        <div id="ostukorv-tulbad-konteiner">
+                            {(ostukorv.poed || []).map((pood) => (
+                                <OstukorvPoodTulp 
+                                    key={pood.pood} 
+                                    pood={pood} 
+                                    logo={logod[pood.pood]}
+                                    setAktiivnePood={setAktiivnePood}
+                                    korgus={tulbad[pood.pood]} 
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <div className="ostukorv-tulemus-ostukorv">
+                        <div className="ostukorv-pood-tooted tume hele-tekst umar-nurk"  id='ostukorv-pood-tooted'>
+                            <div>
+                                <span>Odavaim ostukorv</span>
+                                <img src={logod[aktiivnePood.pood]} alt={aktiivnePood.pood} className="logo-pilt-ostukorv" />
+                            </div>
+                            <div id='ostukorv-tooted-sisemine'>
+                                {aktiivnePood && Array.isArray(aktiivnePood.tooted) && aktiivnePood.tooted.length > 0
+                                    ? aktiivnePood.tooted.map((toode, idx) => (
+                                        <OstukorvPoodToodeKaart 
+                                            key={toode.nimetus}
+                                            kogus={toode.kogus}
+                                            pilt={toode.piltURL}
+                                            nimetus={toode.nimetus}
+                                            hind={toode.tukiHind}
+                                        />
+                                    ))
+                                    : null
+                                }
+                                <div>
+                                    <span>
+                                        Kokku: {aktiivnePood && 
+                                        Array.isArray(aktiivnePood.tooted) && 
+                                        aktiivnePood.tooted.length > 0 ? 
+                                        aktiivnePood.tooted.map(
+                                            toode => toode === null ? 0 : 
+                                            toode.tukiHind * toode.kogus).reduce((a, b) => a + b, 0).toFixed(2) : 0} €
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
