@@ -233,10 +233,8 @@ public class ToodeTeenus {
         logger.info("sain andmed {} uuendamiseks kasutajale {}", toode.tooteNimi(), kasutaja.getEmail());
     }
 
-    @verifyToken
+
     public Toode leiaÜksikToode(Long id, TokenVerify token) {
-        Kasutaja kasutaja = authTeenus.getKasutaja(token);
-        System.out.println(id);
 
         Optional<Toode> optionalToode = toodeRepository.findById(id);
         if (optionalToode.isEmpty()) {
@@ -246,6 +244,7 @@ public class ToodeTeenus {
         Toode toode = optionalToode.get();
 
         try {
+            Kasutaja kasutaja = authTeenus.getKasutaja(token);
             MuudetudToode muudetud = muudetudTootedRepository.leiaKehtivMuudetudToodeKonkreetne(
                     kasutaja.getId(),
                     id.toString(),
@@ -256,9 +255,7 @@ public class ToodeTeenus {
                 toode.setHindKliendi(muudetud.getTykihind());
                 toode.setHulgaHindKliendi(muudetud.getYhikuhind());
             }
-        } catch (Exception e) {
-            // ignore if nothing found
-        }
+        } catch (AuthException ignore) {}
 
         return toode;
     }

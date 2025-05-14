@@ -55,6 +55,7 @@ function LooOstukorv() {
         if (Object.keys(marksonad).length > 0) {
             console.log("Märksõnad saadetud");
             setTooted([]);
+            setTooteidKokku(0);
             fetchTooted(0);
         }
     }, [marksonad])
@@ -78,8 +79,9 @@ function LooOstukorv() {
             uus[ms] = varv;
             return uus;
         }, {});
-        setMarksonad(eemaldatud)
-        setTooted([])
+        setMarksonad(eemaldatud);
+        setTooted([]);
+        setTooteidKokku(0);
     }
 
     function muudaSisalduvust() {
