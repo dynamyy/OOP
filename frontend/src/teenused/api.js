@@ -85,18 +85,20 @@ export const setKasutajaAndmed = async (token, andmetuup, uusSoneTuup, uusListTu
     }
 }
 
-export const postMarksonad = async (marksonad) => {
+export const postMarksonad = async (marksonad, token) => {
     try {
         const marksonadList = Object.entries(marksonad).map(([marksona, valikuVarv]) => ({
             marksona,
             valikuVarv
         }));
 
+
+        
         const vastus = await fetch(`${BAAS_URL}/tooted`, {
             method: "POST",
-            headers: { "Content-Type": "application/json"},
-            body: JSON.stringify(marksonadList)
-        })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({"marksonad": marksonadList, "token": token})
+        });
 
         const vastuseAndmed = await vastus.json();
 
@@ -149,12 +151,12 @@ export const kustutaKasutaja = async (requestData) => {
     }
 }
 
-export const getToode = async (id) => {
+export const getToode = async (id, token) => {
     try {
         const vastus = await fetch(`${BAAS_URL}/toode/${id}`, {
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            body: JSON.stringify()
+            body: JSON.stringify({token})
         })
 
         const vastuseData = await vastus.json();

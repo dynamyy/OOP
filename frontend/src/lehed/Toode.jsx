@@ -21,7 +21,7 @@ function Toode() {
 
     useEffect(() => {
         const getTooteInfo = async () => {
-            const vastus = await getToode(id);
+            const vastus = await getToode(id, localStorage.getItem('AuthToken') || "");
             if (vastus.ok) {
                 setTooteInfo(vastus.tooteAndmed);
                 setHind(vastus.tooteAndmed.tooteTukihind);

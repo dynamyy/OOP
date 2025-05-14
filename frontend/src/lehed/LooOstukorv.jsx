@@ -34,7 +34,7 @@ function LooOstukorv() {
 
     async function fetchTooted() {
 
-        const vastus = await postMarksonad(marksonad)
+        const vastus = await postMarksonad(marksonad, localStorage.getItem('AuthToken'));
 
         if (vastus.ok) {
             setTooted(vastus.marksonad)
