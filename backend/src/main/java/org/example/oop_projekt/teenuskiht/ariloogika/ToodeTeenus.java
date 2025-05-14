@@ -2,6 +2,7 @@ package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.*;
+import org.example.oop_projekt.Erindid.Autentimine.AuthException;
 import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.Kasutaja;
 import org.example.oop_projekt.mudel.MuudetudToode;
@@ -18,11 +19,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.example.oop_projekt.specifications.ToodeSpecification;
+import java.util.function.Function;
 
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -179,7 +182,35 @@ public class ToodeTeenus {
                 .and(ToodeSpecification.nimetusEiSisaldaUhtegi(punased));
 
         Page<Toode> leht = toodeRepository.findAll(spec, pagerequest);
-        List<ToodeDTO> tootedDTOdena = leht.getContent().stream().map(ToodeDTO::new).distinct().toList();
+
+        Map<Long, MuudetudToode> muudetudMap = new HashMap<>();
+        try {
+            Kasutaja kasutaja = authTeenus.getKasutaja(paring.token());
+            List<MuudetudToode> muudetudTooted = muudetudTootedRepository
+                    .leiaKehtivadMuudetudTooted(kasutaja, LocalDateTime.now());
+            muudetudMap = muudetudTooted.stream().collect(Collectors.toMap(MuudetudToode::getMuudetudTooteID, Function.identity()));
+        } catch (AuthException ignore) {} // Kui pole sisse logitud, siis ei näita lihtsalt muudetud tooteid
+
+        Map<Long, MuudetudToode> finalMuudetudMap = muudetudMap;
+        List<ToodeDTO> tootedDTOdena = leht.getContent().stream().map(toode -> {
+            MuudetudToode muutus = finalMuudetudMap.get(toode.getId());
+            double tukiHind = muutus != null ? muutus.getTykihind() : toode.getHindKliendi();
+            double uhikuHind = muutus != null ? muutus.getYhikuhind() : toode.getHulgaHindKliendi();
+            LocalDateTime muutmisAeg = muutus != null ? muutus.getMuutmisAeg() : toode.getViimatiUuendatud();
+
+            return new ToodeDTO(
+                    toode.getId(),
+                    toode.getNimetus(),
+                    tukiHind,
+                    uhikuHind,
+                    toode.getYhik(),
+                    uhikuHind < tukiHind ? "true" : "false",
+                    toode.getPood().getNimi(),
+                    toode.getTootePiltURL(),
+                    muutmisAeg
+            );
+        }).toList();
+
         long toodeteKoguarv = leht.getTotalElements();
 
         return new KuvaTootedDTO(tootedDTOdena, toodeteKoguarv);
@@ -200,11 +231,6 @@ public class ToodeTeenus {
                 toode.id()
         ));// Lisan toote muudetud toodete tabelisse
         logger.info("sain andmed {} uuendamiseks kasutajale {}", toode.tooteNimi(), kasutaja.getEmail());
-
-
-        // throw AndmeteUuendusException, kui sellist toodet pole andmebaasis vms
-
-        //toodeRepository.uuendaTooteHinda(4, 1);//Hind, mis läheb kliendihinna asemele.
     }
 
     @verifyToken

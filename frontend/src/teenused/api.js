@@ -95,7 +95,7 @@ export const postMarksonad = async (marksonad, nihe, token) => {
         const vastus = await fetch(`${BAAS_URL}/tooted`, {
             method: "POST",
             headers: { "Content-Type": "application/json"},
-            body: JSON.stringify({"marksonad": marksonadList, "nihe": nihe, "token": token})
+            body: JSON.stringify({"marksonad": marksonadList, "nihe": nihe, token: {"token": token}})
         })
 
         const vastuseAndmed = await vastus.json();
