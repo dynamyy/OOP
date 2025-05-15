@@ -6,7 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
-import org.example.oop_projekt.DTO.*;
+import org.example.oop_projekt.DTO.autentimine.*;
 import org.example.oop_projekt.Erindid.AndmeteUuendusException;
 import org.example.oop_projekt.Erindid.Autentimine.AuthException;
 import org.example.oop_projekt.Erindid.Autentimine.KasutajaPuudubException;

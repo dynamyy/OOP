@@ -1,7 +1,7 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.DTO.TokenVerify;
-import org.example.oop_projekt.DTO.ToodeDTO;
+import org.example.oop_projekt.DTO.autentimine.TokenVerify;
+import org.example.oop_projekt.DTO.toode.ToodeDTO;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.repository.ToodeRepository;
 import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;

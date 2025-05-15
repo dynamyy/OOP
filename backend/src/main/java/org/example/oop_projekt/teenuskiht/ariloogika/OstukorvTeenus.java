@@ -1,7 +1,11 @@
 package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
-import org.example.oop_projekt.DTO.*;
+import org.example.oop_projekt.DTO.autentimine.Token;
+import org.example.oop_projekt.DTO.ostukorv.*;
+import org.example.oop_projekt.DTO.toode.EbasobivToodeDTO;
+import org.example.oop_projekt.DTO.toode.MarksonaDTO;
+import org.example.oop_projekt.DTO.toode.TokenMarkSonaDTO;
 import org.example.oop_projekt.annotatsioonid.verifyToken;
 import org.example.oop_projekt.mudel.*;
 import org.example.oop_projekt.repository.EbasobivToodeRepository;
@@ -16,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 // Teenuseklass, mis sisaldab ostukorviga seotud äriloogikat
 @Service

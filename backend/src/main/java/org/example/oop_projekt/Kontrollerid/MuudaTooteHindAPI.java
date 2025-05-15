@@ -1,7 +1,6 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.DTO.HinnaMuutusDTO;
-import org.example.oop_projekt.Erindid.AndmeteUuendusException;
+import org.example.oop_projekt.DTO.toode.HinnaMuutusDTO;
 import org.example.oop_projekt.Erindid.Autentimine.AuthException;
 import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.DTO.OstukorvIdDTO;
-import org.example.oop_projekt.DTO.Token;
+import org.example.oop_projekt.DTO.ostukorv.OstukorvIdDTO;
+import org.example.oop_projekt.DTO.autentimine.Token;
 import org.example.oop_projekt.repository.OstukorvRepository;
 import org.example.oop_projekt.teenuskiht.ariloogika.OstukorvTeenus;
 import org.springframework.beans.factory.annotation.Autowired;

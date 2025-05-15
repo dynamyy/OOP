@@ -1,9 +1,8 @@
 package org.example.oop_projekt.Kontrollerid.Kasutaja;
 
-import org.example.oop_projekt.DTO.KasutajaAndmedDTO;
+import org.example.oop_projekt.DTO.autentimine.KasutajaAndmedDTO;
 import org.example.oop_projekt.Erindid.AndmeteUuendusException;
 import org.example.oop_projekt.Erindid.Autentimine.AuthException;
-import org.example.oop_projekt.Erindid.Autentimine.TokenKehtetuException;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

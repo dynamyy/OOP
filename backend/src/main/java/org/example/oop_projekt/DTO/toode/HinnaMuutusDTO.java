@@ -1,4 +1,6 @@
-package org.example.oop_projekt.DTO;
+package org.example.oop_projekt.DTO.toode;
+
+import org.example.oop_projekt.DTO.autentimine.TokenDTO;
 
 public record HinnaMuutusDTO (
         ToodeDTO toodeDTO,

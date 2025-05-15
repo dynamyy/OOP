@@ -1,7 +1,7 @@
 package org.example.oop_projekt.repository;
 
 import jakarta.transaction.Transactional;
-import org.example.oop_projekt.DTO.ToodeDTO;
+import org.example.oop_projekt.DTO.toode.ToodeDTO;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
 import org.springframework.data.jpa.repository.JpaRepository;

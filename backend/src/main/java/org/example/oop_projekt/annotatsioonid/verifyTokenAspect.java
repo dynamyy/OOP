@@ -8,14 +8,13 @@ import io.jsonwebtoken.security.Keys;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.example.oop_projekt.DTO.TokenDTO;
+import org.example.oop_projekt.DTO.autentimine.TokenDTO;
 import org.example.oop_projekt.Erindid.Autentimine.PuudulikudAndmedException;
 import org.example.oop_projekt.Erindid.Autentimine.TokenKehtetuException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Objects;
 
 
 @Aspect
