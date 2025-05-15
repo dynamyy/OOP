@@ -21,7 +21,7 @@ function Toode() {
 
     useEffect(() => {
         const getTooteInfo = async () => {
-            const vastus = await getToode(id);
+            const vastus = await getToode(id, localStorage.getItem('AuthToken') || "");
             if (vastus.ok) {
                 setTooteInfo(vastus.tooteAndmed);
                 setHind(vastus.tooteAndmed.tooteTukihind);
@@ -68,6 +68,7 @@ function Toode() {
 
                 uusTooteInfo.tooteTukihind = hind;
                 uusTooteInfo.tooteUhikuHind = uhikuHind;
+                hinnaMuutusLopp.setHours(23, 59, 0, 0);
                 uusTooteInfo.viimatiUuendatud = hinnaMuutusLopp.toISOString();
 
                 
@@ -104,7 +105,7 @@ function Toode() {
 
     const uuendusajaSilt = () => {
         if (tooteInfo.viimatiUuendatud) {
-            return tooteInfo.viimatiUuendatud > new Date().getTime() ? "Muudetud hind kuni:" : "Viimati uuendatud:";
+            return new Date(tooteInfo.viimatiUuendatud).getTime() > new Date().getTime() ? "Muudetud hind kuni:" : "Viimati uuendatud:";
         }
 
         return "Viimati uuendatud:";

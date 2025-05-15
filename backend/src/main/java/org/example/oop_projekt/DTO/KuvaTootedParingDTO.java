@@ -4,6 +4,7 @@ import java.util.List;
 
 public record KuvaTootedParingDTO (
         List<MarksonaDTO> marksonad,
-        int nihe
+        int nihe,
+        TokenVerify token
 ) {
 }

@@ -38,7 +38,7 @@ function LooOstukorv() {
 
     async function fetchTooted(nihe) {
 
-        const vastus = await postMarksonad(marksonad, nihe)
+        const vastus = await postMarksonad(marksonad, nihe, localStorage.getItem('AuthToken'));
 
         if (vastus.ok) {
             setTooted(prev => [...prev, ...vastus.kuvaTootedDTO.tooted]);
@@ -46,7 +46,7 @@ function LooOstukorv() {
                 setTooteidKokku(vastus.kuvaTootedDTO.tooteidKokku);
             }
         } else {
-            console.log("Märksõnade saatmine nurjus")
+            console.log("Märksõnade saatmine nurjus");
         }
 
         setUuteToodeteLaadimine(false);
@@ -56,6 +56,7 @@ function LooOstukorv() {
         if (Object.keys(marksonad).length > 0) {
             console.log("Märksõnad saadetud");
             setTooted([]);
+            setTooteidKokku(0);
             fetchTooted(0);
         }
     }, [marksonad])
@@ -79,8 +80,9 @@ function LooOstukorv() {
             uus[ms] = varv;
             return uus;
         }, {});
-        setMarksonad(eemaldatud)
-        setTooted([])
+        setMarksonad(eemaldatud);
+        setTooted([]);
+        setTooteidKokku(0);
     }
 
     function muudaSisalduvust() {

@@ -6,6 +6,7 @@ import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.Erindid.TuhiElementideTagastusException;
 import org.example.oop_projekt.mudel.Toode;
 import org.jsoup.Jsoup;
+import org.jsoup.helper.ValidationException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -135,8 +136,11 @@ public abstract class WebScraper{
     void getUrl(String url) throws ScrapeFailedException {
         try {
             chromedriver.get(url);
+            Thread.sleep(1000);
         } catch (WebDriverException e) {
             throw new ScrapeFailedException("Tekkis viga URLi laadimisel: " + url);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -214,6 +218,20 @@ public abstract class WebScraper{
 
         } catch (IllegalStateException e) {
             throw new ScrapeFailedException("Viga elemendi leidmisel vanema kaudu. cssQuery " + cssQuery + ": " + e.getMessage());
+        }
+    }
+
+    Element valiEsimene(Element vanem, String cssQuery) throws ScrapeFailedException {
+        try {
+            Element tulemus = vanem.selectFirst(cssQuery);
+
+            if (tulemus == null) {
+                throw new TuhiElementideTagastusException("Viga esimese elemendi valimisel. Ei leitud elementi. cssQuery: " + cssQuery);
+            }
+
+            return tulemus;
+        } catch (ValidationException e) {
+            throw new ScrapeFailedException("valiEsimene meetodile anti tühi cssQuery sisend");
         }
     }
 

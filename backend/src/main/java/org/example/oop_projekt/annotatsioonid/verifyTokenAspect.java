@@ -33,6 +33,10 @@ public class verifyTokenAspect {
                 String token = dto.token();
 
                 if (token == null) {
+                    throw new PuudulikudAndmedException("Token väli on puudu");
+                }
+
+                if (token.isEmpty()) {
                     throw new PuudulikudAndmedException("Token väli on tühi");
                 }
 

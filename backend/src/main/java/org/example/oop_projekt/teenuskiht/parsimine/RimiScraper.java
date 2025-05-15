@@ -1,6 +1,7 @@
 package org.example.oop_projekt.teenuskiht.parsimine;
 
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
+import org.example.oop_projekt.Erindid.TuhiElementideTagastusException;
 import org.example.oop_projekt.repository.PoodRepository;
 import org.example.oop_projekt.mudel.Toode;
 import org.jsoup.Jsoup;
@@ -10,6 +11,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -21,11 +24,12 @@ import java.util.regex.Pattern;
 public class RimiScraper extends WebScraper {
 
     private final PoodRepository poodRepository;
-    private String url = "https://rimi.ee/epood";
+    private final Logger logger;
 
     public RimiScraper(PoodRepository poodRepository) {
         super("Rimi");
         this.poodRepository = poodRepository;
+        this.logger = LoggerFactory.getLogger(RimiScraper.class);
     }
 
 
@@ -33,7 +37,7 @@ public class RimiScraper extends WebScraper {
     String hangiDynamicSource() throws ScrapeFailedException {
         WebDriver chromedriver = getChromedriver();
 
-        getUrl(url);
+        getUrl("https://rimi.ee/epood"); // Lisa siia ootamine
 
         // Ootan kuni leht laeb, et ei tekiks vigu. Siia pole teda otseselt vaja
         /*
@@ -53,7 +57,7 @@ public class RimiScraper extends WebScraper {
         chromedriver.get(url);
 
         WebDriverWait wait = new WebDriverWait(chromedriver, Duration.ofSeconds(10));
-        wait.until(driver -> driver.findElements(By.cssSelector(".section-header__wrapper")).size() > 0);
+        wait.until(driver -> !driver.findElements(By.cssSelector(".section-header__wrapper")).isEmpty());
 
         return chromedriver.getPageSource();
     }
@@ -90,7 +94,6 @@ public class RimiScraper extends WebScraper {
             return tooted;
         }
 
-
         for (String url : urlid) {
 
             if (url.contains("teenused")){
@@ -112,7 +115,7 @@ public class RimiScraper extends WebScraper {
 
                 // Kui ei leitud üldse tooteid, katkesta while
                 if (info.isEmpty()) {
-                    System.out.println("Leht " + pageNr + " tühjaks jäänud – katkestan selle kategooria.");
+                    logger.info("Leht {} on tühi – lõpetan selle kategooria töötlemise.", pageNr);
                     break;
                 }
 
@@ -149,32 +152,27 @@ public class RimiScraper extends WebScraper {
 
 
 
-                    Element hindElement = toode.selectFirst("div.price-tag.card__price");
+                    Element hindElement = valiEsimene(toode, "div.price-tag.card__price");
 
-                    String täisarvulineOsa = hindElement.selectFirst("span").text();
-                    String komakoht = hindElement.selectFirst("sup").text();
+                    String taisarvulineOsa = valiEsimene(hindElement, "span").text();
+                    String komakoht = valiEsimene(hindElement, "sup").text();
 
-                    String hindStr = täisarvulineOsa + "." + komakoht;
+                    String hindStr = taisarvulineOsa + "." + komakoht;
                     double tykiHind = Double.parseDouble(hindStr);
 
                     double kliendiTykiHind = tykiHind;
                     double kliendiYhikuHind = yhikuHind;
-                    try{
-                        Element kliendiHindElement = toode.selectFirst("div.price-label__price");
 
-                        String täisarv = kliendiHindElement.selectFirst("span.major").text();
-                        String komad = kliendiHindElement.selectFirst("span.cents").text();
+                    try {
+                        Element kliendiHindElement = valiEsimene(toode, "div.price-label__price");
+                        String taisarv = valiEsimene(kliendiHindElement, "span.major").text();
+                        String komad = valiEsimene(kliendiHindElement, "span.cents").text();
 
-                        String hindSt = täisarv + "." + komad;
+                        String hindSt = taisarv + "." + komad;
                         kliendiTykiHind = Double.parseDouble(hindSt);
-
-                        Element yhikuhindElement = toode.selectFirst("div.price-per-unit");
-
-                        //String yhikuHindStr = yhikuhindElement.text();
-                        kliendiYhikuHind = hindTekstist(yhikuhindElement.text());//enne oli replace.(",", ".")
-                    }catch (Exception e){
-
-                    }
+                        Element yhikuhindElement = valiEsimene(toode, "div.price-per-unit");
+                        kliendiYhikuHind = hindTekstist(yhikuhindElement.text());
+                    } catch (TuhiElementideTagastusException ignore) {} // Kõikidel toodetel pole kliendihinda
 
 
                     Element imgElement = toode.selectFirst("img");
@@ -184,17 +182,6 @@ public class RimiScraper extends WebScraper {
                             pildiURL = imgElement.attr("data-src").trim();
                         }
                     }
-                    /*
-                    System.out.println("Nimi: " + tooteNimi +
-                            ", Tükihind: " + tykiHind +
-                            ", Ühikuhind: " + yhikuHind +
-                            ", Kliendihind: " + kliendiTykiHind +
-                            " kliendiühikuhind: " + kliendiYhikuHind +
-                            " Ühik: " + yhik +
-                            ", Pildi URL:" + pildiURL);
-
-                     */
-
 
                     Toode uusToode = new Toode(tooteNimi,
                             yhik,
@@ -208,6 +195,16 @@ public class RimiScraper extends WebScraper {
                             null);
                     tooted.add(uusToode);
 
+                    /*
+                    System.out.println("Nimi: " + tooteNimi +
+                            ", Tükihind: " + tykiHind +
+                            ", Ühikuhind: " + yhikuHind +
+                            ", Kliendihind: " + kliendiTykiHind +
+                            " kliendiühikuhind: " + kliendiYhikuHind +
+                            " Ühik: " + yhik +
+                            ", Pildi URL:" + pildiURL);
+                            
+                     */
 
                 }
                 if (katkesta) {
