@@ -1,7 +1,7 @@
 import { useState, useEffect, React, use } from 'react'
 import { useParams } from 'react-router-dom';
 import Menuu from '../komponendid/Menuu'
-import { getOstukorvTulemus } from '../teenused/api';
+import { getOstukorvTulemus, uuendaOstukorvi } from '../teenused/api';
 import OstukorvPoodTulp from '../komponendid/OstukorvPoodTulp';
 import coopLogo from '../staatiline/logod/coop.png';
 import maximaLogo from '../staatiline/logod/maxima.png';
@@ -9,6 +9,7 @@ import selverLogo from '../staatiline/logod/selver.png';
 import rimiLogo from '../staatiline/logod/rimi.png';
 import prismaLogo from '../staatiline/logod/prisma.png';
 import OstukorvPoodToodeKaart from '../komponendid/OstukorvPoodToodeKaart';
+import MuraFilter from '../komponendid/MuraFilter';
 
 function OstukorvTulemus() {
     const { id } = useParams();
@@ -44,7 +45,7 @@ function OstukorvTulemus() {
             setTimeout(() => {
                 const kast = document.getElementById("ostukorv-pood-tooted");
                 const kast2 = document.getElementById("ostukorv-tooted-sisemine");
-                if (kast) kast.style.maxHeight = "60vh"
+                if (kast) kast.style.maxHeight = "55vh"
                 if (kast2) kast2.style.overflowY = "auto"
             }, 200)
         }
@@ -74,6 +75,30 @@ function OstukorvTulemus() {
         setTulbad(uuedTulbad)
     }, [ostukorv])
 
+    function varskendaOstukorvi(id) {
+        const getOstukorv = async () => {
+                    const vastus = await getOstukorvTulemus(id, localStorage.getItem('AuthToken'));
+                    if (vastus.ok) {
+                        setOstukorv(vastus.ostukorvAndmed);
+                        console.log(vastus);
+                    } else {
+                        console.log(vastus.sonum);
+                    }
+                };
+
+        const uuendamine = async () => {
+            const vastus = await uuendaOstukorvi(id, localStorage.getItem('AuthToken'));
+            if (vastus.ok) {
+                console.log(vastus.ok);
+                getOstukorv();
+            } else {
+                console.log(vastus.sonum);
+            }
+        };
+
+        uuendamine();
+    }
+
     return (
         <>
             <Menuu />
@@ -95,24 +120,27 @@ function OstukorvTulemus() {
                     </div>
                     <div className="ostukorv-tulemus-ostukorv">
                         <div className="ostukorv-pood-tooted tume hele-tekst umar-nurk"  id='ostukorv-pood-tooted'>
+                            <MuraFilter />
                             <div>
                                 <span>Odavaim ostukorv</span>
                                 <img src={logod[aktiivnePood.pood]} alt={aktiivnePood.pood} className="logo-pilt-ostukorv" />
                             </div>
                             <div id='ostukorv-tooted-sisemine'>
                                 {aktiivnePood && Array.isArray(aktiivnePood.tooted) && aktiivnePood.tooted.length > 0
-                                    ? aktiivnePood.tooted.map((toode, idx) => (
+                                    ? aktiivnePood.tooted.map(toode => (
+                                        toode !== null ?
                                         <OstukorvPoodToodeKaart 
                                             key={toode.nimetus}
                                             kogus={toode.kogus}
                                             pilt={toode.piltURL}
                                             nimetus={toode.nimetus}
                                             hind={toode.tukiHind}
-                                        />
+                                        /> : null
                                     ))
                                     : null
                                 }
                                 <div>
+                                    {}
                                     <span>
                                         Kokku: {aktiivnePood && 
                                         Array.isArray(aktiivnePood.tooted) && 
@@ -123,6 +151,10 @@ function OstukorvTulemus() {
                                     </span>
                                 </div>
                             </div>
+                        </div>
+                        <div className="ostukorv-tulemused-nupud">
+                            <button className='nupp hele-tekst tume2' id='varskenda-nupp' onClick={() => varskendaOstukorvi(id)}>Värskenda</button>
+                            <button className='nupp hele-tekst tume2' id='muuda-nupp' onClick={() => muudaOstukorvi()}>Muuda</button>
                         </div>
                     </div>
                 </div>

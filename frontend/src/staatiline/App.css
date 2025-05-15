@@ -13,12 +13,35 @@
     overflow-y: hidden;
 }
 
+.noise-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+.noise-layer svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .tume {
-    background-color: #153448;
+    background: #212A31;
+    background: linear-gradient(33deg,rgba(33, 42, 49, 1) 0%, rgba(18, 78, 102, 1) 100%);
+}
+
+.tume {
+    background: #212A31;
+    background: linear-gradient(25deg,rgba(33, 42, 49, 1) 0%, rgba(18, 78, 102, 1) 45%, rgba(158, 90, 99, 1) 77%, rgba(201, 101, 103, 1) 98%);
 }
 
 .tume2 {
-    background-color: #3C5B6F;
+    background-color: #2E3944;
 }
 
 .tume2:hover {
@@ -26,7 +49,7 @@
 }
 
 .hele {
-    background-color: #DFD0B8;
+    background: #F7F9FB;
 }
 
 .hele2 {
@@ -58,7 +81,7 @@
 }
 
 .hele-tekst {
-    color: #DFD0B8 !important;
+    color: #D3D9D4 !important;
     font-weight: 500;
 }
 
@@ -71,7 +94,7 @@
 }
 
 .tume-tekst {
-    color: #153448;
+    color: #124E66;
 }
 
 .tume-piir {
@@ -86,6 +109,7 @@
     width: fit-content;
     border-bottom-right-radius: 10px;
     z-index: 10;
+    overflow: hidden;
 }
 
 .menuu ul {
