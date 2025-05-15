@@ -52,5 +52,4 @@ public class OopProjektApplication {
         long lopp = System.currentTimeMillis();
         System.out.println(lopp - algus);
     }
-
 }

@@ -33,6 +33,5 @@ public class OstukorvAPI {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sonum", e.getMessage()));
         }
-
     }
 }
