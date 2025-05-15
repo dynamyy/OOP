@@ -195,6 +195,17 @@ public class RimiScraper extends WebScraper {
                             null);
                     tooted.add(uusToode);
 
+                    /*
+                    System.out.println("Nimi: " + tooteNimi +
+                            ", Tükihind: " + tykiHind +
+                            ", Ühikuhind: " + yhikuHind +
+                            ", Kliendihind: " + kliendiTykiHind +
+                            " kliendiühikuhind: " + kliendiYhikuHind +
+                            " Ühik: " + yhik +
+                            ", Pildi URL:" + pildiURL);
+                            
+                     */
+
                 }
                 if (katkesta) {
                     System.out.println("Lehel oli toode, mis polnud saadaval. Katkestan");
