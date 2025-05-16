@@ -196,7 +196,7 @@ public class ToodeTeenus {
             MuudetudToode muutus = finalMuudetudMap.get(toode.getId());
             double tukiHind = muutus != null ? muutus.getTykihind() : toode.getHindKliendi();
             double uhikuHind = muutus != null ? muutus.getYhikuhind() : toode.getHulgaHindKliendi();
-            LocalDateTime muutmisAeg = muutus != null ? muutus.getMuutmisAeg() : toode.getViimatiUuendatud();
+            LocalDateTime muutmisAeg = muutus != null ? muutus.getKehtivusAeg() : toode.getViimatiUuendatud();
 
             return new ToodeDTO(
                     toode.getId(),
@@ -270,7 +270,7 @@ public class ToodeTeenus {
             if (muudetud != null) {
                 toode.setHindKliendi(muudetud.getTykihind());
                 toode.setHulgaHindKliendi(muudetud.getYhikuhind());
-                toode.setViimatiUuendatud(muudetud.getMuutmisAeg());
+                toode.setViimatiUuendatud(muudetud.getKehtivusAeg());// See tglt veits kehv rn, sest andmebaasis hoian ma muudetudtoodete tabelis hinnamuutuse kehtivusaega ning toodete tabelis on
             }
         } catch (AuthException ignore) {}
 

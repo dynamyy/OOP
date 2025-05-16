@@ -184,6 +184,7 @@ public class RimiScraper extends WebScraper {
                         }
                     }
 
+                    /*
                     System.out.println("Nimi: " + tooteNimi +
                             ", Tükihind: " + tykiHind +
                             ", Ühikuhind: " + yhikuHind +
@@ -192,9 +193,11 @@ public class RimiScraper extends WebScraper {
                             " Ühik: " + yhik +
                             ", Pildi URL:" + pildiURL);
 
+                     */
 
 
-                    /*
+
+
                     Toode uusToode = new Toode(tooteNimi,
                             yhik,
                             kliendiTykiHind,
@@ -207,7 +210,6 @@ public class RimiScraper extends WebScraper {
                             null);
                     tooted.add(uusToode);
 
-                     */
 
 
                 }

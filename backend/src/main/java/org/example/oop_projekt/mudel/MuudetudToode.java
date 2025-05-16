@@ -40,10 +40,10 @@ public class MuudetudToode {
     private double tykihind;
 
     @Column(
-            name = "muutmisaeg",
+            name = "kehtivusaeg",
             nullable = false
     )
-    private LocalDateTime muutmisAeg;
+    private LocalDateTime kehtivusAeg;
 
     @Column(
             name = "muudetudTooteID",
@@ -59,13 +59,13 @@ public class MuudetudToode {
             Kasutaja kasutaja,
             double yhikuhind,
             double tykihind,
-            LocalDateTime muutmisAeg,
+            LocalDateTime kehtivusAeg,
             Long muudetudTooteID
     ){
         this.kasutaja = kasutaja;
         this.yhikuhind = yhikuhind;
         this.tykihind = tykihind;
-        this.muutmisAeg = muutmisAeg; //Halb muutujanimi, siia salvestatakse hinnamuutuse kehtivusaeg
+        this.kehtivusAeg = kehtivusAeg; //Halb muutujanimi, siia salvestatakse hinnamuutuse kehtivusaeg
         this.muudetudTooteID = muudetudTooteID;
     }
 
