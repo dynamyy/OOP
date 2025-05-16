@@ -27,7 +27,7 @@ function LooOstukorv() {
     const [ostukorviNimi, setOstukorviNimi] = useState('Ostukorv')
     const [tooteidKokku, setTooteidKokku] = useState(0);
     const [uuteToodeteLaadimine, setUuteToodeteLaadimine] = useState(false);
-    const [uusMarksonaNimi, setUusMarksonaNimi] = useState("Uus märksoõna")
+    const [uusMarksonaNimi, setUusMarksonaNimi] = useState("Uus märksõna")
     const elmRef = useRef(null);
     const logod = {
         Prisma: prismaLogo,
