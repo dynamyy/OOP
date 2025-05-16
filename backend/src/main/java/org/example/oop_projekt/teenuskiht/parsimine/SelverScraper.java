@@ -137,7 +137,6 @@ public class SelverScraper extends WebScraper {
             return tooted;
         }
 
-        int count = 0;
 
         for (String url : urlid){
             String html = html(url);
@@ -168,13 +167,17 @@ public class SelverScraper extends WebScraper {
                 String yhik = hindKoosYhikuga.split("/")[1];
 
 
-                double kliendiTykiHind;
+                double kliendiTykiHind = 0;
+
                 try {
                     Element elemendiKliendiHind = tooteInfo.selectFirst("span.ProductBadge__badge--label");
                     kliendiTykiHind = hindTekstist(elemendiKliendiHind.text().trim());
-                } catch (Exception e){
-                    //System.out.println("Puudub partnerkaardi soodustus");
+                }catch (NullPointerException e){
+
+                }
+                if (kliendiTykiHind == 0){
                     kliendiTykiHind = tykiHind;
+                    //System.out.println("Puudub partnerkaardi soodustus, kliendihind on: " + kliendiTykiHind);
                 }
 
 
@@ -205,10 +208,6 @@ public class SelverScraper extends WebScraper {
                  */
 
 
-
-                //count++;//Kui päriselt asja tööle paned võta see ära
-
-
                 Toode uusToode = new Toode(tooteNimi,
                         yhik,
                         kliendiTykiHind,
@@ -220,6 +219,7 @@ public class SelverScraper extends WebScraper {
                         "",
                         null);
                 tooted.add(uusToode);
+
             }
         }
 
