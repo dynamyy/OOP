@@ -1,18 +1,30 @@
+#ostukorv-loomine-sisu {
+    display: flex;
+    max-width: 90%;
+    min-width: 80rem;
+    min-height: 30rem;
+    max-height: 90%;
+    margin-top: 5rem;
+    position: relative;
+}
+
+
+
 #marksonad-konteiner {
     display: flex;
     flex-direction: column;
     gap: 2rem;
     height: 100%;
     width: 40%;
+    width: 30rem;
     padding: 3rem;
-    padding-top: 5rem;
-    position: relative;
+    padding-right: 0;
 }
 
 
 #marksonad-konteiner > div:nth-child(2) > div {
     display: flex;
-    gap: 2rem !important;
+    justify-content: space-between;
 }
 
 #marksonad-konteiner > div:nth-child(2) > div > div {
@@ -31,7 +43,17 @@
 }
 
 #marksonad-konteiner > :first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     flex-grow: 1;
+}
+
+#marksona-nimi-input {
+    border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+    font-weight: 700;
+    font-size: xx-large !important;
+    padding-left: 0;
 }
 
 
@@ -48,7 +70,7 @@
 
 #marksonad-konteiner input {
     font-size: x-large;
-    border: 1px solid;
+    border: 1px #15344827 solid;
     height: 100%;
     flex: 1;
     min-width: 0;
@@ -83,7 +105,6 @@
 }
 
 #marksonad-konteiner > div .teksti-paar:nth-child(2) > div {
-    min-height: 5rem;
     height: fit-content;
 }
 
@@ -99,9 +120,10 @@
     flex-direction: column;
     justify-content: start;
     padding: 3rem;
-    padding-top: 5rem;
-    height: 100%;
-    width: 60%;
+    height: 90vh;
+    max-height: 100%;
+    max-width: 50rem;
+    width: 60vw;
 }
 
 #tooted-list-konteiner div.teksti-paar {
@@ -194,7 +216,7 @@
 #tooted-list-valimine {
     display: flex;
     height: 100%;
-    border: #153448 solid 1px;
+    border: #15344829 solid 1px;
     padding-right: 0.5rem;
     overflow-y: auto;
 }
@@ -203,17 +225,17 @@
     width: 60%;
 }
 
-#tooted-list::-webkit-scrollbar {
+#tooted-list::-webkit-scrollbar, .ostukorv-list::-webkit-scrollbar {
     width: 8px;
 }
 
-#tooted-list::-webkit-scrollbar-track {
+#tooted-list::-webkit-scrollbar-track, .ostukorv-list::-webkit-scrollbar-track {
     border: #3C5B6F solid 1px;
     margin: 10px;
     border-radius: 4px;
 }
 
-#tooted-list::-webkit-scrollbar-thumb {
+#tooted-list::-webkit-scrollbar-thumb, .ostukorv-list::-webkit-scrollbar-thumb {
     background: #3C5B6F;
     border-radius: 4px;
     width: 10px;
@@ -245,7 +267,7 @@
 
 
 .ostukorv-konteiner {
-    max-height: 100%;
+    max-height: fit-content;
     width: fit-content;
     min-width: 20rem;
     padding: 1.5rem;
@@ -327,7 +349,7 @@
 
     .ostukorv-konteiner {
         position: absolute;
-        right: 0;
+        left: 0;
         bottom: 0;
         z-index: 10;
         border-bottom-left-radius: 0 !important;
@@ -335,7 +357,7 @@
     }
 
     .suletud {
-        transform: translateY(40vh);
+        transform: translateY(80vh);
     }
 
     .ease {

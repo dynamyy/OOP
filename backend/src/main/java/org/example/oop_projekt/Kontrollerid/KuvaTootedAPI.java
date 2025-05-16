@@ -1,12 +1,10 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.DTO.*;
-import org.example.oop_projekt.Erindid.Autentimine.AuthException;
+import org.example.oop_projekt.DTO.toode.KuvaTootedDTO;
+import org.example.oop_projekt.DTO.toode.KuvaTootedParingDTO;
 import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Objects;
 
 @RestController
 @RequestMapping(path = "/api/tooted")

@@ -6,7 +6,7 @@ import { faXmarkCircle } from '@fortawesome/free-regular-svg-icons'
 function OstukorvPoodToodeKaart(props) {
 
     return (
-        <div className='ostukorv-pood-toode-kaart'>
+        <div className={'ostukorv-pood-toode-kaart umar-nurk' + props.punane}>
             <div>
                 <div className="pilt-taust hele">
                     <img src={props.pilt} alt="toote pilt" className='ostukorv-toode-pilt' />
@@ -17,7 +17,7 @@ function OstukorvPoodToodeKaart(props) {
             </div>
             <div>
                 <span>{props.hind} €/tk</span>
-                <span>{props.hind * props.kogus} €</span>
+                <span>{(props.hind * props.kogus).toFixed(2)} €</span>
             </div>
         </div>
     )

@@ -1,7 +1,7 @@
 package org.example.oop_projekt.Kontrollerid;
 
 
-import org.example.oop_projekt.DTO.OstukorvDTO;
+import org.example.oop_projekt.DTO.ostukorv.OstukorvDTO;
 import org.example.oop_projekt.teenuskiht.ariloogika.OstukorvTeenus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +33,5 @@ public class OstukorvAPI {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sonum", e.getMessage()));
         }
-
     }
 }

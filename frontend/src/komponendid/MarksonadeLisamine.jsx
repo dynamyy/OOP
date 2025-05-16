@@ -6,6 +6,14 @@ function MarksonadeLisamine(props) {
 
     return (
         <div>
+            <input 
+                type="text" 
+                name='marksona-nimi' 
+                className='hele tume-tekst' 
+                id='marksona-nimi-input'
+                value={props.uusMarksonaNimi} 
+                onChange={e => props.setUusMarksonaNimi(e.target.value)}
+            />
             <div className="teksti-paar">
                 <label htmlFor="marksona" className="tume-tekst">Sisesta toote otsimiseks märksõna:</label>
                 <div className="tekst-nupp-konteiner">

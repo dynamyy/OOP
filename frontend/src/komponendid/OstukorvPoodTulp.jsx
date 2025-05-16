@@ -1,4 +1,5 @@
 import {React, useState, useEffect} from 'react';
+import MuraFilter from './MuraFilter';
 
 function OstukorvPoodTulp(props) {
 
@@ -16,9 +17,10 @@ function OstukorvPoodTulp(props) {
             {summa > 0 ? <span className='tume-tekst'> {parseFloat(summa).toFixed(2)} €</span> : null}
             <div 
                 id={props.pood.pood + "-id"} 
-                className="ostukorv-tulp tume umar-nurk"
+                className={"ostukorv-tulp tume umar-nurk" + (props.pood.tooted.includes(null) ? " punane" : "")}
             >
-                {summa === 0 ? <span className='hele-tekst'> Kõiki tooteid ei leitud </span> : null}
+                <MuraFilter />
+                {props.pood.tooted.includes(null) ? <span className='hele-tekst'> Kõiki tooteid ei leitud </span> : null}
             </div>
             <img src={props.logo} alt={props.pood.pood} className="logo-pilt-ostukorv" />
         </div>

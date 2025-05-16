@@ -1,6 +1,6 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.DTO.Token;
+import org.example.oop_projekt.DTO.autentimine.Token;
 import org.example.oop_projekt.mudel.Ostukorv;
 import org.example.oop_projekt.repository.OstukorvRepository;
 import org.example.oop_projekt.teenuskiht.ariloogika.OstukorvTeenus;

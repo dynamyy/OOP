@@ -1,4 +1,4 @@
-package org.example.oop_projekt.DTO;
+package org.example.oop_projekt.DTO.ostukorv;
 
 import java.util.List;
 

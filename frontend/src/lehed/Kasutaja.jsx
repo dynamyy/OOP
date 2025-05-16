@@ -3,6 +3,7 @@ import Menuu from '../komponendid/Menuu'
 import LoginAken from '../komponendid/LoginAken'
 import Kliendikaart from '../komponendid/Kliendikaart'
 import authTeenus from '../teenused/AuthTeenus'
+import MuraFilter from '../komponendid/MuraFilter'
 
 function Kasutaja() {
     const [kliendikaartideMuutmine, setKliendikaartideMuutmine] = useState(false);
@@ -111,6 +112,7 @@ function Kasutaja() {
             <Menuu />
             <div id="sisu" className="hele">
                 <div className="tume umar-nurk hele-tekst" id="s-log">
+                    <MuraFilter />
                     { sisselogimiseTeade && (
                     <div className="teade">
                     {sisselogimiseTeade.split('\n').map((line, i) => (
@@ -140,6 +142,7 @@ function Kasutaja() {
             <Menuu />
             <div id="sisu" className="hele">
                 <div className="tume umar-nurk hele-tekst" id="s-log">
+                    <MuraFilter />
                     { sisselogimiseTeade && (
                     <div className="teade">
                     {sisselogimiseTeade.split('\n').map((line, i) => (
@@ -166,8 +169,8 @@ function Kasutaja() {
             <Menuu />
             <div id="sisu" className="hele">
                 <div className="tume umar-nurk hele-tekst" id="s-log">
+                    <MuraFilter />
                     <h2>Kasutaja {kasutaja}</h2>
-                    
                     <h2>Kliendikaardid:</h2>
                     <div className="kliendikaardid samal-real">
                         <Kliendikaart poeNimi="COOP" varv={kliendikaardiVarv("COOP")} kaartValitud={() => valiKliendikaart("COOP")}/>

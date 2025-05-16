@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import authTeenus from '../teenused/AuthTeenus'
 import { useNavigate } from 'react-router-dom';
+import MuraFilter from './MuraFilter';
 
 function Menuu() {
     const navigate = useNavigate();
@@ -26,6 +27,7 @@ function Menuu() {
 
     return (
         <header className="menuu tume">
+            <MuraFilter />
             <nav>
                 <ul>
                     <li><Link to="/kasutaja" className='hele-tekst'>Kasutaja</Link></li>

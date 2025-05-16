@@ -1,7 +1,7 @@
 package org.example.oop_projekt.repository;
 
 import jakarta.transaction.Transactional;
-import org.example.oop_projekt.DTO.ToodeDTO;
+import org.example.oop_projekt.DTO.toode.ToodeDTO;
 import org.example.oop_projekt.mudel.Pood;
 import org.example.oop_projekt.mudel.Toode;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,7 +23,7 @@ public interface ToodeRepository extends JpaRepository<Toode, Long>, JpaSpecific
 
     Toode findToodeById(Long id);
 
-    @Query("SELECT new org.example.oop_projekt.DTO.ToodeDTO(t.id, t.nimetus, t.hindKliendi, t.hulgaHindKliendi, t.yhik, CASE WHEN t.hulgaHindKliendi < t.hindKliendi THEN 'true' ELSE 'false' END, t.pood.nimi, t.tootePiltURL, t.viimatiUuendatud) " +
+    @Query("SELECT new org.example.oop_projekt.DTO.toode.ToodeDTO(t.id, t.nimetus, t.hindKliendi, t.hulgaHindKliendi, t.yhik, CASE WHEN t.hulgaHindKliendi < t.hindKliendi THEN 'true' ELSE 'false' END, t.pood.nimi, t.tootePiltURL, t.viimatiUuendatud) " +
             "FROM Toode t " +
             "WHERE LOWER(t.nimetus) LIKE LOWER(:nimetus)" +
             "ORDER BY 1")

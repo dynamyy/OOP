@@ -4,6 +4,7 @@ import Kliendikaart from '../komponendid/Kliendikaart'
 import { useNavigate } from 'react-router-dom';
 import { postSisseLogimine } from '../teenused/api'
 import { postRegistreerimine } from '../teenused/api'
+import MuraFilter from './MuraFilter';
 
 function loginAken() {
     const navigate = useNavigate();
@@ -65,6 +66,7 @@ function loginAken() {
             <Menuu />
             <div id='sisu' className='hele'>
                 <div className="tume umar-nurk hele-tekst" id='s-log'>
+                    <MuraFilter />
                     { sisselogimiseTeade && (
                     <div className="teade">
                     {sisselogimiseTeade.split('\n').map((line, i) => (
