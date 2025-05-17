@@ -12,14 +12,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 @Component
 public class ScraperController{
     private final List<WebScraper> scraperid;
     private final ToodeTeenus toodeTeenus;
     private final Logger logger;
+    private String chromeKasutajaDir;
 
     public ScraperController(List<WebScraper> scraperid, ToodeTeenus toodeTeenus) {
         this.scraperid = scraperid;
@@ -63,6 +71,7 @@ public class ScraperController{
 
         logger.info("Kõik scrapetud ja andmebaasi lisatud");
         chromedriver.quit();
+        cleanupChromedriver();
     }
 
     /**
@@ -73,10 +82,35 @@ public class ScraperController{
      */
     private ChromeDriver uusDriver() {
         ChromeOptions options = new ChromeOptions();
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+
+        chromeKasutajaDir = "/tmp/chrome-user-data-" + UUID.randomUUID();
+        options.addArguments("--user-data-dir=" + chromeKasutajaDir);
         options.addArguments("--headless"); // peidetult jooksmine
         options.addArguments("window-size=1920,1080");
 
         WebDriverManager.chromedriver().setup();
         return new ChromeDriver(options);
+    }
+
+    /**
+     * Kustutab suvaliselt genereeritud user data kaustast andmed peale sessiooni
+     */
+    private void cleanupChromedriver() {
+        try (Stream<Path> walk = Files.walk(Paths.get(chromeKasutajaDir))) {
+            int[] kustutamisStaatused = {0, 0};
+            walk.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(file -> {
+                if (file.delete()) {
+                    kustutamisStaatused[0]++;
+                } else {
+                    kustutamisStaatused[1]++;
+                }
+            });
+            logger.info("Chrome'i kasutaja kaust {} puhastatud. Edukaid kustutusi: {}; Ebaõnnestunud kustutusi: {}",
+                    chromeKasutajaDir, kustutamisStaatused[0], kustutamisStaatused[1]);
+        } catch (IOException e) {
+            logger.error("Ei õnnestunud puhastada Chrome'i kasutaja kausta {}: {}", chromeKasutajaDir, e.getMessage());
+        }
     }
 }
