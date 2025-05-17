@@ -70,7 +70,14 @@ function LooOstukorv() {
                 setMarksonad(JSON.parse(salvestatudMarksonad));
             }
         }
-    }, [])
+
+        if (Object.keys(ostukorv).length === 0) {
+            const salvestatudKorv = localStorage.getItem("Ostukorv");
+            if (salvestatudKorv) {
+                setOstukorv(JSON.parse(salvestatudKorv));
+            }
+        }
+    }, []);
 
     function lisaMarksona(marksona) {
         if (marksona !== "" && marksona.trim() !== "" && !(marksona in marksonad)) {
@@ -119,19 +126,23 @@ function LooOstukorv() {
 
         if (votmed.length > 0) {
             const voti = votmed.join("");
+            let uusKorv;
             setTooted([]);
             if (voti in ostukorv) {
                 const uusKogus = ostukorv[voti].tooteKogus + tooteKogus;
-                setOstukorv({...ostukorv, [voti]: {...ostukorv[voti], "tooteKogus": uusKogus}})
+                uusKorv = {...ostukorv, [voti]: {...ostukorv[voti], "tooteKogus": uusKogus}}
+                setOstukorv(uusKorv)
             }
             else {
-                setOstukorv({...ostukorv, 
+                uusKorv = {...ostukorv, 
                     [voti]: {
                         "marksonad": marksonad, 
                         "tooteKogus": tooteKogus, 
                         "ebasobivadTooted": ebasobivadTooted
-                    }})
+                    }}
+                setOstukorv(uusKorv)
             }
+            localStorage.setItem("Ostukorv", JSON.stringify(uusKorv));
             setMarksonad({})
             localStorage.removeItem("Marksonad");
             setTooteKogus(1);
@@ -143,6 +154,7 @@ function LooOstukorv() {
         const uusOstukorv = {...ostukorv}
         delete uusOstukorv[voti];
         setOstukorv(uusOstukorv);
+        localStorage.setItem("Ostukorv", JSON.stringify(uusOstukorv));
     }
 
     function muudaToode(toode) {
