@@ -98,7 +98,7 @@ public class ScraperController{
 
         chromeKasutajaDir = "/tmp/chrome-user-data-" + UUID.randomUUID();
         options.addArguments("--user-data-dir=" + chromeKasutajaDir);
-        options.addArguments("--headless"); // peidetult jooksmine
+        options.addArguments("--headless=new"); // peidetult jooksmine
         options.addArguments("window-size=1920,1080");
 
         WebDriverManager.chromedriver().setup();
