@@ -43,7 +43,7 @@ public abstract class WebScraper{
 
     public WebScraper(String poeNimi) {
         this.poeNimi = poeNimi;
-        this.logger = LoggerFactory.getLogger(CoopScraper.class);
+        this.logger = LoggerFactory.getLogger(WebScraper.class);
     }
 
     /**
