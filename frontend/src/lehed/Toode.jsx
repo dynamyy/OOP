@@ -38,7 +38,7 @@ function Toode() {
     function formaadiAeg(dateString) {
         let date;
         if (Array.isArray(dateString) && dateString.length === 7) {
-            date = new Date(...dateArray);
+            date = new Date(...dateString);
         } else {
             date = new Date(dateString);
         }
