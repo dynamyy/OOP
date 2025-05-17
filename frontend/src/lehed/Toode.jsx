@@ -36,18 +36,25 @@ function Toode() {
         }, []);
 
     function formaadiAeg(dateString) {
-        let date;
+        let tunnid;
+        let minutid;
+        let paev;
+        let kuu;
+        let aasta;
         if (Array.isArray(dateString) && dateString.length === 7) {
-            return `${String(dateString[3]).padStart(2, '0')}:${String(dateString[4]).padStart(2, '0')} ${String(dateString[2]).padStart(2, '0')}.${String(dateString[1]).padStart(2, '0')}.${String(dateString[0]).padStart(2, '0')}`;
+            tunnid = String(dateString[3]).padStart(2, '0');
+            minutid = String(dateString[4]).padStart(2, '0');
+            paev = String(dateString[2]).padStart(2, '0');
+            kuu = String(dateString[1]).padStart(2, '0');
+            aasta = String(dateString[0]).padStart(2, '0');
         } else {
-            date = new Date(dateString);
+            const date = new Date(dateString);
+            tunnid = String(date.getHours()).padStart(2, '0');
+            minutid = String(date.getMinutes()).padStart(2, '0');
+            paev = String(date.getDate()).padStart(2, '0');
+            kuu = String(date.getMonth() + 1).padStart(2, '0');
+            aasta = date.getFullYear();
         }
-
-        const tunnid = String(date.getHours()).padStart(2, '0');
-        const minutid = String(date.getMinutes()).padStart(2, '0');
-        const paev = String(date.getDate()).padStart(2, '0');
-        const kuu = String(date.getMonth() + 1).padStart(2, '0');
-        const aasta = date.getFullYear();
 
         return `${tunnid}:${minutid} ${paev}.${kuu}.${aasta}`;
     }
