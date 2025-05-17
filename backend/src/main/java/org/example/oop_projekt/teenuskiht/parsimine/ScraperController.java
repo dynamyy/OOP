@@ -2,6 +2,7 @@ package org.example.oop_projekt.teenuskiht.parsimine;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import jakarta.transaction.Transactional;
+import org.example.oop_projekt.Erindid.ChromeDriverFailException;
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
@@ -44,29 +45,39 @@ public class ScraperController{
     public void scrapeAll() throws IOException {
         WebDriver chromedriver = uusDriver();
         List<Toode> tooted;
+        int failedKatseid;
 
         // Scrapib kõik poed ja lisab tooted andmebaasi
         for (WebScraper pood : scraperid) {
+            failedKatseid = 0;
+            while (failedKatseid < 3) {
+                logger.info("Alustan {} scrapemist", pood.getPoeNimi());
 
-            logger.info("Alustan {} scrapemist", pood.getPoeNimi());
+                try {
+                    tooted = pood.scrape(chromedriver);
+                    if (!tooted.isEmpty()) {
+                        logger.info("Sain {} andmed, lisan andmebaasi ({}) toodet", pood.getPoeNimi(), tooted.size());
+                        this.toodeTeenus.lisaTootedAndmebaasi(tooted);
+                    } else {
+                        logger.warn("Scrape õnnestus, kuid ei saanud {} andmeid (0 toodet)", pood.getPoeNimi());
+                    }
+                    break;
+                } catch (ChromeDriverFailException e) {
+                    failedKatseid++;
+                    logger.error("{} scrape failis {}. korda: {}", pood.getPoeNimi(), failedKatseid, e.getMessage());
 
-            try {
-                tooted = pood.scrape(chromedriver);
-
-                if (!tooted.isEmpty()) {
-                    logger.info("Sain {} andmed, lisan andmebaasi ({}) toodet", pood.getPoeNimi(), tooted.size());
-                    this.toodeTeenus.lisaTootedAndmebaasi(tooted);
-                } else {
-                    logger.warn("Scrape õnnestus, kuid ei saanud {} andmeid (0 toodet)", pood.getPoeNimi());
+                    if (failedKatseid < 3) {
+                        logger.info("Teen uue Chromedriveri ja proovin scrape'imist jätkata");
+                        cleanupChromedriver();
+                        chromedriver = uusDriver();
+                    }
+                } catch (ScrapeFailedException e) {
+                    logger.error("{} scrape failis: {}", pood.getPoeNimi(), e.getMessage());
+                    break;
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-
-            } catch (ScrapeFailedException e) {
-                logger.error("{} scrape failis: {}", pood.getPoeNimi(), e.getMessage());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
-
-
         }
 
         logger.info("Kõik scrapetud ja andmebaasi lisatud");
