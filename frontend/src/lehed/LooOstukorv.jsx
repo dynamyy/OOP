@@ -10,9 +10,8 @@ import prismaLogo from '../staatiline/logod/prisma.png';
 import MarksonadeLisamine from '../komponendid/MarksonadeLisamine';
 import OstukorviToodeKaart from '../komponendid/OstukorviToodeKaart';
 import { FontAwesomeIcon as Font, FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
-import '../staatiline/UusOstukorv.css'
+import { faCartShopping, faLariSign } from '@fortawesome/free-solid-svg-icons';
+import '../staatiline/UusOStukorv.css'
 import MuraFilter from '../komponendid/MuraFilter';
 
 function LooOstukorv() {
@@ -27,7 +26,8 @@ function LooOstukorv() {
     const [ostukorviNimi, setOstukorviNimi] = useState('')
     const [tooteidKokku, setTooteidKokku] = useState(0);
     const [uuteToodeteLaadimine, setUuteToodeteLaadimine] = useState(false);
-    const [uusMarksonaNimi, setUusMarksonaNimi] = useState("Uus märksoõna")
+    const [marksonaError, setMarksonaError] = useState(false)
+    const [ostukorvNimiError, setOstukorvNimiError] = useState(false)
     const elmRef = useRef(null);
     const logod = {
         Prisma: prismaLogo,
@@ -55,7 +55,6 @@ function LooOstukorv() {
 
     useEffect(() => {
         if (Object.keys(marksonad).length > 0) {
-            setUuteToodeteLaadimine(true);
             console.log("Märksõnad saadetud");
             setTooted([]);
             setTooteidKokku(0);
@@ -254,7 +253,6 @@ function LooOstukorv() {
                             marksonad={marksonad}
                             uusMarksona={uusMarksona}
                             eemaldaMarksona={eemaldaMarksona}
-                            nimiError={nimiError}
                             marksonaError={marksonaError}
                         />
                         <div className="teksti-paar">
@@ -266,7 +264,7 @@ function LooOstukorv() {
                                     <button className='nupp hele-tekst tume2' id='sisalduvus' onClick={() => setTooteKogus(tooteKogus + 1)}>+</button>
                                 </div>
                                 <button className='nupp hele-tekst tume' id='sisalduvus' onClick={() => lisaOstukorvi(marksonad)}>Lisa toode</button>
-                                {Object.keys(ostukorv).length > 0 ?
+                                {Object.keys(ostukorv).length > 0 ? 
                                     <div className="ostukorv-ikoon2-konteiner tume hele-tekst" onClick={() => {
                                             const ostukorv = document.querySelector(".ostukorv-konteiner")
                                             ostukorv.classList.toggle("suletud")
@@ -280,17 +278,17 @@ function LooOstukorv() {
                                 : null}
                             </div>
                         </div>
-                        {Object.keys(ostukorv).length > 0 ?
+                        {Object.keys(ostukorv).length > 0 ? 
                             <div className="ostukorv-konteiner suletud tume umar-nurk">
                                 <MuraFilter />
                                 <div>
                                     <div id='ostukorv-nimi-konteiner'>
-                                        <input
-                                            type="text"
-                                            name='ostukorv-nimi'
-                                            className='hele-tekst'
+                                        <input 
+                                            type="text" 
+                                            name='ostukorv-nimi' 
+                                            className='hele-tekst' 
                                             id='ostukorv-nimi'
-                                            value={ostukorviNimi}
+                                            value={ostukorviNimi} 
                                             placeholder='Uus ostukorv'
                                             onChange={e => setOstukorviNimi(e.target.value)}
                                         />
@@ -308,7 +306,7 @@ function LooOstukorv() {
                                         />
                                     ))}
                                 </div>
-                                {Object.keys(ostukorv).length > 0 ?
+                                {Object.keys(ostukorv).length > 0 ? 
                                 <button className='nupp hele-tekst tume2' onClick={() => looOstukorv(ostukorviNimi, ostukorv)}>Loo ostukorv</button> :
                                 <span className="hele-tekst">Ostukorv on tühi</span>}
                             </div> : null
@@ -316,7 +314,7 @@ function LooOstukorv() {
                     </div>
                     <div id="tooted-list-konteiner">
                         <div className="teksti-paar">
-                            <span className="tume-tekst">Leitud {tooteidKokku} toodet     (kuvatud {tooted.length})</span>
+                            <span className="tume-tekst">Leitud {tooteidKokku} toodet(kuvatud {tooted.length})</span>
                             <div id="tooted-list-valimine" className="umar-nurk tume">
                                 <div id="tooted-list" ref={elmRef} onScroll={dynamicScroll}>
                                 {tooted.map(toode => (
