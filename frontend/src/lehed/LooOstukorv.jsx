@@ -55,6 +55,7 @@ function LooOstukorv() {
 
     useEffect(() => {
         if (Object.keys(marksonad).length > 0) {
+            setUuteToodeteLaadimine(true);
             console.log("Märksõnad saadetud");
             setTooted([]);
             setTooteidKokku(0);
@@ -62,9 +63,20 @@ function LooOstukorv() {
         }
     }, [marksonad])
 
+    useEffect(() => {
+        if (Object.keys(marksonad).length === 0) {
+            const salvestatudMarksonad = localStorage.getItem("Marksonad");
+            if (salvestatudMarksonad) {
+                setMarksonad(JSON.parse(salvestatudMarksonad));
+            }
+        }
+    }, [])
+
     function lisaMarksona(marksona) {
         if (marksona !== "" && marksona.trim() !== "" && !(marksona in marksonad)) {
-            setMarksonad(vanadMarksonad => ({...vanadMarksonad, [marksona]: uusSisalduvus}))
+            const uuendatudMarksonad = {...marksonad, [marksona]: uusSisalduvus};
+            setMarksonad(uuendatudMarksonad)
+            localStorage.setItem("Marksonad", JSON.stringify(uuendatudMarksonad));
         }   
         setUusMarksona('')
         setUusSisalduvus("roheline")
@@ -82,6 +94,7 @@ function LooOstukorv() {
             return uus;
         }, {});
         setMarksonad(eemaldatud);
+        localStorage.setItem("Marksonad", JSON.stringify(eemaldatud));
         setTooted([]);
         setTooteidKokku(0);
     }
@@ -120,6 +133,7 @@ function LooOstukorv() {
                     }})
             }
             setMarksonad({})
+            localStorage.removeItem("Marksonad");
             setTooteKogus(1);
             setEbasobivadTooted([])
         }
@@ -133,6 +147,7 @@ function LooOstukorv() {
 
     function muudaToode(toode) {
         setMarksonad(toode.marksonad)
+        localStorage.setItem("Marksonad", JSON.stringify(toode.marksonad));
         setTooteKogus(toode.tooteKogus)
         setEbasobivadTooted(toode.ebasobivadTooted)
         eemaldaOstukorvist(Object.keys(toode.marksonad).join(""))
@@ -189,6 +204,7 @@ function LooOstukorv() {
 
         const scrollPohjas = elm.scrollTop + elm.clientHeight >= elm.scrollHeight - 10;
         if (scrollPohjas) {
+            console.log("laen juurde");
             setUuteToodeteLaadimine(true);
             fetchTooted(tooted.length);
         }
