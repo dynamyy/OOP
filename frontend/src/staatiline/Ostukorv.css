@@ -55,8 +55,13 @@
     text-align: center;
     width: 100%;
     height: 10vh;
-    padding: 1rem;
-    transition: height 1s ease;
+    padding: 0.1rem;
+    transition: height 1s ease, background 5s ease;
+}
+
+.ostukorv-tulp:hover {
+    background: linear-gradient(213deg,rgba(33, 42, 49, 1) 0%, rgba(18, 78, 102, 1) 100%);
+    cursor: pointer;
 }
 
 
@@ -130,6 +135,8 @@
 
 .ostukorv-pood-toode-kaart {
     display: flex;
+    padding: 1rem;
+    margin-right: 10px;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;

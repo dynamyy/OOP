@@ -6,7 +6,7 @@ import { faXmarkCircle } from '@fortawesome/free-regular-svg-icons'
 function OstukorvPoodToodeKaart(props) {
 
     return (
-        <div className={'ostukorv-pood-toode-kaart umar-nurk' + props.punane}>
+        <div className={'ostukorv-pood-toode-kaart umar-nurk tume-g2'}>
             <div>
                 <div className="pilt-taust hele">
                     <img src={props.pilt} alt="toote pilt" className='ostukorv-toode-pilt' />

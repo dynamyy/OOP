@@ -44,6 +44,10 @@ h2 {
   margin: 0;
 }
 
+button {
+  transition: 0.3s;
+}
+
 /* div {
   border: 1px;
   border-style: dashed;

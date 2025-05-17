@@ -1,0 +1,76 @@
+#ostukorvid-loetelu-konteiner {
+    display: flex;
+    flex-direction: column;
+    min-width: 40%;
+    max-height: 19%;
+    position: relative;
+    padding: 2rem;
+    gap: 2rem;
+    overflow: hidden;
+    transition: 1s;
+}
+
+#ostukorvid-loetelu-konteiner > div > span {
+    font-weight: 700;
+    font-size: x-large;
+}
+
+#ostukorvid-loetelu-konteiner:first-child > div {
+    display: flex;
+    justify-content: space-between;
+}
+
+#ostukorvid-loetelu {
+    display: flex;
+    flex-direction: column;
+    max-height: 40vh;
+    overflow-y: auto;
+    gap: 0.5rem;
+}
+
+#ostukorvid-loetelu::-webkit-scrollbar, .ostukorv-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#ostukorvid-loetelu::-webkit-scrollbar-track, .ostukorv-list::-webkit-scrollbar-track {
+    border: #224e63ab solid 0.5px;
+    margin: 10px;
+    border-radius: 4px;
+}
+
+#ostukorvid-loetelu::-webkit-scrollbar-thumb, .ostukorv-list::-webkit-scrollbar-thumb {
+    background: #275d75d0;
+    border-radius: 4px;
+    width: 10px;
+}
+
+
+
+
+.ostukorvid-kaart-konteiner {
+    display: flex;
+    justify-content: space-between;
+    min-height: 4rem;
+    padding: 1rem;
+    margin-right: 10px;
+}
+
+.ostukorvid-kaart-konteiner > div {
+    display: flex;
+    gap: 1rem;
+}
+
+.ostukorvid-kaart-konteiner span, .ostukorvid-ikoon  {
+    font-weight: 600;
+    font-size: large;
+    transition: 0.3s;
+}
+
+.ostukorvid-ikoon {
+    transform: translateY(5px);
+}
+
+.ostukorvid-ikoon:hover {
+    cursor: pointer;
+    transform: scale(1.1) translateY(5px);
+}
