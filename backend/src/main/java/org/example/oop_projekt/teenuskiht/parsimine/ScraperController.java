@@ -73,7 +73,7 @@ public class ScraperController{
      */
     private ChromeDriver uusDriver() {
         ChromeOptions options = new ChromeOptions();
-        //options.addArguments("--headless"); // peidetult jooksmine
+        options.addArguments("--headless"); // peidetult jooksmine
         options.addArguments("window-size=1920,1080");
 
         WebDriverManager.chromedriver().setup();
