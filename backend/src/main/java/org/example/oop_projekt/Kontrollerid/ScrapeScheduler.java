@@ -1,6 +1,5 @@
 package org.example.oop_projekt.Kontrollerid;
 
-import org.example.oop_projekt.teenuskiht.parsimine.CoopScraper;
 import org.example.oop_projekt.teenuskiht.parsimine.ScraperController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ public class ScrapeScheduler {
         this.logger = LoggerFactory.getLogger(ScrapeScheduler.class);
     }
 
-    @Scheduled(cron = "00 25 18 * * *", zone = "Europe/Tallinn")
+    @Scheduled(cron = "00 00 03 * * *", zone = "Europe/Tallinn")
     public void runScrape() throws IOException {
         logger.info("Alustan scheduler scrapimist");
         scraper.scrapeAll();

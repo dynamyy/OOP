@@ -14,6 +14,7 @@ services:
       - "8080:8080"
     volumes:
       - ./backend/env.properties:/app/env.properties
+      - ./backend/log:/app/log
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - DATABASE_URL=jdbc:postgresql://db:5432/ostukorvivordlus
@@ -27,7 +28,6 @@ services:
     image: postgres:13
     volumes:
       - /var/lib/postgresql/data
-      - ./backend/log:/app/log
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PW}
