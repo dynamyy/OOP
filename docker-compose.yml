@@ -27,6 +27,7 @@ services:
     image: postgres:13
     volumes:
       - /var/lib/postgresql/data
+      - ./backend/log:/app/log
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PW}
