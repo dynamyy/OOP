@@ -2,17 +2,18 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "5173:5173"
+      - "4173:5173"
     environment:
       - NODE_ENV=production
     depends_on:
       - backend
-    command: ["npm", "run", "start"]
 
   backend:
     build: ./backend
     ports:
       - "8080:8080"
+    volumes:
+      - ./backend/env.properties:/app/env.properties
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - DATABASE_URL=jdbc:postgresql://db:5432/ostukorvivordlus

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import standardPilt from '../staatiline/standard/standard-toode.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmarkCircle } from '@fortawesome/free-regular-svg-icons'
-import '../staatiline/UusOStukorv.css'
+import '../staatiline/UusOstukorv.css'
 
 function ToodeKaart(props) {
     const navigate = useNavigate();
