@@ -36,6 +36,7 @@ function Toode() {
         }, []);
 
     function formaadiAeg(dateString) {
+        console.log("Kuupäeva debug:", tooteInfo.viimatiUuendatud);
         const date = new Date(dateString);
         const tunnid = String(date.getHours()).padStart(2, '0');
         const minutid = String(date.getMinutes()).padStart(2, '0');
