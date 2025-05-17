@@ -73,25 +73,24 @@ public class ToodeOstukorvis {
     @ManyToMany(mappedBy = "tootedOstukorvis", cascade = CascadeType.ALL)
     private List<EbasobivToode> ebasobivadTooted;
 
-    public ToodeOstukorvis(
-            Ostukorv ostukorv,
-            Toode coopToode,
-            Toode prismaToode,
-            Toode barboraToode,
-            Toode rimiToode,
-            List<TooteMarksona> tooteMarksonad,
-            Integer kogus,
-            List<EbasobivToode> ebasobivadTooted,
-            Toode selverToode) {
+    public ToodeOstukorvis(Ostukorv ostukorv,
+                           Toode coopToode,
+                           Toode prismaToode,
+                           Toode barboraToode,
+                           Toode rimiToode,
+                           Toode selverToode,
+                           List<TooteMarksona> tooteMarksonad,
+                           Integer kogus,
+                           List<EbasobivToode> ebasobivadTooted) {
         this.ostukorv = ostukorv;
         this.coopToode = coopToode;
         this.prismaToode = prismaToode;
         this.barboraToode = barboraToode;
         this.rimiToode = rimiToode;
+        this.selverToode = selverToode;
         this.tooteMarksonad = tooteMarksonad;
         this.kogus = kogus;
         this.ebasobivadTooted = ebasobivadTooted;
-        this.selverToode = selverToode;
     }
 
     public ToodeOstukorvis(Ostukorv ostukorv, List<TooteMarksona> tooteMarksonad, Integer kogus, List<EbasobivToode> ebasobivadTooted) {

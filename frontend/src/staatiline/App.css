@@ -35,17 +35,52 @@
     background: linear-gradient(33deg,rgba(33, 42, 49, 1) 0%, rgba(18, 78, 102, 1) 100%);
 }
 
+.tume-g2 {
+    background: #212A31;
+    background: linear-gradient(213deg,rgba(33, 42, 49, 1) 0%, rgba(18, 78, 102, 1) 100%);
+}
+
 .tume-roosa {
     background: #212A31;
     background: linear-gradient(25deg,rgba(33, 42, 49, 1) 0%, rgba(18, 78, 102, 1) 45%, rgba(158, 90, 99, 1) 77%, rgba(201, 101, 103, 1) 98%);
+}
+
+.tume-roosa2 {
+    background: #212A31;
+    background: linear-gradient(270deg,rgba(33, 42, 49, 1) 0%, rgba(18, 78, 102, 1) 45%, rgba(158, 90, 99, 1) 77%, rgba(201, 101, 103, 1) 98%);
 }
 
 .tume2 {
     background-color: #2E3944;
 }
 
+.tume-g3 {
+    background: #212A31;
+    background: linear-gradient(127deg, rgba(33, 42, 49, 1) 0%, rgba(18, 78, 102, 1) 49%, rgba(216, 225, 232, 1) 90%);
+}
+
 .tume2:hover {
     background-color: #5b7890;
+}
+
+.hele-g1 {
+    background: #d8e1e8;
+    background: linear-gradient(126deg, rgba(216, 225, 232, 1) 0%, rgba(247, 249, 251, 1) 100%);
+}
+
+.hele-g2 {
+    background: #d8e1e8;
+    background: linear-gradient(291deg, rgba(216, 225, 232, 1) 0%, rgba(247, 249, 251, 1) 100%);
+}
+
+.hele-g3 {
+    background: #212A31;
+    background: linear-gradient(307deg, rgba(33, 42, 49, 1) 0%, rgba(49, 68, 85, 1) 20%, rgba(216, 225, 232, 1) 82%);
+}
+
+.hele-g4 {
+    background: #212A31;
+    background: linear-gradient(127deg, rgba(33, 42, 49, 1) 0%, rgba(49, 68, 85, 1) 20%, rgba(216, 225, 232, 1) 82%);
 }
 
 .hele {
@@ -81,7 +116,7 @@
 }
 
 .hele-tekst {
-    color: #D3D9D4 !important;
+    color: #F7F9FB !important;
     font-weight: 500;
 }
 
@@ -94,7 +129,7 @@
 }
 
 .tume-tekst {
-    color: #124E66;
+    color: #314455;
 }
 
 .tume-piir {
@@ -108,7 +143,7 @@
     height: fit-content;
     width: fit-content;
     border-bottom-right-radius: 10px;
-    z-index: 10;
+    z-index: 11;
     overflow: hidden;
 }
 
@@ -123,12 +158,11 @@
     font-size: 1.5rem ;
     font-weight: 500;
     padding: 0 2rem;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 
-.menuu ul li:hover {
-    color: #808080;
-    background-color: #3C5B6F;
+.menuu ul li a:hover {
+    color: #a3a5a7 !important;
 }
 
 .nupp {

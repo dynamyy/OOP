@@ -1,6 +1,7 @@
 import LooOstukorv from "./lehed/LooOstukorv"
+import Ostukorvid from "./lehed/Ostukorvid"
 import Kasutaja from "./lehed/Kasutaja"
-import Tooted from "./lehed/Tooted"
+import Kasutusjuhend from "./lehed/Kasutusjuhend"
 import Toode from "./lehed/Toode"
 import OstukorvTulemus from "./lehed/OstukorvTulemus"
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
@@ -8,6 +9,7 @@ import './staatiline/App.css'
 import './staatiline/Ava.css'
 import './staatiline/Kasutaja.css'
 import './staatiline/Ostukorv.css'
+import './staatiline/Ostukorvid.css'
 
 function App() {
 
@@ -16,8 +18,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Kasutaja />} />
-          <Route path="/ostukorvid" element={<LooOstukorv />} />
-          <Route path="/tooted" element={<Tooted />} />
+          <Route path="/ostukorvid" element={<Ostukorvid />} />
+          <Route path="/ostukorvid/loo-ostukorv" element={<LooOstukorv />} />
+          <Route path="/kasutusjuhend" element={<Kasutusjuhend />} />
           <Route path="/kasutaja" element={<Kasutaja />} />
           <Route path="/Toode/:id" element={<Toode />} />
           <Route path="/ostukorv/:id" element={<OstukorvTulemus />} />

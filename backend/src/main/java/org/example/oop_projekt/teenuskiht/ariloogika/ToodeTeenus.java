@@ -2,6 +2,7 @@ package org.example.oop_projekt.teenuskiht.ariloogika;
 
 import jakarta.transaction.Transactional;
 import org.example.oop_projekt.DTO.autentimine.TokenVerify;
+import org.example.oop_projekt.DTO.ostukorv.ToodeOStukorvisArvutatudDTO;
 import org.example.oop_projekt.DTO.toode.*;
 import org.example.oop_projekt.Erindid.Autentimine.AuthException;
 import org.example.oop_projekt.annotatsioonid.verifyToken;
@@ -27,6 +28,8 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.google.common.graph.ElementOrder.sorted;
 
 
 /**
@@ -152,7 +155,9 @@ public class ToodeTeenus {
             }
         }
 
-        return tulemused;
+        return tulemused.stream()
+                .sorted(Comparator.comparing(t -> t.getNimetus().toLowerCase()))
+                .toList();
     }
 
 

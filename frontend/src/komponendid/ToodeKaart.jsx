@@ -4,6 +4,7 @@ import standardPilt from '../staatiline/standard/standard-toode.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmarkCircle } from '@fortawesome/free-regular-svg-icons'
 import '../staatiline/UusOstukorv.css'
+import MuraFilter from './MuraFilter';
 
 function ToodeKaart(props) {
     const navigate = useNavigate();
@@ -19,10 +20,10 @@ function ToodeKaart(props) {
 
     return (
         <div>
-            <div onClick={kaartVajutatud} className="toode-kaart-konteiner umar-nurk">
+            <div onClick={kaartVajutatud} className="toode-kaart-konteiner hele umar-nurk">
                 <div className="toode-kaart-pilt-konteiner">
                     <FontAwesomeIcon icon={faXmarkCircle} className='ikoon toode-kaart-ikoon' onClick={Xvajutatud} />
-                    <div>
+                    <div className='hele'>
                         <img src={props.toodeUrl ? props.toodeUrl : standardPilt} alt="pilt" className={props.toodeUrl ? "toode-pilt" : "toode-pilt-standard"} />
                     </div>
                     <span className="tume-tekst">{props.tooteNimetus}</span>
