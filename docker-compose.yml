@@ -1,0 +1,33 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "4173:5173"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend/env.properties:/app/env.properties
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DATABASE_URL=jdbc:postgresql://db:5432/ostukorvivordlus
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PW}
+    depends_on:
+      - db
+    command: ["java", "-jar", "OOP_projekt-0.0.1-SNAPSHOT.jar"]
+
+  db:
+    image: postgres:13
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PW}
+      - POSTGRES_DB=ostukorvivordlus

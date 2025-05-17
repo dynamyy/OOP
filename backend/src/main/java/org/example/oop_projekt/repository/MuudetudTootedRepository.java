@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface MuudetudTootedRepository extends JpaRepository<MuudetudToode, Long> {
 
-    @Query("SELECT m FROM Muudetudtoode m WHERE m.kasutaja.id = :kasutajaId AND m.muutmisAeg > :praegu")
+    @Query("SELECT m FROM Muudetudtoode m WHERE m.kasutaja.id = :kasutajaId AND m.kehtivusAeg > :praegu")
     List<MuudetudToode> leiaKehtivadMuudetudTooted(@Param("kasutajaId") Long kasutajaId, @Param("praegu") LocalDateTime praegu);
 
-    @Query("SELECT m FROM Muudetudtoode m WHERE m.kasutaja = :kasutajaId AND m.muutmisAeg > :praegu")
+    @Query("SELECT m FROM Muudetudtoode m WHERE m.kasutaja = :kasutajaId AND m.kehtivusAeg > :praegu")
     List<MuudetudToode> leiaKehtivadMuudetudTooted(@Param("kasutajaId") Kasutaja kasutaja, @Param("praegu") LocalDateTime praegu);
 
-    @Query("SELECT m FROM Muudetudtoode m WHERE m.kasutaja.id = :kasutajaId AND CAST(m.muudetudTooteID AS string) = :tooteId AND m.muutmisAeg > :praegu")
+    @Query("SELECT m FROM Muudetudtoode m WHERE m.kasutaja.id = :kasutajaId AND CAST(m.muudetudTooteID AS string) = :tooteId AND m.kehtivusAeg > :praegu")
     MuudetudToode leiaKehtivMuudetudToodeKonkreetne(@Param("kasutajaId") Long kasutajaId, @Param("tooteId") String tooteId, @Param("praegu") LocalDateTime praegu);
 
 
