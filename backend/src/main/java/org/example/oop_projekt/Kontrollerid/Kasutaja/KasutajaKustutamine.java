@@ -12,7 +12,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/kustutaKasutaja")
-@CrossOrigin(origins = "http://localhost:5173")
 public class KasutajaKustutamine {
     private final AuthTeenus authTeenus;
 

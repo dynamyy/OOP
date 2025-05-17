@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping(path = "api/tokenVerif")
 public class TokenVerifyKontroller {
     private final AuthTeenus authTeenus;

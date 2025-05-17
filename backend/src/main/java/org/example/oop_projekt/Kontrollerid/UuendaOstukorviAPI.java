@@ -13,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/ostukorv/uuenda")
-@CrossOrigin(origins = "http://localhost:5173")
 public class UuendaOstukorviAPI {
 
     private final OstukorvTeenus ostukorvTeenus;

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping(path = "api/registreeri")
 public class RegistreerimineKontroller {
     private final AuthTeenus authTeenus;

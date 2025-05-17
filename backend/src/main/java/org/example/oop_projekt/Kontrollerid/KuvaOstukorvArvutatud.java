@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 @RestController
 @RequestMapping(path = "/api/ostukorv/{id}")
-@CrossOrigin(origins = "http://localhost:5173")
 public class KuvaOstukorvArvutatud {
 
     private final OstukorvTeenus ostukorvTeenus;
