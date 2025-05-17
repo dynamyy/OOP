@@ -27,7 +27,7 @@ function LooOstukorv() {
     const [ostukorviNimi, setOstukorviNimi] = useState('Ostukorv')
     const [tooteidKokku, setTooteidKokku] = useState(0);
     const [uuteToodeteLaadimine, setUuteToodeteLaadimine] = useState(false);
-    const [uusMarksonaNimi, setUusMarksonaNimi] = useState("Uus märksoõna")
+    const [uusMarksonaNimi, setUusMarksonaNimi] = useState("Uus märksõna")
     const elmRef = useRef(null);
     const logod = {
         Prisma: prismaLogo,
@@ -55,6 +55,7 @@ function LooOstukorv() {
 
     useEffect(() => {
         if (Object.keys(marksonad).length > 0) {
+            setUuteToodeteLaadimine(true);
             console.log("Märksõnad saadetud");
             setTooted([]);
             setTooteidKokku(0);
@@ -62,9 +63,27 @@ function LooOstukorv() {
         }
     }, [marksonad])
 
+    useEffect(() => {
+        if (Object.keys(marksonad).length === 0) {
+            const salvestatudMarksonad = localStorage.getItem("Marksonad");
+            if (salvestatudMarksonad) {
+                setMarksonad(JSON.parse(salvestatudMarksonad));
+            }
+        }
+
+        if (Object.keys(ostukorv).length === 0) {
+            const salvestatudKorv = localStorage.getItem("Ostukorv");
+            if (salvestatudKorv) {
+                setOstukorv(JSON.parse(salvestatudKorv));
+            }
+        }
+    }, []);
+
     function lisaMarksona(marksona) {
         if (marksona !== "" && marksona.trim() !== "" && !(marksona in marksonad)) {
-            setMarksonad(vanadMarksonad => ({...vanadMarksonad, [marksona]: uusSisalduvus}))
+            const uuendatudMarksonad = {...marksonad, [marksona]: uusSisalduvus};
+            setMarksonad(uuendatudMarksonad)
+            localStorage.setItem("Marksonad", JSON.stringify(uuendatudMarksonad));
         }   
         setUusMarksona('')
         setUusSisalduvus("roheline")
@@ -82,6 +101,7 @@ function LooOstukorv() {
             return uus;
         }, {});
         setMarksonad(eemaldatud);
+        localStorage.setItem("Marksonad", JSON.stringify(eemaldatud));
         setTooted([]);
         setTooteidKokku(0);
     }
@@ -106,20 +126,25 @@ function LooOstukorv() {
 
         if (votmed.length > 0) {
             const voti = votmed.join("");
+            let uusKorv;
             setTooted([]);
             if (voti in ostukorv) {
                 const uusKogus = ostukorv[voti].tooteKogus + tooteKogus;
-                setOstukorv({...ostukorv, [voti]: {...ostukorv[voti], "tooteKogus": uusKogus}})
+                uusKorv = {...ostukorv, [voti]: {...ostukorv[voti], "tooteKogus": uusKogus}}
+                setOstukorv(uusKorv)
             }
             else {
-                setOstukorv({...ostukorv, 
+                uusKorv = {...ostukorv, 
                     [voti]: {
                         "marksonad": marksonad, 
                         "tooteKogus": tooteKogus, 
                         "ebasobivadTooted": ebasobivadTooted
-                    }})
+                    }}
+                setOstukorv(uusKorv)
             }
+            localStorage.setItem("Ostukorv", JSON.stringify(uusKorv));
             setMarksonad({})
+            localStorage.removeItem("Marksonad");
             setTooteKogus(1);
             setEbasobivadTooted([])
         }
@@ -129,10 +154,12 @@ function LooOstukorv() {
         const uusOstukorv = {...ostukorv}
         delete uusOstukorv[voti];
         setOstukorv(uusOstukorv);
+        localStorage.setItem("Ostukorv", JSON.stringify(uusOstukorv));
     }
 
     function muudaToode(toode) {
         setMarksonad(toode.marksonad)
+        localStorage.setItem("Marksonad", JSON.stringify(toode.marksonad));
         setTooteKogus(toode.tooteKogus)
         setEbasobivadTooted(toode.ebasobivadTooted)
         eemaldaOstukorvist(Object.keys(toode.marksonad).join(""))
@@ -189,6 +216,7 @@ function LooOstukorv() {
 
         const scrollPohjas = elm.scrollTop + elm.clientHeight >= elm.scrollHeight - 10;
         if (scrollPohjas) {
+            console.log("laen juurde");
             setUuteToodeteLaadimine(true);
             fetchTooted(tooted.length);
         }

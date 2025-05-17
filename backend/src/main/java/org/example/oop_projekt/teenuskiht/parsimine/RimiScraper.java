@@ -136,18 +136,18 @@ public class RimiScraper extends WebScraper {
                         break;
                     }
 
-                    Element tooteNimiElement = toode.selectFirst("div.card__details p.card__name");
+                    Element tooteNimiElement = valiEsimene(toode, "div.card__details p.card__name");
                     String tooteNimi = tooteNimiElement.text();
 
                     double yhikuHind = 0;
                     String yhik = "puudub";
                     try{
-                        Element yhikuHindElement = toode.selectFirst("p.card__price-per");
+                        Element yhikuHindElement = valiEsimene(toode, "p.card__price-per");
                         String hindKoosYhikuga = yhikuHindElement.text();
                         yhikuHind = hindTekstist(hindKoosYhikuga.split(" ")[0]);
                         yhik = hindKoosYhikuga.split("/")[1];
                     }catch (Exception e){
-                        System.out.println("Puudub ühik");
+                        logger.warn("Ühik puudub, {}", e.getMessage());
                     }
 
 
