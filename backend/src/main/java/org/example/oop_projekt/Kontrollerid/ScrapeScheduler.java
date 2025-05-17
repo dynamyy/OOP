@@ -16,7 +16,7 @@ public class ScrapeScheduler {
         this.scraper = scraper;
     }
 
-    @Scheduled(cron = "00 35 16 * * *", zone = "Europe/Tallinn")
+    @Scheduled(cron = "00 45 16 * * *", zone = "Europe/Tallinn")
     public void runScrape() throws IOException {
         System.out.println("\u001B[32mAlustan scheduler scrapimist\u001B[0m");
         scraper.scrapeAll();
