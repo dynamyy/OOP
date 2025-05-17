@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 // Teenuseklass, mis sisaldab ostukorviga seotud äriloogikat
 @Service
@@ -137,14 +138,14 @@ public class OstukorvTeenus {
                     .filter(t -> t.getPood()
                             .equals(pood)).toList()
                     .stream()
-                    .min(Comparator.comparingDouble(t -> omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind()
+                    .min(Comparator.comparingDouble(t -> omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind()
                     ))
                     .orElse(null);
             if (odavaimToode != null) {
                 switch (pood.getNimi().toLowerCase()) {
                     case "coop" -> ostukorviToode.setCoopToode(odavaimToode);
                     case "prisma" -> ostukorviToode.setPrismaToode(odavaimToode);
-                    case "barbora" -> ostukorviToode.setBarboraToode(odavaimToode);
+                    case "maxima" -> ostukorviToode.setBarboraToode(odavaimToode);
                     case "rimi" -> ostukorviToode.setRimiToode(odavaimToode);
                     case "selver" -> ostukorviToode.setSelverToode(odavaimToode);
                 }
@@ -171,7 +172,7 @@ public class OstukorvTeenus {
         return switch (pood) {
             case "coop" -> toodeOstukorvis.getCoopToode();
             case "prisma" -> toodeOstukorvis.getPrismaToode();
-            case "barbora" -> toodeOstukorvis.getBarboraToode();
+            case "maxima" -> toodeOstukorvis.getBarboraToode();
             case "rimi" -> toodeOstukorvis.getRimiToode();
             case "selver" -> toodeOstukorvis.getSelverToode();
             default -> null;
@@ -199,7 +200,6 @@ public class OstukorvTeenus {
                         Toode t = leiaPoeToode(pood.getNimi().toLowerCase(), toode);
                         if (!(t == null)) {
                             return new ToodeOStukorvisArvutatudDTO(
-                                    t.getNimetus(),
                                     omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind(),
                                     omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind(),
                                     t.getTootePiltURL(),

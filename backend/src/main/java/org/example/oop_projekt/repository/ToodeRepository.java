@@ -25,8 +25,7 @@ public interface ToodeRepository extends JpaRepository<Toode, Long>, JpaSpecific
 
     @Query("SELECT new org.example.oop_projekt.DTO.toode.ToodeDTO(t.id, t.nimetus, t.hindKliendi, t.hulgaHindKliendi, t.yhik, CASE WHEN t.hulgaHindKliendi < t.hindKliendi THEN 'true' ELSE 'false' END, t.pood.nimi, t.tootePiltURL, t.viimatiUuendatud) " +
             "FROM Toode t " +
-            "WHERE LOWER(t.nimetus) LIKE LOWER(:nimetus)" +
-            "ORDER BY 1")
+            "WHERE LOWER(t.nimetus) LIKE LOWER(:nimetus)")
 
     List<ToodeDTO> leiaToodeNimega(@Param("nimetus") String nimetus);
 

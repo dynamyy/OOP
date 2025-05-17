@@ -2,6 +2,7 @@ package org.example.oop_projekt.mudel;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class Ostukorv {
 
     @ManyToOne
     @JoinColumn(name = "kasutaja_id")
+    @ToString.Exclude
     private Kasutaja kasutaja;
 
     @OneToMany(mappedBy = "ostukorv", cascade = CascadeType.ALL, orphanRemoval = true)

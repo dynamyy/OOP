@@ -2,6 +2,8 @@ package org.example.oop_projekt.mudel;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,7 @@ public class Kasutaja {
     private String parool;
 
     @OneToMany(mappedBy = "kasutaja")
+    @ToString.Exclude
     private List<Ostukorv> ostukorvid;
 
     @OneToMany(mappedBy = "kasutaja")

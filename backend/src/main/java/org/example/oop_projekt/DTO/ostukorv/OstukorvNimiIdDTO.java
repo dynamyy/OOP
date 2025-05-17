@@ -1,4 +1,7 @@
 package org.example.oop_projekt.DTO.ostukorv;
 
-public class OstukorvNimiDTO {
+public record OstukorvNimiIdDTO(
+        String nimi,
+        Long id
+) {
 }
