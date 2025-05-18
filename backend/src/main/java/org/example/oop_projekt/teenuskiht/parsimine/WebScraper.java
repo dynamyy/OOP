@@ -116,13 +116,24 @@ public abstract class WebScraper{
      * @throws ScrapeFailedException Viga kui oodati 15sec ja element ei laadinud
      */
     void ootaLeheLaadimist(String cssSelector) throws ScrapeFailedException {
-        try {
-            driverWait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector))));
-        } catch (TimeoutException e) {
-            throw new ScrapeFailedException("Ootamine kestis liiga kaua, cssSelector: " + cssSelector);
-        } catch (WebDriverException e) {
-            throw new ChromeDriverFailException("Elemendi ootamine ebaõnnestus chromedriveri vea tõttu, cssSelector: "
-                    + cssSelector + ": " + e.getMessage());
+        int kordiProovitud = 0;
+        while (true) {
+            try {
+                driverWait.until((ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector))));
+                return;
+            } catch (TimeoutException e) {
+                if (kordiProovitud < 3) {
+                    kordiProovitud += 1;
+                    logger.warn("Ootamine kestis liiga kaua ({}. katse), cssSelector: {}", kordiProovitud, cssSelector);
+                    String source = chromedriver.getPageSource();
+                    logger.info(source);
+                } else {
+                    throw new ScrapeFailedException("Ootamine kestis liiga kaua, cssSelector: " + cssSelector);
+                }
+            } catch (WebDriverException e) {
+                throw new ChromeDriverFailException("Elemendi ootamine ebaõnnestus chromedriveri vea tõttu, cssSelector: "
+                        + cssSelector + ": " + e.getMessage());
+            }
         }
     }
 

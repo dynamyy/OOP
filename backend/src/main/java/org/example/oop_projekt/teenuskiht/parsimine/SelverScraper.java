@@ -81,9 +81,6 @@ public class SelverScraper extends WebScraper {
         getUrl(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        logger.info("Source:");
-        String source = chromedriver.getPageSource();
-        logger.info(source);
         ootaLeheLaadimist("li.SidebarMenu__item");
 
         return chromedriver.getPageSource();
