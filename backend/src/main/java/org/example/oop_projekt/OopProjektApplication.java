@@ -39,7 +39,7 @@ public class OopProjektApplication {
 
         // Scraperite loomine
         List<WebScraper> scraperid = new ArrayList<>();
-        scraperid.add(new CoopScraper(this.poodRepository));
+        //scraperid.add(new CoopScraper(this.poodRepository));
         //scraperid.add(new PrismaScraper(this.poodRepository));
         scraperid.add(new SelverScraper(this.poodRepository));
         //scraperid.add(new BarboraScraper(this.poodRepository));

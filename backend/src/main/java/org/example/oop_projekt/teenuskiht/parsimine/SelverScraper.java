@@ -10,6 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -60,11 +62,12 @@ public class SelverScraper extends WebScraper {
 
 
     private final PoodRepository poodRepository;
-    private String url = "https://www.selver.ee/";
+    private final Logger logger;
 
     public SelverScraper(PoodRepository poodRepository) {
         super("Selver");
         this.poodRepository = poodRepository;
+        this.logger = LoggerFactory.getLogger(SelverScraper.class);
     }
 
     /*
@@ -74,9 +77,13 @@ public class SelverScraper extends WebScraper {
     String hangiDynamicSource() throws ScrapeFailedException {
         WebDriver chromedriver = getChromedriver();
 
+        String url = "https://www.selver.ee/";
         getUrl(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
+        logger.info("Source:");
+        String source = chromedriver.getPageSource();
+        logger.info(source);
         ootaLeheLaadimist("li.SidebarMenu__item");
 
         return chromedriver.getPageSource();
