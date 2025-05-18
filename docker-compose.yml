@@ -4,7 +4,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8081"
     environment:
       - NODE_ENV=production
     depends_on:
@@ -15,7 +14,6 @@ services:
 
   backend:
     build: ./backend
-
     volumes:
       - ./backend/env.properties:/app/env.properties
       - ./backend/log:/app/log
