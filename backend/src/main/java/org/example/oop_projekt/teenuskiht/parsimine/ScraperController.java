@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -100,6 +99,10 @@ public class ScraperController{
         options.addArguments("--user-data-dir=" + chromeKasutajaDir);
         options.addArguments("--headless=new"); // peidetult jooksmine
         options.addArguments("window-size=1920,1080");
+
+        options.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
+        options.setExperimentalOption("useAutomationExtension", false);
+        options.addArguments("--disable-blink-features=AutomationControlled");
 
         WebDriverManager.chromedriver().setup();
         return new ChromeDriver(options);
