@@ -9,6 +9,8 @@ import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.v134.network.Network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -42,9 +45,17 @@ public class ScraperController{
      */
     @Transactional
     public void scrapeAll() throws IOException {
-        WebDriver chromedriver = uusDriver();
+        ChromeDriver chromedriver = uusDriver();
         List<Toode> tooted;
         int failedKatseid;
+
+        DevTools devTools = chromedriver.getDevTools();
+        devTools.createSession();
+        devTools.send(Network.enable(Optional.of(1000000), Optional.of(1000000), Optional.of(1000000)));
+        devTools.addListener(Network.requestWillBeSent(), request -> {
+            System.out.println("Request URL: " + request.getRequest().getUrl());
+            System.out.println("Request Headers: " + request.getRequest().getHeaders());
+        });
 
         // Scrapib kõik poed ja lisab tooted andmebaasi
         for (WebScraper pood : scraperid) {
