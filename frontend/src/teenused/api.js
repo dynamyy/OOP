@@ -121,13 +121,9 @@ export const postOstukorv = async (nimi, tooted, token) => {
             body: JSON.stringify({"nimi": nimi, "tooted": tooted, "token": token || ""})
         })
 
-        const sonum = await vastus.json();
+        const vastuseData = await vastus.json();
 
-        if (vastus.ok) {
-            return {ok: true, sonum: sonum}
-        } else {
-            return {ok: false, sonum: sonum}
-        }
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
     } catch (viga) {
         console.log("Viga ostukorvi saatmisel ", viga.message)
         return {ok: false, ostukorv: "Ilmnes viga ostukorvi saatmisel"}
