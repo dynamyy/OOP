@@ -9,7 +9,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
+      - /etc/letsencrypt:/etc/letsencrypt/:ro
       - ./frontend/nginx:/etc/nginx/conf.d
       - ./frontend/dist:/usr/share/nginx/html
 
