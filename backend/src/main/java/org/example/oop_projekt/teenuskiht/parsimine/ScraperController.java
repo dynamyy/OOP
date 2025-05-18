@@ -103,9 +103,15 @@ public class ScraperController{
         options.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
         options.setExperimentalOption("useAutomationExtension", false);
         options.addArguments("--disable-blink-features=AutomationControlled");
+        options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0");
 
         WebDriverManager.chromedriver().setup();
-        return new ChromeDriver(options);
+        ChromeDriver driver = new ChromeDriver(options);
+
+        driver.executeScript(
+                "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+        );
+        return driver;
     }
 
     /**
