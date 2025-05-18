@@ -13,9 +13,11 @@ import { FontAwesomeIcon as Font, FontAwesomeIcon } from '@fortawesome/react-fon
 import { faCartShopping, faLariSign } from '@fortawesome/free-solid-svg-icons';
 import '../staatiline/UusOstukorv.css'
 import MuraFilter from '../komponendid/MuraFilter';
+import { useNavigate } from 'react-router-dom';
 
 function LooOstukorv() {
 
+    const navigeeri = useNavigate();
     const [marksonad, setMarksonad] = useState({})
     const [uusMarksona, setUusMarksona] = useState('')
     const [uusSisalduvus, setUusSisalduvus] = useState("roheline")
@@ -204,9 +206,14 @@ function LooOstukorv() {
         const vastus = await postOstukorv(nimi, vormindatudTooted, localStorage.getItem('AuthToken'));
 
         if (vastus.ok) {
-            console.log("Ostukorv loodud")
+            console.log("Ostukorv loodud");
+            setOstukorv({});
+            setMarksonad({});
+            localStorage.removeItem("Marksonad");
+            localStorage.removeItem("Ostukorv");
+            navigeeri("/ostukorvid");
         } else {
-            console.log("Ostukorvi loomine nurjus")
+            console.log("Ostukorvi loomine nurjus");
         }
     }
 
