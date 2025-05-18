@@ -17,10 +17,7 @@ import org.example.oop_projekt.repository.TooteMarksonaRepository;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 // Teenuseklass, mis sisaldab ostukorviga seotud äriloogikat
 @Service
@@ -210,6 +207,11 @@ public class OstukorvTeenus {
             ostukorvTootedDTO.poed().add(poodDTO);
         }
         return ostukorvTootedDTO;
+    }
+
+    @verifyToken
+    public void kustutaOstukorv(Ostukorv ostukorv, Token token) {
+        ostukorvRepository.deleteById(ostukorv.getId());
     }
 }
 
