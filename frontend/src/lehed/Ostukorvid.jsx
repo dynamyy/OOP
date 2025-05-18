@@ -2,7 +2,7 @@ import { useState, React, useEffect } from 'react'
 import Menuu from '../komponendid/Menuu'
 import OstukorvidKaart from '../komponendid/OstukorvidKaart';
 import MuraFilter from '../komponendid/MuraFilter';
-import { getOstukorvNimed } from '../teenused/api';
+import { getOstukorvNimed, kustutaOstukorv } from '../teenused/api';
 import { height } from '@fortawesome/free-regular-svg-icons/faAddressBook';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,24 +13,32 @@ function Ostukorvid() {
 
     const [ostukorvid, setOstukorvid] = useState([])
     
-        async function getOstukorv() {
-            const vastus = await getOstukorvNimed(localStorage.getItem('AuthToken'))
-            console.log(vastus.ostukorvid.ostukorvid)
-    
-            if (vastus.ok) {
-                setOstukorvid(vastus.ostukorvid.ostukorvid);
-            } else {
-                console.log(vastus.sonum)
-            }
-        }
-        
-        useEffect(() => {
-            getOstukorv();
-        }, []);
+    async function getOstukorv() {
+        const vastus = await getOstukorvNimed(localStorage.getItem('AuthToken'))
+        console.log(vastus.ostukorvid.ostukorvid)
 
-        useEffect(() => {
-            document.getElementById("ostukorvid-loetelu-konteiner").style.maxHeight = "60%"
-        })
+        if (vastus.ok) {
+            setOstukorvid(vastus.ostukorvid.ostukorvid);
+        } else {
+            console.log(vastus.sonum)
+        }
+    }
+
+    async function kustutaOstukorvDb(id) {
+        const vastus = await kustutaOstukorv(id, localStorage.getItem('AuthToken'))
+        if (vastus.ok) {
+            setOstukorvid(ostukorvid.filter(ostukorv => ostukorv.id !== id))
+        }
+        console.log(vastus.sonum)
+    }
+    
+    useEffect(() => {
+        getOstukorv();
+    }, []);
+
+    useEffect(() => {
+        document.getElementById("ostukorvid-loetelu-konteiner").style.maxHeight = "60%"
+    })
 
     return (
         <>
@@ -48,6 +56,7 @@ function Ostukorvid() {
                                 key={ostukorv.id}
                                 nimi={ostukorv.nimi}
                                 id={ostukorv.id}
+                                kustutaOstukorv={kustutaOstukorvDb}
                             />
                         )) : <span>Sul pole ostukorve</span>}
                     </div>

@@ -246,3 +246,23 @@ export const getOstukorvNimed = async(token) => {
         return {ok: false, sonum: "Viga ostukorvi andmete hankimisel"}  
     }
 }
+
+export const kustutaOstukorv = async (id, token) => {
+    try {
+        const vastus = await fetch(`${BAAS_URL}/kustuta-ostukorv/${id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({"id": id, "token": token || ""})
+        })
+
+        const vastuseData = await vastus.json()
+
+        if (vastus.ok) {
+            return {ok: vastus.ok, sonum: vastuseData.sonum};
+        }
+        
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
+    } catch (viga) {
+        return {ok: false, sonum: "Viga ostukorvi andmete hankimisel"}  
+    }
+}
