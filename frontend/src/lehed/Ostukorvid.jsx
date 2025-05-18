@@ -1,6 +1,7 @@
 import { useState, React, useEffect } from 'react'
 import Menuu from '../komponendid/Menuu'
 import OstukorvidKaart from '../komponendid/OstukorvidKaart';
+import LoginAken from '../komponendid/LoginAken';
 import MuraFilter from '../komponendid/MuraFilter';
 import { getOstukorvNimed } from '../teenused/api';
 import { height } from '@fortawesome/free-regular-svg-icons/faAddressBook';
@@ -15,10 +16,12 @@ function Ostukorvid() {
     
         async function getOstukorv() {
             const vastus = await getOstukorvNimed(localStorage.getItem('AuthToken'))
-            console.log(vastus.ostukorvid.ostukorvid)
+            
     
             if (vastus.ok) {
                 setOstukorvid(vastus.ostukorvid.ostukorvid);
+            } else if (vastus.status === 401) {
+                return <LoginAken />;
             } else {
                 console.log(vastus.sonum)
             }

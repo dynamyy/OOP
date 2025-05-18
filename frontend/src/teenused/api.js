@@ -241,7 +241,7 @@ export const getOstukorvNimed = async(token) => {
             return {ok: vastus.ok, ostukorvid: vastuseData.ostukorvid};
         }
         
-        return {ok: vastus.ok, sonum: vastuseData.sonum};
+        return {status: vastus.status, sonum: vastuseData.sonum};
     } catch (viga) {
         return {ok: false, sonum: "Viga ostukorvi andmete hankimisel"}  
     }
