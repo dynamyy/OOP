@@ -11,7 +11,7 @@ import MarksonadeLisamine from '../komponendid/MarksonadeLisamine';
 import OstukorviToodeKaart from '../komponendid/OstukorviToodeKaart';
 import { FontAwesomeIcon as Font, FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faLariSign } from '@fortawesome/free-solid-svg-icons';
-import '../staatiline/UusOStukorv.css'
+import '../staatiline/UusOstukorv.css'
 import MuraFilter from '../komponendid/MuraFilter';
 
 function LooOstukorv() {
