@@ -211,7 +211,7 @@ function LooOstukorv() {
             setMarksonad({});
             localStorage.removeItem("Marksonad");
             localStorage.removeItem("Ostukorv");
-            navigeeri("/ostukorvid");
+            //navigeeri("/ostukorvid");
         } else {
             console.log("Ostukorvi loomine nurjus");
         }
