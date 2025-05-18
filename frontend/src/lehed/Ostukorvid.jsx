@@ -17,11 +17,10 @@ function Ostukorvid() {
         async function getOstukorv() {
             const vastus = await getOstukorvNimed(localStorage.getItem('AuthToken'))
             
-    
-            if (vastus.ok) {
+            if (vastus.status === 401) {
+                navigeeri("/kasutaja");
+            } else if (vastus.ok) {
                 setOstukorvid(vastus.ostukorvid.ostukorvid);
-            } else if (vastus.status === 401) {
-                return <LoginAken />;
             } else {
                 console.log(vastus.sonum)
             }
