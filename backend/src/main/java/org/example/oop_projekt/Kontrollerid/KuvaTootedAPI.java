@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/tooted")
-@CrossOrigin(origins = "http://localhost:5173")
 public class KuvaTootedAPI {
 
 

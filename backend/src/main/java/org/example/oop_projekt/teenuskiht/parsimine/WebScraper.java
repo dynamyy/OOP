@@ -2,15 +2,13 @@ package org.example.oop_projekt.teenuskiht.parsimine;
 
 import jakarta.transaction.Transactional;
 import lombok.Getter;
+import org.example.oop_projekt.Erindid.ChromeDriverFailException;
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.Erindid.TuhiElementideTagastusException;
 import org.example.oop_projekt.mudel.Toode;
-import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.jsoup.select.Selector;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -43,7 +41,7 @@ public abstract class WebScraper{
 
     public WebScraper(String poeNimi) {
         this.poeNimi = poeNimi;
-        this.logger = LoggerFactory.getLogger(CoopScraper.class);
+        this.logger = LoggerFactory.getLogger(WebScraper.class);
     }
 
     /**
@@ -100,7 +98,7 @@ public abstract class WebScraper{
                         "\n\toodatavLasteArv:" + oodatavLasteArv + "; Leidsin vaid:" + lasteArv +
                         "; lapseCss:" + lapseCss);
             } catch (WebDriverException e) {
-                throw new ScrapeFailedException("Lehe lõppu scrollimine ebaõnnestus chromedriveri vea tõttu: " + e.getMessage());
+                throw new ChromeDriverFailException("Lehe lõppu scrollimine ebaõnnestus chromedriveri vea tõttu: " + e.getMessage());
             }
 
             // Leian uue laste arvu
@@ -123,7 +121,7 @@ public abstract class WebScraper{
         } catch (TimeoutException e) {
             throw new ScrapeFailedException("Ootamine kestis liiga kaua, cssSelector: " + cssSelector);
         } catch (WebDriverException e) {
-            throw new ScrapeFailedException("Elemendi ootamine ebaõnnestus chromedriveri vea tõttu, cssSelector: "
+            throw new ChromeDriverFailException("Elemendi ootamine ebaõnnestus chromedriveri vea tõttu, cssSelector: "
                     + cssSelector + ": " + e.getMessage());
         }
     }
@@ -138,7 +136,7 @@ public abstract class WebScraper{
             chromedriver.get(url);
             Thread.sleep(1000);
         } catch (WebDriverException e) {
-            throw new ScrapeFailedException("Tekkis viga URLi laadimisel: " + url);
+            throw new ChromeDriverFailException("Tekkis viga URLi laadimisel: " + url);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -155,7 +153,7 @@ public abstract class WebScraper{
         try {
             return chromedriver.findElement(By.cssSelector(cssSelector));
         } catch (WebDriverException e) {
-            throw new ScrapeFailedException("Viga elemendi leidmisel chromedriverist. cssSelector " + cssSelector + ": " + e.getMessage());
+            throw new ChromeDriverFailException("Viga elemendi leidmisel chromedriverist. cssSelector " + cssSelector + ": " + e.getMessage());
         }
     }
 
@@ -170,7 +168,7 @@ public abstract class WebScraper{
         try {
             return chromedriver.findElements(By.cssSelector(cssSelector));
         } catch (WebDriverException e) {
-            throw new ScrapeFailedException("Viga elementide leidmisel chromedriverist. cssSelector " + cssSelector + ": " + e.getMessage());
+            throw new ChromeDriverFailException("Viga elementide leidmisel chromedriverist. cssSelector " + cssSelector + ": " + e.getMessage());
         }
     }
 

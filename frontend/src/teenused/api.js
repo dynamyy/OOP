@@ -1,4 +1,4 @@
-const BAAS_URL = "http://localhost:8080/api"
+const BAAS_URL = "https://www.ostukäru.ee/api"
 
 export const postSisseLogimine = async (email, parool) => {
     try {
@@ -121,13 +121,9 @@ export const postOstukorv = async (nimi, tooted, token) => {
             body: JSON.stringify({"nimi": nimi, "tooted": tooted, "token": token || ""})
         })
 
-        const sonum = await vastus.json();
+        const vastuseData = await vastus.json();
 
-        if (vastus.ok) {
-            return {ok: true, sonum: sonum}
-        } else {
-            return {ok: false, sonum: sonum}
-        }
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
     } catch (viga) {
         console.log("Viga ostukorvi saatmisel ", viga.message)
         return {ok: false, ostukorv: "Ilmnes viga ostukorvi saatmisel"}
@@ -241,7 +237,7 @@ export const getOstukorvNimed = async(token) => {
             return {ok: vastus.ok, ostukorvid: vastuseData.ostukorvid};
         }
         
-        return {ok: vastus.ok, sonum: vastuseData.sonum};
+        return {status: vastus.status, sonum: vastuseData.sonum};
     } catch (viga) {
         return {ok: false, sonum: "Viga ostukorvi andmete hankimisel"}  
     }

@@ -14,6 +14,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.awt.Robot;
 import java.awt.AWTException;
@@ -29,10 +31,12 @@ import java.util.Random;
 public class BarboraScraper extends WebScraper {
     private final PoodRepository poodRepository;
     private String url = "https://barbora.ee/";
+    private final Logger logger;
 
     public BarboraScraper(PoodRepository poodRepository) {
         super("Barbora");
         this.poodRepository = poodRepository;
+        this.logger = LoggerFactory.getLogger(BarboraScraper.class);
     }
 
 
@@ -129,7 +133,7 @@ public class BarboraScraper extends WebScraper {
                 for (Element kaart : kaardid) {
                     Element hindElement = kaart.selectFirst("meta[itemprop=price]");
                     if (hindElement == null) {
-                        System.out.println("Hinnainfo puudub. Katkestan selle lehe töötlemise.");
+                        logger.info("Lõpetasin vahelehe {} scrapemise", vaheleht);
                         break;
                     }
 

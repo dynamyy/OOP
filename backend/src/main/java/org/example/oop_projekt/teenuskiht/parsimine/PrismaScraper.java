@@ -9,6 +9,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,11 +23,13 @@ public class PrismaScraper extends WebScraper {
     private final PoodRepository poodRepository;
     private String url;
     private int toodeteArv;
+    private final Logger logger;
 
     public PrismaScraper(PoodRepository poodRepository) {
         super("Prisma");
         url = "https://www.prismamarket.ee/tooted";
         this.poodRepository = poodRepository;
+        this.logger = LoggerFactory.getLogger(PrismaScraper.class);
     }
 
     @Override
@@ -54,6 +58,7 @@ public class PrismaScraper extends WebScraper {
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
+        url = "https://www.prismamarket.ee/tooted";
         List<Toode> tooted = new ArrayList<>();
         scrapeRek(tooted, url);
         return tooted;
@@ -81,7 +86,7 @@ public class PrismaScraper extends WebScraper {
             throw new ScrapeFailedException("Ei suutnud scrapeRek meetodis toodetearvu silti numbriks muuta");
         }
 
-        if (toodeteArv > 5000) {
+        if (toodeteArv > 3000) {
             List<String> URLd = URLiKirjed();
 
             for (String u : URLd) {
@@ -89,6 +94,7 @@ public class PrismaScraper extends WebScraper {
             }
         } else {
             url = uusUrl;
+            logger.info("Alustan lehe {} scrapemist", url);
             Document doc = Jsoup.parse(hangiDynamicSource());
             scrapeLehekulg(tooted, doc);
         }

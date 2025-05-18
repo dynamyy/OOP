@@ -3,6 +3,7 @@ package org.example.oop_projekt.Kontrollerid;
 import org.example.oop_projekt.DTO.autentimine.Token;
 import org.example.oop_projekt.DTO.ostukorv.KasutajaOstukorvidDTO;
 import org.example.oop_projekt.DTO.ostukorv.OstukorvNimiIdDTO;
+import org.example.oop_projekt.Erindid.Autentimine.AuthException;
 import org.example.oop_projekt.mudel.Ostukorv;
 import org.example.oop_projekt.repository.OstukorvRepository;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
@@ -37,7 +38,9 @@ public class OstukorvNimiAPI {
             KasutajaOstukorvidDTO kasutajaOstukorvid = new KasutajaOstukorvidDTO(new ArrayList<>());
             ostukorvid.forEach(ostukorv -> kasutajaOstukorvid.ostukorvid().add(new OstukorvNimiIdDTO(ostukorv.getNimi(), ostukorv.getId())));
             return ResponseEntity.ok(Map.of("sonum", "Ostukorvid käes", "ostukorvid", kasutajaOstukorvid));
-        } catch (Exception e) {
+        } catch(AuthException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sonum", e.getMessage()));
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sonum", e.getMessage()));
         }
     }

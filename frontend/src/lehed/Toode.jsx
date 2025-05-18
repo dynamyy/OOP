@@ -36,12 +36,25 @@ function Toode() {
         }, []);
 
     function formaadiAeg(dateString) {
-        const date = new Date(dateString);
-        const tunnid = String(date.getHours()).padStart(2, '0');
-        const minutid = String(date.getMinutes()).padStart(2, '0');
-        const paev = String(date.getDate()).padStart(2, '0');
-        const kuu = String(date.getMonth() + 1).padStart(2, '0');
-        const aasta = date.getFullYear();
+        let tunnid;
+        let minutid;
+        let paev;
+        let kuu;
+        let aasta;
+        if (Array.isArray(dateString) && dateString.length === 7) {
+            tunnid = String(dateString[3]).padStart(2, '0');
+            minutid = String(dateString[4]).padStart(2, '0');
+            paev = String(dateString[2]).padStart(2, '0');
+            kuu = String(dateString[1]).padStart(2, '0');
+            aasta = String(dateString[0]).padStart(2, '0');
+        } else {
+            const date = new Date(dateString);
+            tunnid = String(date.getHours()).padStart(2, '0');
+            minutid = String(date.getMinutes()).padStart(2, '0');
+            paev = String(date.getDate()).padStart(2, '0');
+            kuu = String(date.getMonth() + 1).padStart(2, '0');
+            aasta = date.getFullYear();
+        }
 
         return `${tunnid}:${minutid} ${paev}.${kuu}.${aasta}`;
     }

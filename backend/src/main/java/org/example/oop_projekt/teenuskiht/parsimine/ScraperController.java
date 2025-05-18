@@ -2,6 +2,7 @@ package org.example.oop_projekt.teenuskiht.parsimine;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import jakarta.transaction.Transactional;
+import org.example.oop_projekt.Erindid.ChromeDriverFailException;
 import org.example.oop_projekt.Erindid.ScrapeFailedException;
 import org.example.oop_projekt.mudel.Toode;
 import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
@@ -12,14 +13,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 @Component
 public class ScraperController{
     private final List<WebScraper> scraperid;
     private final ToodeTeenus toodeTeenus;
     private final Logger logger;
+    private String chromeKasutajaDir;
 
     public ScraperController(List<WebScraper> scraperid, ToodeTeenus toodeTeenus) {
         this.scraperid = scraperid;
@@ -36,33 +45,44 @@ public class ScraperController{
     public void scrapeAll() throws IOException {
         WebDriver chromedriver = uusDriver();
         List<Toode> tooted;
+        int failedKatseid;
 
         // Scrapib kõik poed ja lisab tooted andmebaasi
         for (WebScraper pood : scraperid) {
+            failedKatseid = 0;
+            while (failedKatseid < 3) {
+                logger.info("Alustan {} scrapemist", pood.getPoeNimi());
 
-            logger.info("Alustan {} scrapemist", pood.getPoeNimi());
+                try {
+                    tooted = pood.scrape(chromedriver);
+                    if (!tooted.isEmpty()) {
+                        logger.info("Sain {} andmed, lisan andmebaasi ({}) toodet", pood.getPoeNimi(), tooted.size());
+                        this.toodeTeenus.lisaTootedAndmebaasi(tooted);
+                    } else {
+                        logger.warn("Scrape õnnestus, kuid ei saanud {} andmeid (0 toodet)", pood.getPoeNimi());
+                    }
+                    break;
+                } catch (ChromeDriverFailException e) {
+                    failedKatseid++;
+                    logger.error("{} scrape failis {}. korda: {}", pood.getPoeNimi(), failedKatseid, e.getMessage());
 
-            try {
-                tooted = pood.scrape(chromedriver);
-
-                if (!tooted.isEmpty()) {
-                    logger.info("Sain {} andmed, lisan andmebaasi ({}) toodet", pood.getPoeNimi(), tooted.size());
-                    this.toodeTeenus.lisaTootedAndmebaasi(tooted);
-                } else {
-                    logger.warn("Scrape õnnestus, kuid ei saanud {} andmeid (0 toodet)", pood.getPoeNimi());
+                    if (failedKatseid < 3) {
+                        logger.info("Teen uue Chromedriveri ja proovin scrape'imist jätkata");
+                        cleanupChromedriver();
+                        chromedriver = uusDriver();
+                    }
+                } catch (ScrapeFailedException e) {
+                    logger.error("{} scrape failis: {}", pood.getPoeNimi(), e.getMessage());
+                    break;
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-
-            } catch (ScrapeFailedException e) {
-                logger.error("{} scrape failis: {}", pood.getPoeNimi(), e.getMessage());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
-
-
         }
 
         logger.info("Kõik scrapetud ja andmebaasi lisatud");
         chromedriver.quit();
+        cleanupChromedriver();
     }
 
     /**
@@ -73,10 +93,35 @@ public class ScraperController{
      */
     private ChromeDriver uusDriver() {
         ChromeOptions options = new ChromeOptions();
-        //options.addArguments("--headless"); // peidetult jooksmine
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+
+        chromeKasutajaDir = "/tmp/chrome-user-data-" + UUID.randomUUID();
+        options.addArguments("--user-data-dir=" + chromeKasutajaDir);
+        options.addArguments("--headless=new"); // peidetult jooksmine
         options.addArguments("window-size=1920,1080");
 
         WebDriverManager.chromedriver().setup();
         return new ChromeDriver(options);
+    }
+
+    /**
+     * Kustutab suvaliselt genereeritud user data kaustast andmed peale sessiooni
+     */
+    private void cleanupChromedriver() {
+        try (Stream<Path> walk = Files.walk(Paths.get(chromeKasutajaDir))) {
+            int[] kustutamisStaatused = {0, 0};
+            walk.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(file -> {
+                if (file.delete()) {
+                    kustutamisStaatused[0]++;
+                } else {
+                    kustutamisStaatused[1]++;
+                }
+            });
+            logger.info("Chrome'i kasutaja kaust {} puhastatud. Edukaid kustutusi: {}; Ebaõnnestunud kustutusi: {}",
+                    chromeKasutajaDir, kustutamisStaatused[0], kustutamisStaatused[1]);
+        } catch (IOException e) {
+            logger.error("Ei õnnestunud puhastada Chrome'i kasutaja kausta {}: {}", chromeKasutajaDir, e.getMessage());
+        }
     }
 }

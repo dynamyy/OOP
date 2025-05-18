@@ -11,12 +11,13 @@ import MarksonadeLisamine from '../komponendid/MarksonadeLisamine';
 import OstukorviToodeKaart from '../komponendid/OstukorviToodeKaart';
 import { FontAwesomeIcon as Font, FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faLariSign } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
-import '../staatiline/UusOStukorv.css'
+import '../staatiline/UusOstukorv.css'
 import MuraFilter from '../komponendid/MuraFilter';
+import { useNavigate } from 'react-router-dom';
 
 function LooOstukorv() {
 
+    const navigeeri = useNavigate();
     const [marksonad, setMarksonad] = useState({})
     const [uusMarksona, setUusMarksona] = useState('')
     const [uusSisalduvus, setUusSisalduvus] = useState("roheline")
@@ -29,7 +30,6 @@ function LooOstukorv() {
     const [uuteToodeteLaadimine, setUuteToodeteLaadimine] = useState(false);
     const [marksonaError, setMarksonaError] = useState(false)
     const [ostukorvNimiError, setOstukorvNimiError] = useState(false)
-    const navigeeri = useNavigate();
     const elmRef = useRef(null);
     const logod = {
         Prisma: prismaLogo,
@@ -204,16 +204,16 @@ function LooOstukorv() {
         }))
 
         const vastus = await postOstukorv(nimi, vormindatudTooted, localStorage.getItem('AuthToken'));
-        console.log(vastus)
+
         if (vastus.ok) {
-            console.log("Ostukorv loodud")
-            setOstukorv({})
+            setOstukorv({});
+            setMarksonad({});
+            setTooted([]);
+            localStorage.removeItem("Marksonad");
             localStorage.removeItem("Ostukorv");
-            setOstukorviNimi('')
-            setTooted([])
             navigeeri(`/ostukorv/${vastus.sonum.id}`);
         } else {
-            console.log("Ostukorvi loomine nurjus")
+            console.log("Ostukorvi loomine nurjus");
         }
     }
 

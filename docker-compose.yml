@@ -2,18 +2,21 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "4173:5173"
+      - "80:80"
+      - "443:443"
     environment:
       - NODE_ENV=production
     depends_on:
       - backend
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt/:ro
+
 
   backend:
     build: ./backend
-    ports:
-      - "8080:8080"
     volumes:
       - ./backend/env.properties:/app/env.properties
+      - ./backend/log:/app/log
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - DATABASE_URL=jdbc:postgresql://db:5432/ostukorvivordlus
@@ -26,8 +29,11 @@ services:
   db:
     image: postgres:13
     volumes:
-      - /var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PW}
       - POSTGRES_DB=ostukorvivordlus
+
+volumes:
+  db-data:
