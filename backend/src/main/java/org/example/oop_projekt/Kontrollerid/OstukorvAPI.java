@@ -28,8 +28,8 @@ public class OstukorvAPI {
     @PostMapping
     public ResponseEntity<?> getOstukorv(@RequestBody OstukorvDTO ostukorv){//Java teisendab automaatselt jsoni DTO-ks
         try {
-            ostukorvTeenus.looOstukorv(ostukorv);
-            return ResponseEntity.ok(Map.of("sonum", "Ostukorv edukalt loodud"));
+            Long id = ostukorvTeenus.looOstukorv(ostukorv);
+            return ResponseEntity.ok(Map.of("sonum", "Ostukorv edukalt loodud", "id", id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sonum", e.getMessage()));
         }

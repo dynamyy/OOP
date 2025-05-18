@@ -72,18 +72,18 @@ public class OstukorvTeenus {
 
 
     @Transactional
-    public void looOstukorv(OstukorvDTO ostukorv) {
+    public Long looOstukorv(OstukorvDTO ostukorvDTO) {
 
         List<ToodeOstukorvis> tootedOstukorvis = new ArrayList<>(); // List, kuhu kõik uued tooted salvestatakse
-        Ostukorv ostuKorv = new Ostukorv(ostukorv.nimi(), tootedOstukorvis);
+        Ostukorv ostukorv = new Ostukorv(ostukorvDTO.nimi(), tootedOstukorvis);
 
-        for (ToodeOstukorvisDTO toode : ostukorv.tooted()) {
+        for (ToodeOstukorvisDTO toode : ostukorvDTO.tooted()) {
             ToodeOstukorvis uusToodeOstukorvis = new ToodeOstukorvis(
-                    ostuKorv,
+                    ostukorv,
                     new ArrayList<>(),
                     Integer.valueOf(toode.tooteKogus()),
                     new ArrayList<>());
-            ostuKorv.getTootedOstukorvis().add(uusToodeOstukorvis);
+            ostukorv.getTootedOstukorvis().add(uusToodeOstukorvis);
 
             // Kõik uue toote märksõnad lisatakse andmebaasi
             for (MarksonaDTO marksona : toode.marksonad()) {
@@ -111,10 +111,11 @@ public class OstukorvTeenus {
                 }
             }
         }
-        ostukorvRepository.save(ostuKorv);
-        if (!ostukorv.token().isEmpty()) {
-            uuendaHindu(ostuKorv, new Token(ostukorv.token()));
+        ostukorvRepository.save(ostukorv);
+        if (!ostukorvDTO.token().isEmpty()) {
+            uuendaHindu(ostukorv, new Token(ostukorvDTO.token()));
         }
+        return ostukorv.getId();
     }
 
     @verifyToken
@@ -197,6 +198,7 @@ public class OstukorvTeenus {
                         Toode t = leiaPoeToode(pood.getNimi().toLowerCase(), toode);
                         if (!(t == null)) {
                             return new ToodeOStukorvisArvutatudDTO(
+                                    t.getNimetus(),
                                     omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind(),
                                     omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind(),
                                     t.getTootePiltURL(),
