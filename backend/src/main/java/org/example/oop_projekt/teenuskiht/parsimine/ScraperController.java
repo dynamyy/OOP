@@ -99,8 +99,6 @@ public class ScraperController{
         options.addArguments("Accept-Encoding", "gzip, deflate, br");
         options.addArguments("Connection", "keep-alive");
 
-        options.addArguments("--proxy-server=socks4://51.75.242.182:80");
-
         chromeKasutajaDir = "/tmp/chrome-user-data-" + UUID.randomUUID();
         options.addArguments("--user-data-dir=" + chromeKasutajaDir);
         options.addArguments("--headless=new"); // peidetult jooksmine
