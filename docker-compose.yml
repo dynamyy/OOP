@@ -10,8 +10,6 @@ services:
       - backend
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt/:ro
-      - ./frontend/nginx:/etc/nginx/conf.d
-      - ./frontend/dist:/usr/share/nginx/html
 
 
   backend:
