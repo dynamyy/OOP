@@ -39,17 +39,14 @@ public class OopProjektApplication {
 
         // Scraperite loomine
         List<WebScraper> scraperid = new ArrayList<>();
-        //scraperid.add(new CoopScraper(this.poodRepository));
+        scraperid.add(new CoopScraper(this.poodRepository));
         //scraperid.add(new PrismaScraper(this.poodRepository));
-        //scraperid.add(new SelverScraper(this.poodRepository));
+        scraperid.add(new SelverScraper(this.poodRepository));
         //scraperid.add(new BarboraScraper(this.poodRepository));
         //scraperid.add(new RimiScraper(this.poodRepository));
 
 
         ScraperController scraper = new ScraperController(scraperid, this.toodeTeenus);
-        long algus = System.currentTimeMillis();
-        //scraper.scrapeAll();
-        long lopp = System.currentTimeMillis();
-        System.out.println(lopp - algus);
+        scraper.scrapeAll();
     }
 }
