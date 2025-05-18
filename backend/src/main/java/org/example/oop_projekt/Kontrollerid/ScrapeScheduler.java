@@ -20,7 +20,7 @@ public class ScrapeScheduler {
         this.logger = LoggerFactory.getLogger(ScrapeScheduler.class);
     }
 
-    @Scheduled(cron = "00 46 20 * * *", zone = "Europe/Tallinn")
+    @Scheduled(cron = "00 37 04 * * *", zone = "Europe/Tallinn")
     public void runScrape() throws IOException {
         logger.info("Alustan scheduler scrapimist");
         scraper.scrapeAll();

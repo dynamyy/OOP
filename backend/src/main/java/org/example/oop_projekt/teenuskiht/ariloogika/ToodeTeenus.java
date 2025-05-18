@@ -21,6 +21,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.example.oop_projekt.specifications.ToodeSpecification;
+
+import java.time.ZoneId;
 import java.util.function.Function;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -72,7 +74,7 @@ public class ToodeTeenus {
         List<Toode> uuedTooted = new ArrayList<>();
 
         Pood pood = tooted.getFirst().getPood();
-        LocalDateTime uuendusAeg = LocalDateTime.now();
+        LocalDateTime uuendusAeg = LocalDateTime.now(ZoneId.of("Europe/Tallinn"));
 
         int uuendatudToodeteArv = 0;
         for (Toode toode : tooted) {
