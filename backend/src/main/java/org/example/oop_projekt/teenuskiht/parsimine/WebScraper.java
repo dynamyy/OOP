@@ -125,8 +125,6 @@ public abstract class WebScraper{
                 if (kordiProovitud < 3) {
                     kordiProovitud += 1;
                     logger.warn("Ootamine kestis liiga kaua ({}. katse), cssSelector: {}", kordiProovitud, cssSelector);
-                    String source = chromedriver.getPageSource();
-                    logger.info(source);
                 } else {
                     throw new ScrapeFailedException("Ootamine kestis liiga kaua, cssSelector: " + cssSelector);
                 }
