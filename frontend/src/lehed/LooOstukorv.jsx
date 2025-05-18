@@ -182,7 +182,7 @@ function LooOstukorv() {
         eemaldaOstukorvist(Object.keys(toode.marksonad).join(""))
     }
 
-    function looOstukorv(nimi, tooted) {
+    async function looOstukorv(nimi, tooted) {
 
         if (nimi === "") {
             document.getElementById("ostukorv-nimi").classList.add("hele-serv")
@@ -201,7 +201,7 @@ function LooOstukorv() {
             }))
         }))
 
-        const vastus = postOstukorv(nimi, vormindatudTooted, localStorage.getItem('AuthToken'));
+        const vastus = await postOstukorv(nimi, vormindatudTooted, localStorage.getItem('AuthToken'));
 
         if (vastus.ok) {
             console.log("Ostukorv loodud")
