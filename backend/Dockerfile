@@ -32,7 +32,6 @@ RUN apt-get update && apt-get install -y \
     libx11-xcb1 \
     libxrandr2 \
     libgbm-dev \
-    libasound2 \
     fonts-liberation \
     libappindicator3-1 \
     libxtst6 \
