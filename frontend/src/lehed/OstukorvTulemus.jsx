@@ -71,7 +71,7 @@ function OstukorvTulemus() {
         Object.keys(uuedTulbad).forEach(pood => {
             uuedTulbad[pood] = suurim === 0 ? 0 : uuedTulbad[pood] / suurim;
         });
-        console.log(uuedTulbad)
+
         setTulbad(uuedTulbad)
     }, [ostukorv])
 
