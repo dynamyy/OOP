@@ -118,35 +118,38 @@ public class OstukorvTeenus {
         return ostukorv.getId();
     }
 
-    @verifyToken
     private void uuendaPoeHinnad(List<Kliendikaardid> kliendikaardid, Ostukorv ostukorv, Pood pood, Token token) {
         boolean omabKliendikaarti = kliendikaardid.stream().anyMatch(kliendikaart -> kliendikaart.getPoeNimi().equalsIgnoreCase(pood.getNimi()));
 
         List<ToodeOstukorvis> tootedOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisByOstukorv(ostukorv);// See rida peaks toimima kohe alguses määrates
         for (ToodeOstukorvis ostukorviToode : tootedOstukorvis) {
-            List<MarksonaDTO> marksonad = new ArrayList<>();
-            for (TooteMarksona tooteMarksona : ostukorviToode.getTooteMarksonad()) {
-                marksonad.add(new MarksonaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));// SIIA LISASIN dto.token rea
-            }
+            uuendaTooteHind(ostukorviToode, pood, token, omabKliendikaarti);
+        }
+    }
 
-            TokenMarkSonaDTO tokenMarkSona = new TokenMarkSonaDTO(marksonad, token.token());
-            List<Toode> sobivadTooted = toodeTeenus.valitudTootedAndmebaasist(tokenMarkSona);// Siin tuleb teha TokenMarkSOna DTO objekt
-            Toode odavaimToode = sobivadTooted
-                    .stream()
-                    .filter(t -> t.getPood()
-                            .equals(pood)).toList()
-                    .stream()
-                    .min(Comparator.comparingDouble(t -> omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind()
-                    ))
-                    .orElse(null);
-            if (odavaimToode != null) {
-                switch (pood.getNimi().toLowerCase()) {
-                    case "coop" -> ostukorviToode.setCoopToode(odavaimToode);
-                    case "prisma" -> ostukorviToode.setPrismaToode(odavaimToode);
-                    case "maxima" -> ostukorviToode.setBarboraToode(odavaimToode);
-                    case "rimi" -> ostukorviToode.setRimiToode(odavaimToode);
-                    case "selver" -> ostukorviToode.setSelverToode(odavaimToode);
-                }
+    @verifyToken
+    private void uuendaTooteHind(ToodeOstukorvis ostukorviToode, Pood pood, Token token, boolean omabKliendikaarti) {
+        List<MarksonaDTO> marksonad = new ArrayList<>();
+        for (TooteMarksona tooteMarksona : ostukorviToode.getTooteMarksonad()) {
+            marksonad.add(new MarksonaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));// SIIA LISASIN dto.token rea
+        }
+
+        TokenMarkSonaDTO tokenMarkSona = new TokenMarkSonaDTO(marksonad, token.token());
+        List<Toode> sobivadTooted = toodeTeenus.valitudTootedAndmebaasist(tokenMarkSona);// Siin tuleb teha TokenMarkSOna DTO objekt
+        Toode odavaimToode = sobivadTooted
+                .stream()
+                .filter(t -> t.getPood()
+                .equals(pood))
+                .min(Comparator.comparingDouble(t -> omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind()
+                ))
+                .orElse(null);
+        if (odavaimToode != null) {
+            switch (pood.getNimi().toLowerCase()) {
+                case "coop" -> ostukorviToode.setCoopToode(odavaimToode);
+                case "prisma" -> ostukorviToode.setPrismaToode(odavaimToode);
+                case "maxima" -> ostukorviToode.setBarboraToode(odavaimToode);
+                case "rimi" -> ostukorviToode.setRimiToode(odavaimToode);
+                case "selver" -> ostukorviToode.setSelverToode(odavaimToode);
             }
         }
     }

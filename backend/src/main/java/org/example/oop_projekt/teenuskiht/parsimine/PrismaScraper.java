@@ -9,12 +9,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,21 +20,16 @@ public class PrismaScraper extends WebScraper {
     private final PoodRepository poodRepository;
     private String url;
     private int toodeteArv;
-    private final Logger logger;
 
     public PrismaScraper(PoodRepository poodRepository) {
         super("Prisma");
         url = "https://www.prismamarket.ee/tooted";
         this.poodRepository = poodRepository;
-        this.logger = LoggerFactory.getLogger(PrismaScraper.class);
     }
 
     @Override
     String hangiDynamicSource() throws ScrapeFailedException {
         WebDriver chromedriver = getChromedriver();
-
-        // Veebilehe avamine
-        //getUrl(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
         //ootaLeheLaadimist("[data-test-id='product-list'] > div");
@@ -58,45 +50,48 @@ public class PrismaScraper extends WebScraper {
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
-        url = "https://www.prismamarket.ee/tooted";
         List<Toode> tooted = new ArrayList<>();
-        scrapeRek(tooted, url);
+        Queue<String> urlid = new LinkedList<>(Collections.singleton(url));
+        scrapeQueue(tooted, urlid);
         return tooted;
     }
 
-    public void scrapeRek(List<Toode> tooted, String uusUrl) {
-        getUrl(uusUrl);
-        toodeteArv = 0;
+    public void scrapeQueue(List<Toode> tooted, Queue<String> urlid) {
+        while (!urlid.isEmpty()) {
+            String uusUrl = urlid.poll();
+            getUrl(uusUrl);
+            toodeteArv = 0;
 
-        try {
-            getDriverWait().until(driver -> !driver
-                    .findElement(By.cssSelector("[data-test-id='product-result-total']"))
-                    .getText().trim().isEmpty());
-        } catch (TimeoutException e) {
-            throw new ScrapeFailedException("Ootamine scrapeRek meetodis kestis liiga kaua");
-        } catch (WebDriverException e) {
-            throw new ScrapeFailedException("Elemendi ootamine scrapeRek meetodis ebaõnnestus chromedriveri vea tõttu");
-        }
-
-        WebElement tootearvuSilt = leiaElement("[data-test-id='product-result-total']");
-
-        try {
-            toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
-        } catch (NullPointerException | NumberFormatException e) {
-            throw new ScrapeFailedException("Ei suutnud scrapeRek meetodis toodetearvu silti numbriks muuta");
-        }
-
-        if (toodeteArv > 3000) {
-            List<String> URLd = URLiKirjed();
-
-            for (String u : URLd) {
-                scrapeRek(tooted, u);
+            if (tooted.size() % 1000 == 0) {
+                System.gc();
             }
-        } else {
-            url = uusUrl;
-            logger.info("Alustan lehe {} scrapemist", url);
-            Document doc = Jsoup.parse(hangiDynamicSource());
-            scrapeLehekulg(tooted, doc);
+
+            try {
+                getDriverWait().until(driver -> !driver
+                        .findElement(By.cssSelector("[data-test-id='product-result-total']"))
+                        .getText().trim().isEmpty());
+            } catch (TimeoutException e) {
+                throw new ScrapeFailedException("Ootamine scrapeRek meetodis kestis liiga kaua");
+            } catch (WebDriverException e) {
+                throw new ScrapeFailedException("Elemendi ootamine scrapeRek meetodis ebaõnnestus chromedriveri vea tõttu");
+            }
+
+            WebElement tootearvuSilt = leiaElement("[data-test-id='product-result-total']");
+
+            try {
+                toodeteArv = Integer.parseInt(tootearvuSilt.getText().split(" ")[0]);
+            } catch (NullPointerException | NumberFormatException e) {
+                throw new ScrapeFailedException("Ei suutnud scrapeRek meetodis toodetearvu silti numbriks muuta");
+            }
+
+            if (toodeteArv > 3000) {
+                List<String> URLd = URLiKirjed();
+                urlid.addAll(URLd);
+            } else {
+                url = uusUrl;
+                Document doc = Jsoup.parse(hangiDynamicSource());
+                scrapeLehekulg(tooted, doc);
+            }
         }
     }
 
@@ -125,7 +120,7 @@ public class PrismaScraper extends WebScraper {
                 continue;
             }
 
-            tootePiltUrl = valiElement(toode, "[data-test-id='product-card__productImage'] > img")
+            tootePiltUrl = valiElement(toode, "[data-test-id='product-card__productImage']")
                     .attr("srcset")
                     .split(" ")[0];
             tooteKood = valiElement(toode, "article").attr("data-product-id");
