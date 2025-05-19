@@ -94,6 +94,10 @@ public class ScraperController{
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-extensions");
+        options.addArguments("--process-per-site");
+        options.addArguments("--disable-background-networking");
+        options.addArguments("--disable-site-isolation-trials");
 
         options.addArguments("--accept-language=en-US,en;q=0.9");
         options.addArguments("Accept-Encoding", "gzip, deflate, br");
