@@ -50,7 +50,6 @@ public class PrismaScraper extends WebScraper {
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
-        url = "https://www.prismamarket.ee/tooted";
         List<Toode> tooted = new ArrayList<>();
         Queue<String> urlid = new LinkedList<>(Collections.singleton(url));
         scrapeQueue(tooted, urlid);
