@@ -9,6 +9,9 @@ import org.example.oop_projekt.teenuskiht.ariloogika.ToodeTeenus;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -64,6 +67,11 @@ public class ScraperController{
                 } catch (ChromeDriverFailException e) {
                     failedKatseid++;
                     logger.error("{} scrape failis {}. korda: {}", pood.getPoeNimi(), failedKatseid, e.getMessage());
+                    logger.error("Chromedriveri logid: ");
+                    LogEntries driveriLogid = chromedriver.manage().logs().get(LogType.BROWSER);
+                    for (LogEntry log : driveriLogid) {
+                        logger.error("\tLevel: " + log.getLevel() + "; sõnum: " + log.getMessage());
+                    }
 
                     if (failedKatseid < 3) {
                         logger.info("Teen uue Chromedriveri ja proovin scrape'imist jätkata");
@@ -122,6 +130,8 @@ public class ScraperController{
         driver.executeScript(
                 "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
         );
+
+        driver.manage().logs().get(LogType.BROWSER);
         return driver;
     }
 
