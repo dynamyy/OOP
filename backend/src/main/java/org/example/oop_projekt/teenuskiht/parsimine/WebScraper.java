@@ -98,7 +98,7 @@ public abstract class WebScraper{
                         "\n\toodatavLasteArv:" + oodatavLasteArv + "; Leidsin vaid:" + lasteArv +
                         "; lapseCss:" + lapseCss);
             } catch (WebDriverException e) {
-                throw new ChromeDriverFailException("Lehe lõppu scrollimine ebaõnnestus chromedriveri vea tõttu: " + e.getMessage());
+                throw new ChromeDriverFailException("Lehe lõppu scrollimine ebaõnnestus chromedriveri vea tõttu.\n\toodatavLasteArv:" + oodatavLasteArv + "; Leidsin vaid:" + lasteArv + "\n\tViga: " + e.getMessage());
             }
 
             // Leian uue laste arvu
