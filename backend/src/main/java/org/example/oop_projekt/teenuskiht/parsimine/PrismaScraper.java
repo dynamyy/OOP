@@ -9,9 +9,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,10 +23,11 @@ public class PrismaScraper extends WebScraper {
     private final PoodRepository poodRepository;
     private String url;
     private int toodeteArv;
+    private final Logger logger;
 
     public PrismaScraper(PoodRepository poodRepository) {
         super("Prisma");
-        url = "https://www.prismamarket.ee/tooted";
+        this.logger = LoggerFactory.getLogger(PrismaScraper.class);
         this.poodRepository = poodRepository;
     }
 
@@ -50,6 +54,7 @@ public class PrismaScraper extends WebScraper {
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
+        url = "https://www.prismamarket.ee/tooted";
         List<Toode> tooted = new ArrayList<>();
         Queue<String> urlid = new LinkedList<>(Collections.singleton(url));
         scrapeQueue(tooted, urlid);
@@ -59,10 +64,11 @@ public class PrismaScraper extends WebScraper {
     public void scrapeQueue(List<Toode> tooted, Queue<String> urlid) {
         while (!urlid.isEmpty()) {
             String uusUrl = urlid.poll();
+            logger.info("Parsin lehekülge {}. Järjekorras veel {} lehekülge.", uusUrl, urlid.size());
             getUrl(uusUrl);
             toodeteArv = 0;
 
-            if (tooted.size() % 1000 == 0) {
+            if (tooted.size() % 400 == 0) {
                 System.gc();
             }
 
