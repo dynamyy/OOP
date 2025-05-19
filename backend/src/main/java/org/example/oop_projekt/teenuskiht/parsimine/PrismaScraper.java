@@ -37,10 +37,10 @@ public class PrismaScraper extends WebScraper {
         WebDriver chromedriver = getChromedriver();
 
         // Veebilehe avamine
-        getUrl(url);
+        //getUrl(url);
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        ootaLeheLaadimist("[data-test-id='product-list'] > div");
+        //ootaLeheLaadimist("[data-test-id='product-list'] > div");
 
         scrolliLeheLoppu(toodeteArv, "[data-test-id='product-list-item']");
 
