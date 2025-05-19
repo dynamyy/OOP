@@ -24,11 +24,16 @@ public class PrismaScraper extends WebScraper {
     private String url;
     private int toodeteArv;
     private final Logger logger;
+    private final Queue<String> urlid;
+    private final List<Toode> tooted;
 
     public PrismaScraper(PoodRepository poodRepository) {
         super("Prisma");
         this.logger = LoggerFactory.getLogger(PrismaScraper.class);
         this.poodRepository = poodRepository;
+        this.url = "https://www.prismamarket.ee/tooted";
+        this.urlid = new LinkedList<>(Collections.singleton(url));
+        this.tooted = new ArrayList<>();
     }
 
     @Override
@@ -54,9 +59,6 @@ public class PrismaScraper extends WebScraper {
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
-        url = "https://www.prismamarket.ee/tooted";
-        List<Toode> tooted = new ArrayList<>();
-        Queue<String> urlid = new LinkedList<>(Collections.singleton(url));
         scrapeQueue(tooted, urlid);
         return tooted;
     }
@@ -77,7 +79,7 @@ public class PrismaScraper extends WebScraper {
                         .findElement(By.cssSelector("[data-test-id='product-result-total']"))
                         .getText().trim().isEmpty());
             } catch (TimeoutException e) {
-                throw new ScrapeFailedException("Ootamine scrapeRek meetodis kestis liiga kaua");
+                throw new ScrapeFailedException("Ootamine scrapeQueue meetodis kestis liiga kaua");
             } catch (WebDriverException e) {
                 throw new ScrapeFailedException("Elemendi ootamine scrapeRek meetodis ebaõnnestus chromedriveri vea tõttu");
             }
@@ -90,10 +92,12 @@ public class PrismaScraper extends WebScraper {
                 throw new ScrapeFailedException("Ei suutnud scrapeRek meetodis toodetearvu silti numbriks muuta");
             }
 
-            if (toodeteArv > 3000) {
+            if (toodeteArv > 1500) {
+                logger.info("Tooteid on lehel {}. Jaotan osadeks", toodeteArv);
                 List<String> URLd = URLiKirjed();
                 urlid.addAll(URLd);
             } else {
+                logger.info("Tooteid on lehel {}. Hakkan parsima", toodeteArv);
                 url = uusUrl;
                 Document doc = Jsoup.parse(hangiDynamicSource());
                 scrapeLehekulg(tooted, doc);
