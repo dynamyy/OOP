@@ -1,4 +1,4 @@
-const BAAS_URL = "https://xn--ostukru-9wa.ee"
+const BAAS_URL = "https://xn--ostukru-9wa.ee/api"
 
 export const postSisseLogimine = async (email, parool) => {
     try {
