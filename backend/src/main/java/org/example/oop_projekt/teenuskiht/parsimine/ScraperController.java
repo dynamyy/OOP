@@ -107,6 +107,7 @@ public class ScraperController{
         options.addArguments("--process-per-site");
         options.addArguments("--disable-background-networking");
         options.addArguments("--disable-site-isolation-trials");
+        options.addArguments("--disable-quic");
 
         options.addArguments("--accept-language=en-US,en;q=0.9");
         options.addArguments("Accept-Encoding", "gzip, deflate, br");
