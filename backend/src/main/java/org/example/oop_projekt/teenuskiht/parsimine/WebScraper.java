@@ -72,7 +72,13 @@ public abstract class WebScraper{
      * @throws ScrapeFailedException Viga kui kui ei õnnestunud laadida etteantud arv elemente
      */
     void scrolliLeheLoppu(int oodatavLasteArv, String lapseCss) throws ScrapeFailedException {
-        int lasteArv = chromedriver.findElements(By.cssSelector(lapseCss)).size();
+        int lasteArv;
+        try {
+            lasteArv = chromedriver.findElements(By.cssSelector(lapseCss)).size();
+        } catch (WebDriverException e) {
+            throw new ChromeDriverFailException("Lehe lõppu scrollimine ebaõnnestus. Ei suutnud leida laste arvu lehel: " + e.getMessage());
+        }
+
         int kordiProovitud = 0;
 
         // Scrollin nii kaua kuni kõik lapsed on laetud
