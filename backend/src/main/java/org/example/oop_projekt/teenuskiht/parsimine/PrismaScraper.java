@@ -86,7 +86,7 @@ public class PrismaScraper extends WebScraper {
             throw new ScrapeFailedException("Ei suutnud scrapeRek meetodis toodetearvu silti numbriks muuta");
         }
 
-        if (toodeteArv > 3000) {
+        if (toodeteArv > 2000) {
             List<String> URLd = URLiKirjed();
 
             for (String u : URLd) {
