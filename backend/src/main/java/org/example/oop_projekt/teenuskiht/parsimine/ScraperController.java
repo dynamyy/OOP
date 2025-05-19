@@ -103,6 +103,7 @@ public class ScraperController{
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-extensions");
+        options.addArguments("--disable-notifications");
         options.addArguments("--process-per-site");
         options.addArguments("--disable-background-networking");
         options.addArguments("--disable-site-isolation-trials");
@@ -123,6 +124,10 @@ public class ScraperController{
         options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36");
         options.addArguments("--sec-ch-ua-platform=Windows");
         options.addArguments("--sec-ch-ua-full-version-list=\"Chromium/136.0.0.0, Google Chrome/136.0.0.0, Not.A/Brand/99\"");
+
+        options.addArguments("--enable-logging");
+        options.addArguments("--v=1");
+        options.addArguments("--log-level=0");
 
         WebDriverManager.chromedriver().setup();
         ChromeDriver driver = new ChromeDriver(options);
