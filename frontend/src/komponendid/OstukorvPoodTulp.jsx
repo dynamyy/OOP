@@ -13,7 +13,7 @@ function OstukorvPoodTulp(props) {
     }, [props.korgus]);
 
     return (
-        <div className="ostukorv-pood-konteiner" onClick={() => props.setAktiivnePood(props.pood)}>
+        <div className="ostukorv-pood-konteiner" onClick={() => {props.setAktiivnePood(props.pood); props.setAktiivnePoodNimi(props.pood.pood)}}>
             {summa > 0 ? <span className='tume-tekst'> {parseFloat(summa).toFixed(2)} €</span> : null}
             <div 
                 id={props.pood.pood + "-id"} 

@@ -91,6 +91,7 @@ public class ToodeTeenus {
                 toode.setViimatiUuendatud(uuendusAeg);
                 uuedTooted.add(toode);
             } else {
+                dbToode.setNimetus(toode.getNimetus());
                 dbToode.setHindKliendi(toode.getHindKliendi());
                 dbToode.setHulgaHind(toode.getHulgaHind());
                 dbToode.setHulgaHindKliendi(toode.getHulgaHindKliendi());

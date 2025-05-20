@@ -266,3 +266,24 @@ export const kustutaOstukorv = async (id, token) => {
         return {ok: false, sonum: "Viga ostukorvi andmete hankimisel"}  
     }
 }
+
+export const uuendaToodet = async (id, pood, token) => {
+    console.log(token)
+    try {
+        const vastus = await fetch(`${BAAS_URL}/ostukorv/uuenda-toodet`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({"token": token, "id": id, "pood": pood})
+        })
+
+        const vastuseData = await vastus.json()
+
+        if (vastus.ok) {
+            return {ok: vastus.ok, sonum: vastuseData.sonum};
+        }
+        
+        return {ok: vastus.ok, sonum: vastuseData.sonum};
+    } catch (viga) {
+        return {ok: false, sonum: "Viga ostukorvi andmete hankimisel"}  
+    }
+}
