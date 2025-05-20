@@ -123,7 +123,7 @@ export const postOstukorv = async (nimi, tooted, token) => {
 
         const vastuseData = await vastus.json();
 
-        return {ok: vastus.ok, sonum: vastuseData.sonum};
+        return {ok: vastus.ok, sonum: vastuseData.sonum, id: vastuseData.id};
     } catch (viga) {
         console.log("Viga ostukorvi saatmisel ", viga.message)
         return {ok: false, ostukorv: "Ilmnes viga ostukorvi saatmisel"}
