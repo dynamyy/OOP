@@ -249,7 +249,7 @@ export const getOstukorvNimed = async(token) => {
 
 export const kustutaOstukorv = async (id, token) => {
     try {
-        const vastus = await fetch(`${BAAS_URL}/kustuta-ostukorv/${id}`, {
+        const vastus = await fetch(`${BAAS_URL}/kustuta-ostukorv/${id}`, {  
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify({"id": id, "token": token || ""})

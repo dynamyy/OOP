@@ -128,7 +128,7 @@ public class OstukorvTeenus {
     }
 
     @verifyToken
-    private void uuendaTooteHind(ToodeOstukorvis ostukorviToode, Pood pood, Token token, boolean omabKliendikaarti) {
+    public void uuendaTooteHind(ToodeOstukorvis ostukorviToode, Pood pood, Token token, boolean omabKliendikaarti) {
         List<MarksonaDTO> marksonad = new ArrayList<>();
         for (TooteMarksona tooteMarksona : ostukorviToode.getTooteMarksonad()) {
             marksonad.add(new MarksonaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));// SIIA LISASIN dto.token rea
@@ -205,7 +205,8 @@ public class OstukorvTeenus {
                                     omabKliendikaarti ? t.getHindKliendi() : t.getTukiHind(),
                                     omabKliendikaarti ? t.getHulgaHindKliendi() : t.getHulgaHind(),
                                     t.getTootePiltURL(),
-                                    toode.getKogus());
+                                    toode.getKogus(),
+                                    toode.getId());
                         }
                         return null;
                     }).toList());

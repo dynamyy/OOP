@@ -9,9 +9,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import org.slf4j.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,11 +22,17 @@ public class PrismaScraper extends WebScraper {
     private final PoodRepository poodRepository;
     private String url;
     private int toodeteArv;
+    private final Logger logger;
+    private final Queue<String> urlid;
+    private final List<Toode> tooted;
 
     public PrismaScraper(PoodRepository poodRepository) {
         super("Prisma");
-        url = "https://www.prismamarket.ee/tooted";
+        this.logger = LoggerFactory.getLogger(PrismaScraper.class);
         this.poodRepository = poodRepository;
+        this.url = "https://www.prismamarket.ee/tooted/puu-ja-koogiviljad";
+        this.urlid = new LinkedList<>();
+        this.tooted = new ArrayList<>();
     }
 
     @Override
@@ -32,7 +40,7 @@ public class PrismaScraper extends WebScraper {
         WebDriver chromedriver = getChromedriver();
 
         // Ootan kuni leht laeb, et ei tekiks vigu
-        ootaLeheLaadimist("[data-test-id='product-list'] > div");
+        //ootaLeheLaadimist("[data-test-id='product-list'] > div");
 
         scrolliLeheLoppu(toodeteArv, "[data-test-id='product-list-item']");
 
@@ -50,8 +58,7 @@ public class PrismaScraper extends WebScraper {
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
-        List<Toode> tooted = new ArrayList<>();
-        Queue<String> urlid = new LinkedList<>(Collections.singleton(url));
+        urlid.add(url);
         scrapeQueue(tooted, urlid);
         return tooted;
     }
@@ -59,10 +66,11 @@ public class PrismaScraper extends WebScraper {
     public void scrapeQueue(List<Toode> tooted, Queue<String> urlid) {
         while (!urlid.isEmpty()) {
             String uusUrl = urlid.poll();
+            logger.info("Parsin lehekülge {}. Järjekorras veel {} lehekülge.", uusUrl, urlid.size());
             getUrl(uusUrl);
             toodeteArv = 0;
 
-            if (tooted.size() % 1000 == 0) {
+            if (tooted.size() % 400 == 0) {
                 System.gc();
             }
 
@@ -71,7 +79,7 @@ public class PrismaScraper extends WebScraper {
                         .findElement(By.cssSelector("[data-test-id='product-result-total']"))
                         .getText().trim().isEmpty());
             } catch (TimeoutException e) {
-                throw new ScrapeFailedException("Ootamine scrapeRek meetodis kestis liiga kaua");
+                throw new ScrapeFailedException("Ootamine scrapeQueue meetodis kestis liiga kaua");
             } catch (WebDriverException e) {
                 throw new ScrapeFailedException("Elemendi ootamine scrapeRek meetodis ebaõnnestus chromedriveri vea tõttu");
             }
@@ -84,10 +92,12 @@ public class PrismaScraper extends WebScraper {
                 throw new ScrapeFailedException("Ei suutnud scrapeRek meetodis toodetearvu silti numbriks muuta");
             }
 
-            if (toodeteArv > 3000) {
+            if (toodeteArv > 1500) {
+                logger.info("Tooteid on lehel {}. Jaotan osadeks", toodeteArv);
                 List<String> URLd = URLiKirjed();
                 urlid.addAll(URLd);
             } else {
+                logger.info("Tooteid on lehel {}. Hakkan parsima", toodeteArv);
                 url = uusUrl;
                 Document doc = Jsoup.parse(hangiDynamicSource());
                 scrapeLehekulg(tooted, doc);
@@ -114,7 +124,7 @@ public class PrismaScraper extends WebScraper {
         String tootePiltUrl, tooteKood;
         for (Element toode : lapsed) {
             try {
-                tooteNimi = valiElement(toode, "[data-test-id='product-card__productName'] span").text();
+                tooteNimi = valiElement(toode, "[data-test-id='product-card__productName'] span span").text();
             } catch (TuhiElementideTagastusException e) {
                 // Elements tooted sisaldab mõningaid üleliigseid ridu, skipin need
                 continue;
