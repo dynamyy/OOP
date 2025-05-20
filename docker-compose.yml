@@ -25,6 +25,7 @@ services:
     depends_on:
       - db
     command: ["java", "-jar", "OOP_projekt-0.0.1-SNAPSHOT.jar"]
+    mem_limit: 4g
 
   db:
     image: postgres:13
