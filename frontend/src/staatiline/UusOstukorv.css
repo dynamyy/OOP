@@ -169,19 +169,13 @@
 
 #tooted-list-konteiner div.teksti-paar {
     display: flex;
-    gap: 1rem;
     height: 100%;
-}
-
-#tooted-list-konteiner > div > span {
-    font-size: x-large;
-    font-weight: 700;
 }
 
 #tooted-list {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 0 1rem;
     overflow-y: auto;
     gap: 0.5rem;
     flex-grow: 1;
@@ -256,10 +250,15 @@
 
 #tooted-list-valimine {
     display: flex;
+    flex-direction: column;
     height: 100%;
     padding: 1.5rem;
     position: relative;
     overflow-y: auto;
+}
+
+#tooted-list-valimine > * {
+    z-index: 10;
 }
 
 .toode-kaart-konteiner > span:nth-child(1) {
@@ -302,6 +301,47 @@
 .ebasobiv-toode {
     background-color: #902c2c50;
 }
+
+#tooted-list-pais {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem;
+}
+
+#tooted-list-pais > span {
+    font-size: medium;
+    opacity: 0.8;
+}
+
+#tooted-list-pais > span:first-child {
+    font-size: x-large;
+    opacity: 1;
+    padding-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+#tooted-list-filter {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+}
+
+.filter-nupp {
+    display: flex;
+    align-items: center;
+    height: 2.7rem;
+    padding: 1rem 0.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+.filter-nupp > img {
+    max-width: 5rem;
+}
+
 
 
 

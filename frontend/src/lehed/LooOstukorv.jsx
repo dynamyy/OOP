@@ -1,4 +1,4 @@
-import { useState, React, useEffect, useRef } from 'react';
+import { useState, React, useEffect, useRef, use } from 'react';
 import Menuu from '../komponendid/Menuu';
 import ToodeKaart from '../komponendid/ToodeKaart';
 import { postMarksonad, postOstukorv } from '../teenused/api';
@@ -22,6 +22,8 @@ function LooOstukorv() {
     const [uusSisalduvus, setUusSisalduvus] = useState("roheline")
     const [tooteKogus, setTooteKogus] = useState(1)
     const [tooted, setTooted] = useState([])
+    const [filtreeritudTooted, setFiltreeritudTooted] = useState([])
+    const [filtrid, setFiltrid] = useState(["Coop", "Maxima", "Selver", "Rimi", "Prisma"])
     const [ostukorv, setOstukorv] = useState({})
     const [ebasobivadTooted, setEbasobivadTooted] = useState([])
     const [ostukorviNimi, setOstukorviNimi] = useState('')
@@ -38,6 +40,12 @@ function LooOstukorv() {
         Coop: coopLogo,
         Rimi: rimiLogo
     }
+
+    useEffect(() => {
+        const tootedFiltreeritud = tooted.filter(toode => filtrid.includes(toode.pood));
+        console.log(tootedFiltreeritud)
+        setFiltreeritudTooted(tootedFiltreeritud);
+    }, [filtrid, tooted]);
 
     async function fetchTooted(nihe) {
 
@@ -247,6 +255,19 @@ function LooOstukorv() {
         }
     }
 
+    function filtreeriTooted(e, pood) {
+        e.currentTarget.classList.toggle("punane");
+        e.currentTarget.classList.toggle("hele");
+        console.log(filtrid)
+        setFiltrid(prev => {
+            if (prev.includes(pood)) {
+                return prev.filter(filtreeritud => filtreeritud !== pood);
+            } else {
+                return [...prev, pood];
+            }
+        });
+    }
+
     return (
         <>
             <Menuu />
@@ -321,10 +342,23 @@ function LooOstukorv() {
                     </div>
                     <div id="tooted-list-konteiner">
                         <div className="teksti-paar">
-                            <span className="tume-tekst">Leitud {tooteidKokku} toodet(kuvatud {tooted.length})</span>
+                            <div id='tooted-list-pais'>
+                                <span className="tume-tekst">Valik tehakse järgmistest toodetest</span>
+                                <span className='tume-tekst'>
+                                    Tooteid {tooted.length} / {tooteidKokku}
+                                </span>
+                            </div>
                             <div id="tooted-list-valimine" className="umar-nurk tume">
+                                <MuraFilter />
+                                <div id='tooted-list-filter'>
+                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Coop")}}><img src={logod.Coop} alt="Coop"/></button>
+                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Maxima")}}><img src={logod.Maxima} alt="Maxima"/></button>
+                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Selver")}}><img src={logod.Selver} alt="Selver"/></button>
+                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Rimi")}}><img src={logod.Rimi} alt="Rimi"/></button>
+                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Prisma")}}><img src={logod.Prisma} alt="Prisma"/></button>
+                                </div>
                                 <div id="tooted-list" ref={elmRef} onScroll={dynamicScroll}>
-                                {tooted.map(toode => (
+                                {filtreeritudTooted.map(toode => (
                                     <ToodeKaart
                                         key={toode.id}
                                         id={toode.id}
