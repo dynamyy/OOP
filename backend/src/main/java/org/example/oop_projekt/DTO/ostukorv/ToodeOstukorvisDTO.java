@@ -7,6 +7,6 @@ import java.util.List;
 
 public record ToodeOstukorvisDTO(
         List<MarksonaDTO> marksonad,
-        String tooteKogus,
+        Integer tooteKogus,
         List<EbasobivToodeDTO> ebasobivadTooted
 ) { }

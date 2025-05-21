@@ -93,6 +93,7 @@ public class ToodeTeenus {
                 toode.setViimatiUuendatud(uuendusAeg);
                 uuedTooted.add(toode);
             } else {
+                dbToode.setNimetus(toode.getNimetus());
                 dbToode.setHindKliendi(toode.getHindKliendi());
                 dbToode.setHulgaHind(toode.getHulgaHind());
                 dbToode.setHulgaHindKliendi(toode.getHulgaHindKliendi());
@@ -183,7 +184,7 @@ public class ToodeTeenus {
 
         int tooteidLehel = 50;
         int kusitavLeht = paring.nihe() / tooteidLehel;
-        PageRequest pagerequest = PageRequest.of(kusitavLeht, tooteidLehel, Sort.by("id").ascending());
+        PageRequest pagerequest = PageRequest.of(kusitavLeht, tooteidLehel, Sort.by("nimetus").ascending());
 
         Specification<Toode> spec = Specification
                 .where(ToodeSpecification.nimetusSisaldabKoiki(rohelised))

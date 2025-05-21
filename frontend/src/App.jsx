@@ -10,6 +10,8 @@ import './staatiline/Ava.css'
 import './staatiline/Kasutaja.css'
 import './staatiline/Ostukorv.css'
 import './staatiline/Ostukorvid.css'
+import './staatiline/Kasutusjuhend.css'
+
 
 function App() {
 

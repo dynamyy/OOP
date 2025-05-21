@@ -13,7 +13,6 @@ import org.example.oop_projekt.repository.OstukorvRepository;
 import org.example.oop_projekt.repository.PoodRepository;
 import org.example.oop_projekt.repository.ToodeOstukorvisRepository;
 import org.example.oop_projekt.repository.ToodeRepository;
-import org.example.oop_projekt.repository.TooteMarksonaRepository;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,6 @@ public class OstukorvTeenus {
     // Sõltuvused: JPA repository'd, mida kasutatakse andmebaasiga suhtlemiseks
     private final OstukorvRepository ostukorvRepository;
     private final ToodeOstukorvisRepository toodeOstukorvisRepository;
-    private final TooteMarksonaRepository tooteMarksonaRepository;
     private final ToodeRepository toodeRepository;
     private final PoodRepository poodRepository;
     private final ToodeTeenus toodeTeenus;
@@ -35,39 +33,15 @@ public class OstukorvTeenus {
 
     // Konstruktoripõhine sõltuvuste süstimine (Spring süstib bean'id siia)
     public OstukorvTeenus(OstukorvRepository ostukorvRepository,
-                          ToodeOstukorvisRepository toodeOstukorvisRepository, TooteMarksonaRepository tooteMarksonaRepository, ToodeRepository toodeRepository, PoodRepository poodRepository,
+                          ToodeOstukorvisRepository toodeOstukorvisRepository, ToodeRepository toodeRepository, PoodRepository poodRepository,
                           ToodeTeenus toodeTeenus, EbasobivToodeRepository ebasobivToodeRepository, AuthTeenus authTeenus) {
         this.ostukorvRepository = ostukorvRepository;
         this.toodeOstukorvisRepository = toodeOstukorvisRepository;
-        this.tooteMarksonaRepository = tooteMarksonaRepository;
         this.toodeRepository = toodeRepository;
         this.poodRepository = poodRepository;
         this.toodeTeenus = toodeTeenus;
         this.ebasobivToodeRepository = ebasobivToodeRepository;
         this.authTeenus = authTeenus;
-    }
-
-    // Meetod, mis vähendab antud toodete arvu ostukorvis sisendarvu võrra
-    @Transactional // Annotatsioon selleks, et kõik andmebaasi muudatused toimuksid korraga
-    public void muudaKogust(Ostukorv ostukorv, ToodeOstukorvis toodeOstukorvis, int toodeteArv) {
-
-        // Võetakse olemasolev tootenimekiri ostukorvist
-        List<ToodeOstukorvis> tootedOstukorvis = ostukorv.getTootedOstukorvis();
-
-        // Toote koguse vähendamine vastavalt sellele, kui palju tooteid eemaldada soovitakse
-        int kogus = toodeOstukorvis.getKogus() - toodeteArv;
-
-        if (kogus < 1) {
-            // Kui kogus on väiksem kui 1, siis eemaldatakse toode ostukorvist
-            tootedOstukorvis.remove(toodeOstukorvis); // Eemaldatakse toode ostukorvist
-            ostukorv.setTootedOstukorvis(tootedOstukorvis); // Uuendatakse ostukorvi tootenimekiri
-            ostukorvRepository.save(ostukorv); // Salvestatakse ostukorv andmebaasi
-            toodeOstukorvisRepository.delete(toodeOstukorvis); // Eemaldatakse toodeOstukorvis andmebaasist
-        } else {
-            // Kui kogus on suurem või võrdne 1, siis uuendatakse toote kogust
-            toodeOstukorvis.setKogus(kogus); // Uuendatakse kogus
-            toodeOstukorvisRepository.save(toodeOstukorvis); // Salvestatakse uuendatud kogus andmebaasi
-        }
     }
 
 
@@ -81,7 +55,7 @@ public class OstukorvTeenus {
             ToodeOstukorvis uusToodeOstukorvis = new ToodeOstukorvis(
                     ostukorv,
                     new ArrayList<>(),
-                    Integer.valueOf(toode.tooteKogus()),
+                    toode.tooteKogus(),
                     new ArrayList<>());
             ostukorv.getTootedOstukorvis().add(uusToodeOstukorvis);
 
@@ -96,19 +70,8 @@ public class OstukorvTeenus {
 
             // Kõik uue toote ebasobivad tooted lisatakse andmebaasi
             for (EbasobivToodeDTO ebasobivToode : toode.ebasobivadTooted()) {
-                EbasobivToode dbEbasobivToode = ebasobivToodeRepository
-                        .findByToode(toodeRepository.findToodeById(Long.parseLong(ebasobivToode.id())));
-                if (dbEbasobivToode == null) {
-                    List<ToodeOstukorvis> tootedOstukorvisEST = new ArrayList<>();
-                    tootedOstukorvisEST.add(uusToodeOstukorvis);
-                    EbasobivToode uusEbasobivToode = new EbasobivToode(
-                            tootedOstukorvisEST,
-                            toodeRepository.findToodeById(Long.parseLong(ebasobivToode.id()))
-                    );
-                    uusToodeOstukorvis.getEbasobivadTooted().add(uusEbasobivToode);
-                } else {
-                    uusToodeOstukorvis.getEbasobivadTooted().add(dbEbasobivToode);
-                }
+                long toodeId = ebasobivToode.id();
+                lisaEbasobivToodeAndmebaasi(toodeId, uusToodeOstukorvis);
             }
         }
         ostukorvRepository.save(ostukorv);
@@ -116,6 +79,22 @@ public class OstukorvTeenus {
             uuendaHindu(ostukorv, new Token(ostukorvDTO.token()));
         }
         return ostukorv.getId();
+    }
+
+    private void lisaEbasobivToodeAndmebaasi(long toodeId, ToodeOstukorvis toodeOstukorvis) {
+        EbasobivToode dbEbasobivToode = ebasobivToodeRepository
+                .findByToode(toodeRepository.findToodeById(toodeId));
+        if (dbEbasobivToode == null) {
+            List<ToodeOstukorvis> tootedOstukorvisEST = new ArrayList<>();
+            tootedOstukorvisEST.add(toodeOstukorvis);
+            EbasobivToode uusEbasobivToode = new EbasobivToode(
+                    tootedOstukorvisEST,
+                    toodeRepository.findToodeById(toodeId)
+            );
+            toodeOstukorvis.getEbasobivadTooted().add(uusEbasobivToode);
+        } else {
+            toodeOstukorvis.getEbasobivadTooted().add(dbEbasobivToode);
+        }
     }
 
     private void uuendaPoeHinnad(List<Kliendikaardid> kliendikaardid, Ostukorv ostukorv, Pood pood, Token token) {
@@ -131,11 +110,17 @@ public class OstukorvTeenus {
     public void uuendaTooteHind(ToodeOstukorvis ostukorviToode, Pood pood, Token token, boolean omabKliendikaarti) {
         List<MarksonaDTO> marksonad = new ArrayList<>();
         for (TooteMarksona tooteMarksona : ostukorviToode.getTooteMarksonad()) {
-            marksonad.add(new MarksonaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));// SIIA LISASIN dto.token rea
+            marksonad.add(new MarksonaDTO(tooteMarksona.getMarksona(), tooteMarksona.getVarv()));
         }
 
+        List<EbasobivToode> ebasobivadTooted = ostukorviToode.getEbasobivadTooted();
+
         TokenMarkSonaDTO tokenMarkSona = new TokenMarkSonaDTO(marksonad, token.token());
-        List<Toode> sobivadTooted = toodeTeenus.valitudTootedAndmebaasist(tokenMarkSona);// Siin tuleb teha TokenMarkSOna DTO objekt
+        List<Toode> sobivadTooted = toodeTeenus.valitudTootedAndmebaasist(tokenMarkSona)
+                .stream()
+                .filter(toode -> ebasobivadTooted.stream()
+                        .noneMatch(ebasobivToode -> ebasobivToode.getToode().equals(toode)))
+                .toList();
         Toode odavaimToode = sobivadTooted
                 .stream()
                 .filter(t -> t.getPood()
@@ -152,6 +137,24 @@ public class OstukorvTeenus {
                 case "selver" -> ostukorviToode.setSelverToode(odavaimToode);
             }
         }
+    }
+
+    @verifyToken
+    @Transactional
+    public void jargmineToode(long id, String pood, Token token) {
+        ToodeOstukorvis toodeOstukorvis = toodeOstukorvisRepository.findToodeOstukorvisById(id);
+        Pood tootePood = poodRepository.findPoodByNimi(pood);
+        Toode hetkeToode = leiaPoeToode(tootePood.getNimi(), toodeOstukorvis);
+        toodeOstukorvis.getEbasobivadTooted().add(new EbasobivToode());
+
+        assert hetkeToode != null;
+        lisaEbasobivToodeAndmebaasi(hetkeToode.getId(), toodeOstukorvis);
+
+        List<Kliendikaardid> kliendikaardid = authTeenus.getKliendikaardid(token);
+        boolean omabKliendikaarti = kliendikaardid.stream().anyMatch(kliendikaart ->
+                kliendikaart.getPoeNimi().equalsIgnoreCase(tootePood.getNimi()));
+        uuendaTooteHind(toodeOstukorvis, tootePood, token, omabKliendikaarti);
+        toodeOstukorvisRepository.save(toodeOstukorvis);
     }
     
     
@@ -170,7 +173,7 @@ public class OstukorvTeenus {
     }
 
     private Toode leiaPoeToode(String pood, ToodeOstukorvis toodeOstukorvis) {
-        return switch (pood) {
+        return switch (pood.toLowerCase()) {
             case "coop" -> toodeOstukorvis.getCoopToode();
             case "prisma" -> toodeOstukorvis.getPrismaToode();
             case "maxima" -> toodeOstukorvis.getBarboraToode();

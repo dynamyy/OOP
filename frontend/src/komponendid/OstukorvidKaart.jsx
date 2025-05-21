@@ -20,10 +20,6 @@ function OstukorvidKaart(props) {
                         props.kustutaOstukorv(props.id)
                     }}
                 />
-                <FontAwesomeIcon 
-                    icon={faPenToSquare} 
-                    className='ostukorvid-ikoon'
-                />
             </div>
         </div>
     )

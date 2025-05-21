@@ -55,7 +55,8 @@
     text-align: center;
     width: 100%;
     height: 10vh;
-    padding: 0.1rem;
+    min-height: fit-content;
+    padding: 1rem;
     transition: height 1s ease, background 5s ease;
 }
 
@@ -159,12 +160,31 @@
     padding-right: 1rem;
 }
 
+
+.pilt-taust-konteiner {
+    position: relative;
+    height: 4rem;
+    width: 4rem;
+}
+
 .ostukorv-toode-pilt {
     height: 3rem;
     width: 3rem;
     object-fit: contain;
     margin: 1rem;
     mix-blend-mode: multiply;
+    transition: filter 0.3s;
+}
+
+.pilt-taust:hover {
+    filter: brightness(0.6);
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.pilt-taust-konteiner:hover .jargmine-ikoon {
+    opacity: 1;
+    filter: brightness(1);
 }
 
 .pilt-taust {
@@ -174,6 +194,20 @@
     width: 4rem;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+.jargmine-ikoon {
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+    color: rgb(255, 255, 255);
+    top: 15%;
+    left: 15%;
+    height: 70%;
+    width: 70%;
+    opacity: 0;
+    transition: 0.5s;
 }
 
 #ostukorv-tooted-sisemine > div > span {

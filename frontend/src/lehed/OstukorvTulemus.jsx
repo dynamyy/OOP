@@ -1,7 +1,6 @@
 import { useState, useEffect, React, use } from 'react'
-import { useParams } from 'react-router-dom';
 import Menuu from '../komponendid/Menuu'
-import { getOstukorvTulemus, uuendaOstukorvi } from '../teenused/api';
+import { getOstukorvTulemus, uuendaOstukorvi, uuendaToodet } from '../teenused/api';
 import OstukorvPoodTulp from '../komponendid/OstukorvPoodTulp';
 import coopLogo from '../staatiline/logod/coop.png';
 import maximaLogo from '../staatiline/logod/maxima.png';
@@ -10,6 +9,8 @@ import rimiLogo from '../staatiline/logod/rimi.png';
 import prismaLogo from '../staatiline/logod/prisma.png';
 import OstukorvPoodToodeKaart from '../komponendid/OstukorvPoodToodeKaart';
 import MuraFilter from '../komponendid/MuraFilter';
+import { useNavigate, useParams } from 'react-router-dom';
+
 
 function OstukorvTulemus() {
     const { id } = useParams();
@@ -23,6 +24,8 @@ function OstukorvTulemus() {
         };
     const [tulbad, setTulbad] = useState({});
     const [aktiivnePood, setAktiivnePood] = useState({});
+    const [aktiivnePoodNimi, setAktiivnePoodNimi] = useState('Coop');
+    const navigeeri = useNavigate();
 
 
     useEffect(() => {
@@ -41,7 +44,7 @@ function OstukorvTulemus() {
 
     useEffect(() => {
         if (Object.keys(ostukorv).length > 0) {
-            setAktiivnePood(ostukorv.poed.find(poodObj => poodObj.pood === 'Coop'));
+            setAktiivnePood(ostukorv.poed.find(poodObj => poodObj.pood === aktiivnePoodNimi));
             setTimeout(() => {
                 const kast = document.getElementById("ostukorv-pood-tooted");
                 const kast2 = document.getElementById("ostukorv-tooted-sisemine");
@@ -99,6 +102,19 @@ function OstukorvTulemus() {
         uuendamine();
     }
 
+    function uuendaToodeFunk(toodeId, pood) {
+        const uuendaToode = async () => {
+            const vastus = await uuendaToodet(toodeId, pood, localStorage.getItem('AuthToken'));
+            if (vastus.ok) {
+                varskendaOstukorvi(id);
+            } else {
+                console.log(vastus.sonum);
+            }
+        };
+
+        uuendaToode();
+    }
+
     return (
         <>
             <Menuu />
@@ -113,6 +129,7 @@ function OstukorvTulemus() {
                                     pood={pood} 
                                     logo={logod[pood.pood]}
                                     setAktiivnePood={setAktiivnePood}
+                                    setAktiivnePoodNimi={setAktiivnePoodNimi}
                                     korgus={tulbad[pood.pood]} 
                                 />
                             ))}
@@ -135,6 +152,9 @@ function OstukorvTulemus() {
                                             pilt={toode.piltURL}
                                             nimetus={toode.nimetus}
                                             hind={toode.tukiHind}
+                                            uuendaToode={uuendaToodeFunk}
+                                            toodeId={toode.id}
+                                            pood={aktiivnePood.pood}
                                         /> : null
                                     ))
                                     : null
@@ -154,7 +174,6 @@ function OstukorvTulemus() {
                         </div>
                         <div className="ostukorv-tulemused-nupud">
                             <button className='nupp hele-tekst tume2' id='varskenda-nupp' onClick={() => varskendaOstukorvi(id)}>Värskenda</button>
-                            <button className='nupp hele-tekst tume2' id='muuda-nupp' onClick={() => muudaOstukorvi()}>Muuda</button>
                         </div>
                     </div>
                 </div>

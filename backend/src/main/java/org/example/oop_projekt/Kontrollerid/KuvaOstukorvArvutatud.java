@@ -31,7 +31,7 @@ public class KuvaOstukorvArvutatud {
                     Map.of("sonum", "Ostukorv leitud", "ostukorvAndmed", ostukorvTeenus.looOstukorviDTO(ostukorv, token)));
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("sonum", ("Ei leidnud ostukorvi id-ga " + id)));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("sonum", ("Ei leidnud toodet ostukorvis id-ga " + id)));
     }
 
 }

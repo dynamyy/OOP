@@ -7,6 +7,7 @@ import standardPilt from '../staatiline/standard/standard-toode.png';
 import '../staatiline/Toode.css'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import MuraFilter from '../komponendid/MuraFilter';
 
 function Toode() {
     const { id } = useParams();
@@ -129,27 +130,28 @@ function Toode() {
             <Menuu />
             <div id="sisu" className="hele">
                 <div id="toode-konteiner">
-                    <span className="tume-tekst">{tooteInfo.tooteNimi}</span>
-                    <div className="umar-nurk" id="toode-andmed-konteiner">
-                        <span className="tume-tekst">Pood: {tooteInfo.pood}</span>
-                        <span className="tume-tekst">Hind: {tooteInfo.tooteTukihind}€</span>
-                        { onSisselogitud && hinnaMuutmine && (<input name='hind' className='hele tume-tekst umar-nurk' value={hind} onChange={e => kontrolliHinnaInput(e, setHind)} /> ) }
-                        <span className="tume-tekst">Ühikuhind: {tooteInfo.tooteUhikuHind}€/{tooteInfo.uhik}</span>
-                        { onSisselogitud && hinnaMuutmine && (
-                            <>
-                            <input name='uhikuHind' className='hele tume-tekst umar-nurk' value={uhikuHind} onChange={e => kontrolliHinnaInput(e, setUhikuHind)} />
-                            <div className="samal-real">
-                                <span className="tume-tekst">Hinnamuutuse kehtivuse lõpp:</span>
-                                <DatePicker className="kuupaevaValik" selected={hinnaMuutusLopp} onChange={(kuupaev) => setHinnaMuutusLopp(kuupaev)} dateFormat="dd-MM-yyyy"/>
-                            </div>
-                            </>) }
-                        <span className="tume-tekst">{uuendusajaSilt()} {tooteInfo.viimatiUuendatud ? formaadiAeg(tooteInfo.viimatiUuendatud) : "Aeg puudub"}</span>
-                        <button className='nupp tume2 hele-tekst' onClick={() => muudaHindu()}><span>{hinnaMuutmineNupusilt}</span></button>
-                        { hinnaMuutmine && (<span className="tume-tekst muutmiseinfo">{muutmiseInfo}</span>) }
+                    <div className="umar-nurk tume" id="toode-andmed-konteiner">
+                        <MuraFilter />
+                        <div id='toote-andmed-row'>
+                            <span className="hele-tekst pood">{tooteInfo.tooteNimi}</span>
+                            <span className="hele-tekst">Hind: {tooteInfo.tooteTukihind}€</span>
+                            { onSisselogitud && hinnaMuutmine && (<input name='hind' className='hele tume-tekst aja-sisend' value={hind} onChange={e => kontrolliHinnaInput(e, setHind)} /> ) }
+                            <span className="hele-tekst">Ühikuhind: {tooteInfo.tooteUhikuHind}€/{tooteInfo.uhik}</span>
+                            { onSisselogitud && hinnaMuutmine && (
+                                <>
+                                <input name='uhikuHind' className='hele tume-tekst aja-sisend' value={uhikuHind} onChange={e => kontrolliHinnaInput(e, setUhikuHind)} />
+                                <div className="samal-real">
+                                    <span className="hele-tekst">Hinnamuutuse kehtivuse lõpp:</span>
+                                    <DatePicker className="kuupaevaValik" selected={hinnaMuutusLopp} onChange={(kuupaev) => setHinnaMuutusLopp(kuupaev)} dateFormat="dd-MM-yyyy"/>
+                                </div>
+                                </>) }
+                            <span className="hele-tekst">{uuendusajaSilt()} {tooteInfo.viimatiUuendatud ? formaadiAeg(tooteInfo.viimatiUuendatud) : "Aeg puudub"}</span>
+                            <button className='nupp tume2 hele-tekst' onClick={() => muudaHindu()}><span>{hinnaMuutmineNupusilt}</span></button>
+                        </div>
+                        <div id="pilt-konteiner" className="hele">
+                            <img src={tooteInfo.toodePiltURL ? tooteInfo.toodePiltURL : standardPilt} alt="pilt" className={tooteInfo.toodePiltURL ? "toode-pilt-suur" : "toode-pilt-standard-suur"} />
+                        </div>
                     </div>
-                </div>
-                <div id="pilt-konteiner">
-                    <img src={tooteInfo.toodePiltURL ? tooteInfo.toodePiltURL : standardPilt} alt="pilt" className={tooteInfo.toodePiltURL ? "toode-pilt-suur" : "toode-pilt-standard-suur"} />
                 </div>
             </div>
         </>

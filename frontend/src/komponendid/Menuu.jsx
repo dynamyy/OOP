@@ -27,6 +27,7 @@ function Menuu() {
 
     return (
         <header className="menuu tume">
+            <MuraFilter />
             <nav>
                 <ul>
                     <li><Link to="/kasutaja" className='hele-tekst'>Kasutaja</Link></li>
