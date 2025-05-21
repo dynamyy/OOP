@@ -13,7 +13,6 @@ import org.example.oop_projekt.repository.OstukorvRepository;
 import org.example.oop_projekt.repository.PoodRepository;
 import org.example.oop_projekt.repository.ToodeOstukorvisRepository;
 import org.example.oop_projekt.repository.ToodeRepository;
-import org.example.oop_projekt.repository.TooteMarksonaRepository;
 import org.example.oop_projekt.teenuskiht.autentimine.AuthTeenus;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,6 @@ public class OstukorvTeenus {
     // Sõltuvused: JPA repository'd, mida kasutatakse andmebaasiga suhtlemiseks
     private final OstukorvRepository ostukorvRepository;
     private final ToodeOstukorvisRepository toodeOstukorvisRepository;
-    private final TooteMarksonaRepository tooteMarksonaRepository;
     private final ToodeRepository toodeRepository;
     private final PoodRepository poodRepository;
     private final ToodeTeenus toodeTeenus;
@@ -35,11 +33,10 @@ public class OstukorvTeenus {
 
     // Konstruktoripõhine sõltuvuste süstimine (Spring süstib bean'id siia)
     public OstukorvTeenus(OstukorvRepository ostukorvRepository,
-                          ToodeOstukorvisRepository toodeOstukorvisRepository, TooteMarksonaRepository tooteMarksonaRepository, ToodeRepository toodeRepository, PoodRepository poodRepository,
+                          ToodeOstukorvisRepository toodeOstukorvisRepository, ToodeRepository toodeRepository, PoodRepository poodRepository,
                           ToodeTeenus toodeTeenus, EbasobivToodeRepository ebasobivToodeRepository, AuthTeenus authTeenus) {
         this.ostukorvRepository = ostukorvRepository;
         this.toodeOstukorvisRepository = toodeOstukorvisRepository;
-        this.tooteMarksonaRepository = tooteMarksonaRepository;
         this.toodeRepository = toodeRepository;
         this.poodRepository = poodRepository;
         this.toodeTeenus = toodeTeenus;
@@ -58,7 +55,7 @@ public class OstukorvTeenus {
             ToodeOstukorvis uusToodeOstukorvis = new ToodeOstukorvis(
                     ostukorv,
                     new ArrayList<>(),
-                    Integer.valueOf(toode.tooteKogus()),
+                    toode.tooteKogus(),
                     new ArrayList<>());
             ostukorv.getTootedOstukorvis().add(uusToodeOstukorvis);
 
@@ -73,7 +70,7 @@ public class OstukorvTeenus {
 
             // Kõik uue toote ebasobivad tooted lisatakse andmebaasi
             for (EbasobivToodeDTO ebasobivToode : toode.ebasobivadTooted()) {
-                long toodeId = Long.parseLong(ebasobivToode.id());
+                long toodeId = ebasobivToode.id();
                 lisaEbasobivToodeAndmebaasi(toodeId, uusToodeOstukorvis);
             }
         }

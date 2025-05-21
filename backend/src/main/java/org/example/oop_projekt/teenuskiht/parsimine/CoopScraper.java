@@ -34,7 +34,7 @@ public class CoopScraper extends WebScraper {
 
     public CoopScraper(PoodRepository poodRepository) {
         super("COOP");
-        url = "https://hiiumaa.ecoop.ee/et/tooted";
+        url = "https://vandra.ecoop.ee/et/tooted";
         this.poodRepository = poodRepository;
         this.logger = LoggerFactory.getLogger(CoopScraper.class);
     }

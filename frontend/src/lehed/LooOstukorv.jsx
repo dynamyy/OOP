@@ -9,8 +9,8 @@ import rimiLogo from '../staatiline/logod/rimi.png';
 import prismaLogo from '../staatiline/logod/prisma.png';
 import MarksonadeLisamine from '../komponendid/MarksonadeLisamine';
 import OstukorviToodeKaart from '../komponendid/OstukorviToodeKaart';
-import { FontAwesomeIcon as Font, FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faLariSign } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import '../staatiline/UusOStukorv.css'
 import MuraFilter from '../komponendid/MuraFilter';
@@ -23,7 +23,10 @@ function LooOstukorv() {
     const [tooteKogus, setTooteKogus] = useState(1)
     const [tooted, setTooted] = useState([])
     const [filtreeritudTooted, setFiltreeritudTooted] = useState([])
-    const [filtrid, setFiltrid] = useState(["Coop", "Maxima", "Selver", "Rimi", "Prisma"])
+    const [filtrid, setFiltrid] = useState(() => {
+    const salvestatud = localStorage.getItem("Filtrid");
+    return salvestatud ? JSON.parse(salvestatud) : [];
+    });
     const [ostukorv, setOstukorv] = useState({})
     const [ebasobivadTooted, setEbasobivadTooted] = useState([])
     const [ostukorviNimi, setOstukorviNimi] = useState('')
@@ -42,9 +45,38 @@ function LooOstukorv() {
     }
 
     useEffect(() => {
-        const tootedFiltreeritud = tooted.filter(toode => filtrid.includes(toode.pood));
-        console.log(tootedFiltreeritud)
-        setFiltreeritudTooted(tootedFiltreeritud);
+        if (Object.keys(marksonad).length === 0) {
+            const salvestatudMarksonad = localStorage.getItem("Marksonad");
+            if (salvestatudMarksonad) {
+                setMarksonad(JSON.parse(salvestatudMarksonad));
+            }
+        }
+
+        if (Object.keys(ostukorv).length === 0) {
+            const salvestatudKorv = localStorage.getItem("Ostukorv");
+            if (salvestatudKorv) {
+                setOstukorv(JSON.parse(salvestatudKorv));
+            }
+        }
+        if (ebasobivadTooted.length === 0) {
+            const salvestatudEbasobivadTooted = localStorage.getItem("EbasobivadTooted");
+            if (salvestatudEbasobivadTooted) {
+                setEbasobivadTooted(JSON.parse(salvestatudEbasobivadTooted));
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("Ostukorv", JSON.stringify(ostukorv));
+    }, [ostukorv]);
+
+    useEffect(() => {
+        localStorage.setItem("Filtrid", JSON.stringify(filtrid));
+        if (filtrid.length === 0) {
+            setFiltreeritudTooted(tooted);
+        } else {
+            setFiltreeritudTooted(tooted.filter(toode => filtrid.includes(toode.pood)));
+        }
     }, [filtrid, tooted]);
 
     async function fetchTooted(nihe) {
@@ -71,22 +103,6 @@ function LooOstukorv() {
             fetchTooted(0);
         }
     }, [marksonad])
-
-    useEffect(() => {
-        if (Object.keys(marksonad).length === 0) {
-            const salvestatudMarksonad = localStorage.getItem("Marksonad");
-            if (salvestatudMarksonad) {
-                setMarksonad(JSON.parse(salvestatudMarksonad));
-            }
-        }
-
-        if (Object.keys(ostukorv).length === 0) {
-            const salvestatudKorv = localStorage.getItem("Ostukorv");
-            if (salvestatudKorv) {
-                setOstukorv(JSON.parse(salvestatudKorv));
-            }
-        }
-    }, []);
 
     function lisaMarksona(marksona) {
         if (marksona !== "" && marksona.trim() !== "" && !(marksona in marksonad)) {
@@ -171,7 +187,8 @@ function LooOstukorv() {
             }
             localStorage.setItem("Ostukorv", JSON.stringify(uusKorv));
             setMarksonad({})
-            localStorage.removeItem("Marksonad");
+            localStorage.setItem("Marksonad", JSON.stringify({}));
+            localStorage.setItem("EbasobivadTooted", JSON.stringify([]));
             setTooteKogus(1);
             setEbasobivadTooted([])
         }
@@ -187,6 +204,7 @@ function LooOstukorv() {
     function muudaToode(toode) {
         setMarksonad(toode.marksonad)
         localStorage.setItem("Marksonad", JSON.stringify(toode.marksonad));
+        localStorage.setItem("EbasobivadTooted", JSON.stringify(toode.ebasobivadTooted));
         setTooteKogus(toode.tooteKogus)
         setEbasobivadTooted(toode.ebasobivadTooted)
         eemaldaOstukorvist(Object.keys(toode.marksonad).join(""))
@@ -212,7 +230,6 @@ function LooOstukorv() {
         }))
 
         const vastus = await postOstukorv(nimi, vormindatudTooted, localStorage.getItem('AuthToken'));
-        console.log(vastus)
         if (vastus.ok) {
             console.log("Ostukorv loodud")
             setOstukorv({})
@@ -231,8 +248,6 @@ function LooOstukorv() {
         nupp.classList.toggle("poora-45")
         const emaDiv = e.currentTarget.closest(".toode-kaart-konteiner");
         emaDiv.classList.toggle("ebasobiv-toode");
-
-        console.log(toodeId)
         
         setEbasobivadTooted(prev => {
             if (prev.includes(toodeId)) {
@@ -241,6 +256,12 @@ function LooOstukorv() {
                 return [...prev, toodeId];
             }
         })
+
+        if (ebasobivadTooted.includes(toodeId)) {
+            localStorage.setItem("EbasobivadTooted", JSON.stringify(ebasobivadTooted.filter(t => t !== toodeId)));
+        } else {
+            localStorage.setItem("EbasobivadTooted", JSON.stringify([...ebasobivadTooted, toodeId]));
+        }
     }
 
     const dynamicScroll = () => {
@@ -255,10 +276,7 @@ function LooOstukorv() {
         }
     }
 
-    function filtreeriTooted(e, pood) {
-        e.currentTarget.classList.toggle("punane");
-        e.currentTarget.classList.toggle("hele");
-        console.log(filtrid)
+    function filtreeriTooted(pood) {
         setFiltrid(prev => {
             if (prev.includes(pood)) {
                 return prev.filter(filtreeritud => filtreeritud !== pood);
@@ -288,10 +306,10 @@ function LooOstukorv() {
                             <div>
                                 <div>
                                     <button className='nupp hele-tekst tume2' id='sisalduvus' onClick={() => setTooteKogus(tooteKogus > 0 ? tooteKogus - 1 : 0)}>-</button>
-                                    <input type="text" name='marksona' className='hele tume-tekst umar-nurk tume-piir' value={tooteKogus} onChange={e => setTooteKogus(parseInt(e.target.value))} />
+                                    <input type="text" name='marksona' className='hele tume-tekst umar-nurk' value={tooteKogus} onChange={e => setTooteKogus(parseInt(e.target.value))} />
                                     <button className='nupp hele-tekst tume2' id='sisalduvus' onClick={() => setTooteKogus(tooteKogus + 1)}>+</button>
                                 </div>
-                                <button className='nupp hele-tekst tume' id='sisalduvus' onClick={() => lisaOstukorvi(marksonad)}>Lisa toode</button>
+                                <button className='nupp hele-tekst tume2' id='sisalduvus' onClick={() => lisaOstukorvi(marksonad)}>Lisa toode</button>
                                 {Object.keys(ostukorv).length > 0 ? 
                                     <div className="ostukorv-ikoon2-konteiner tume hele-tekst" onClick={() => {
                                             const ostukorv = document.querySelector(".ostukorv-konteiner")
@@ -345,17 +363,32 @@ function LooOstukorv() {
                             <div id='tooted-list-pais'>
                                 <span className="tume-tekst">Valik tehakse järgmistest toodetest</span>
                                 <span className='tume-tekst'>
-                                    Tooteid {tooted.length} / {tooteidKokku}
+                                    Tooteid {filtreeritudTooted.length} / {tooteidKokku}
                                 </span>
                             </div>
                             <div id="tooted-list-valimine" className="umar-nurk tume">
                                 <MuraFilter />
                                 <div id='tooted-list-filter'>
-                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Coop")}}><img src={logod.Coop} alt="Coop"/></button>
-                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Maxima")}}><img src={logod.Maxima} alt="Maxima"/></button>
-                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Selver")}}><img src={logod.Selver} alt="Selver"/></button>
-                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Rimi")}}><img src={logod.Rimi} alt="Rimi"/></button>
-                                    <button className='filter-nupp hele umar-nurk' onClick={(e) => {filtreeriTooted(e, "Prisma")}}><img src={logod.Prisma} alt="Prisma"/></button>
+                                    <button 
+                                        className={'filter-nupp umar-nurk' + (filtrid.includes("Coop") ? " tume-piir sinine" : " hele")} 
+                                        onClick={() => {filtreeriTooted("Coop")}}
+                                    ><img src={logod.Coop} alt="Coop"/></button>
+                                    <button 
+                                        className={'filter-nupp umar-nurk' + (filtrid.includes("Maxima") ? " tume-piir sinine" : " hele")} 
+                                        onClick={() => {filtreeriTooted("Maxima")}}
+                                    ><img src={logod.Maxima} alt="Maxima"/></button>
+                                    <button 
+                                        className={'filter-nupp umar-nurk' + (filtrid.includes("Selver") ? " tume-piir sinine" : " hele")} 
+                                        onClick={() => {filtreeriTooted("Selver")}}
+                                    ><img src={logod.Selver} alt="Selver"/></button>
+                                    <button 
+                                        className={'filter-nupp umar-nurk' + (filtrid.includes("Rimi") ? " tume-piir sinine" : " hele")} 
+                                        onClick={() => {filtreeriTooted("Rimi")}}
+                                    ><img src={logod.Rimi} alt="Rimi"/></button>
+                                    <button 
+                                        className={'filter-nupp umar-nurk' + (filtrid.includes("Prisma") ? " tume-piir sinine" : " hele")} 
+                                        onClick={() => {filtreeriTooted("Prisma")}}
+                                    ><img src={logod.Prisma} alt="Prisma"/></button>
                                 </div>
                                 <div id="tooted-list" ref={elmRef} onScroll={dynamicScroll}>
                                 {filtreeritudTooted.map(toode => (
@@ -371,6 +404,7 @@ function LooOstukorv() {
                                         toodeUrl={toode.toodePiltURL}
                                         lisaEbasobivToode={lisaEbasobivToode}
                                         toode={toode.tooteNimi}
+                                        ebasobivadTooted={ebasobivadTooted}
                                     />
                                 ))}
                                 </div>

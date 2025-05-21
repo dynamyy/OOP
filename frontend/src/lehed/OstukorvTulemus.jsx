@@ -1,5 +1,4 @@
 import { useState, useEffect, React, use } from 'react'
-import { useParams } from 'react-router-dom';
 import Menuu from '../komponendid/Menuu'
 import { getOstukorvTulemus, uuendaOstukorvi, uuendaToodet } from '../teenused/api';
 import OstukorvPoodTulp from '../komponendid/OstukorvPoodTulp';
@@ -10,6 +9,7 @@ import rimiLogo from '../staatiline/logod/rimi.png';
 import prismaLogo from '../staatiline/logod/prisma.png';
 import OstukorvPoodToodeKaart from '../komponendid/OstukorvPoodToodeKaart';
 import MuraFilter from '../komponendid/MuraFilter';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 function OstukorvTulemus() {
@@ -25,6 +25,7 @@ function OstukorvTulemus() {
     const [tulbad, setTulbad] = useState({});
     const [aktiivnePood, setAktiivnePood] = useState({});
     const [aktiivnePoodNimi, setAktiivnePoodNimi] = useState('Coop');
+    const navigeeri = useNavigate();
 
 
     useEffect(() => {
@@ -173,7 +174,6 @@ function OstukorvTulemus() {
                         </div>
                         <div className="ostukorv-tulemused-nupud">
                             <button className='nupp hele-tekst tume2' id='varskenda-nupp' onClick={() => varskendaOstukorvi(id)}>Värskenda</button>
-                            <button className='nupp hele-tekst tume2' id='muuda-nupp' onClick={() => muudaOstukorvi()}>Muuda</button>
                         </div>
                     </div>
                 </div>

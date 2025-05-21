@@ -107,6 +107,10 @@
     background-color: #902c2c;
 }
 
+.sinine {
+    background-color: #b7c5cf;
+}
+
 .punane:hover {
     background-color: #b94747;
 }
@@ -130,10 +134,6 @@
 
 .tume-tekst {
     color: #314455;
-}
-
-.tume-piir {
-    border: #153448 solid;
 }
 
 .menuu {

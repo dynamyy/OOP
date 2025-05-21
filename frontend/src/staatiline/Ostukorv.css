@@ -55,7 +55,8 @@
     text-align: center;
     width: 100%;
     height: 10vh;
-    padding: 0.1rem;
+    min-height: fit-content;
+    padding: 1rem;
     transition: height 1s ease, background 5s ease;
 }
 

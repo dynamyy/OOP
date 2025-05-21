@@ -224,6 +224,8 @@
 .toode-kaart-konteiner > div > div {
     display: flex;
     align-items: center;
+    height: 5rem;
+    margin: 0.5rem 1rem;
 }
 
 .toode-pilt-standard {
@@ -255,6 +257,7 @@
     padding: 1.5rem;
     position: relative;
     overflow-y: auto;
+    border: 1px solid #bebebe;
 }
 
 #tooted-list-valimine > * {
@@ -287,7 +290,7 @@
 
 .toode-kaart-ikoon {
     font-size: x-large !important;
-    color: #F7F9FB;
+    color: #153448;
     margin-left: 1rem;
     transition: 0.3s;
 }
@@ -299,7 +302,7 @@
 }
 
 .ebasobiv-toode {
-    background-color: #902c2c50;
+    background-color: #da9393 !important;
 }
 
 #tooted-list-pais {
@@ -332,14 +335,22 @@
 .filter-nupp {
     display: flex;
     align-items: center;
+    justify-content: center;
     height: 2.7rem;
+    width: 6.5rem;
     padding: 1rem 0.5rem;
     border: none;
     cursor: pointer;
+    transition: 0s;
+    box-sizing: border-box;
 }
 
 .filter-nupp > img {
     max-width: 5rem;
+}
+
+.tume-piir {
+    border:  3px #153448 solid;
 }
 
 

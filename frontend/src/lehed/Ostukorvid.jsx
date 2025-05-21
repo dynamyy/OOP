@@ -48,7 +48,13 @@ function Ostukorvid() {
                     <MuraFilter />
                     <div>
                         <span>Sinu ostukorvid</span>
-                        <button className='nupp tume2 hele-tekst' onClick={() => {navigeeri("/ostukorvid/loo-ostukorv")}}><span>Loo ostukorv</span></button>
+                        <button className='nupp tume2 hele-tekst' onClick={() => {
+                            localStorage.setItem('Marksonad', JSON.stringify({}))
+                            localStorage.setItem('Ostukorv', JSON.stringify({}))
+                            localStorage.setItem('EbasobivadTooted', JSON.stringify([]))
+                            localStorage.setItem('Filtrid', JSON.stringify([]))
+                            navigeeri("/ostukorvid/loo-ostukorv")
+                        }}><span>Loo ostukorv</span></button>
                     </div>
                     <div id='ostukorvid-loetelu'>
                         {ostukorvid.length > 0 ? ostukorvid.map(ostukorv => (

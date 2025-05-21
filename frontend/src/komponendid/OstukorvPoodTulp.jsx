@@ -8,7 +8,7 @@ function OstukorvPoodTulp(props) {
     useEffect(() => {
         setTimeout(() => {
             const tulp = document.getElementById(props.pood.pood + "-id");
-            tulp.style.height = "calc(" + (props.korgus > 0 ? 100 * props.korgus : 50) + "% - 2rem - 60.75px)" 
+            tulp.style.height = (props.korgus > 0 ? 40 * props.korgus : 10) + "vh";
         }, 200);
     }, [props.korgus]);
 
