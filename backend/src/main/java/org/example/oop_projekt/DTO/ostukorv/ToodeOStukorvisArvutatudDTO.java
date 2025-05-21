@@ -5,6 +5,7 @@ public record ToodeOStukorvisArvutatudDTO(
         double tukiHind,
         double hulgaHind,
         String piltURL,
-        int kogus
+        int kogus,
+        long id
 ) {
 }

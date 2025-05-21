@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +31,7 @@ public class PrismaScraper extends WebScraper {
         this.logger = LoggerFactory.getLogger(PrismaScraper.class);
         this.poodRepository = poodRepository;
         this.url = "https://www.prismamarket.ee/tooted";
-        this.urlid = new LinkedList<>(Collections.singleton(url));
+        this.urlid = new LinkedList<>();
         this.tooted = new ArrayList<>();
     }
 
@@ -59,6 +58,7 @@ public class PrismaScraper extends WebScraper {
     @Override
     public List<Toode> scrape(WebDriver chromedriver) throws ScrapeFailedException{
         setChromedriver(chromedriver);
+        urlid.add(url);
         scrapeQueue(tooted, urlid);
         return tooted;
     }
@@ -124,7 +124,7 @@ public class PrismaScraper extends WebScraper {
         String tootePiltUrl, tooteKood;
         for (Element toode : lapsed) {
             try {
-                tooteNimi = valiElement(toode, "[data-test-id='product-card__productName'] span").text();
+                tooteNimi = valiElement(toode, "[data-test-id='product-card__productName'] span span").text();
             } catch (TuhiElementideTagastusException e) {
                 // Elements tooted sisaldab mõningaid üleliigseid ridu, skipin need
                 continue;
