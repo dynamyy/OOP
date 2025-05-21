@@ -12,7 +12,7 @@ public class TokenHandler {
     private static Key key;
 
     // Token kehtib 15 min
-    private static final long EXPIRATION_TIME_MS = 1000 * 60 * 100;
+    private static final long EXPIRATION_TIME_MS = 1000 * 60 * 15;
 
     public TokenHandler(@Value("${jwt.secret}") String secret) {
         key = Keys.hmacShaKeyFor(secret.getBytes());
