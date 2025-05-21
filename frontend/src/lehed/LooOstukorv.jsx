@@ -12,7 +12,7 @@ import OstukorviToodeKaart from '../komponendid/OstukorviToodeKaart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import '../staatiline/UusOStukorv.css'
+import '../staatiline/UusOstukorv.css'
 import MuraFilter from '../komponendid/MuraFilter';
 
 function LooOstukorv() {
