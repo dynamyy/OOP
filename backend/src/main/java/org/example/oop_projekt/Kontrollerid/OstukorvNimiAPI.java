@@ -18,7 +18,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/ostukorv/nimed")
-@CrossOrigin(origins = "http://localhost:5173")
 public class OstukorvNimiAPI {
 
     private final OstukorvRepository ostukorvRepository;
