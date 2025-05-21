@@ -81,7 +81,7 @@ public class BarboraScraper extends WebScraper {
         Document doc = Jsoup.parse(s);
         Elements links = doc.select("a.category-item--title");
 
-        for (int i = 1; i < links.size(); i++) {
+        for (int i = 0; i < links.size(); i++) {
             Element link = links.get(i);
             String href = link.attr("href");
             info.add("https://barbora.ee" + href);

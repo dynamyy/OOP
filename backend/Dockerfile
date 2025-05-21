@@ -17,6 +17,8 @@ RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
 
 WORKDIR /app
 
+COPY selver.txt .
+
 COPY --from=build /app/target/OOP_projekt-0.0.1-SNAPSHOT.jar .
 
 CMD ["java", "-jar", "OOP_projekt-0.0.1-SNAPSHOT.jar"]
