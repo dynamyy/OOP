@@ -23,8 +23,8 @@ function Kasutusjuhend() {
                                 Seejärel saate hakata ostukorvi lisama tooteid kasutades märksõnu. 
                                 Märksõna saate lisada märksõnaväljale ning vajutades sisalduvuse nuppu saate valida, 
                                 kas teie otsitav toode sisaldab või ei sisalda antud märksõna. Kui olete need valikud 
-                                teinud vajutage "lisa märksõna" nuppu ning näeta kõrvalt kõiki tooteid, mis märksõnadele 
-                                vastavad. Tootte kogust saab muuta vajutades pluss- ja miinusnuppe.
+                                teinud vajutage "lisa märksõna" nuppu ning näete kõrvalt kõiki tooteid, mis märksõnadele 
+                                vastavad. Toote kogust saab muuta vajutades pluss- ja miinusnuppe.
                             </p>
                         </div>
                         <div id='kj-3'>
@@ -39,21 +39,21 @@ function Kasutusjuhend() {
                             <img className='kj-pilt' src="/staatiline/naide4.png" alt="Näide 4" />
                             <p className='kj-tekst'>
                                 Kui olete tootevalikuga rahul vajutage nuppu "lisa ostukorvi" ning saate asuda uut toodet valima. 
-                                Kui soovite juiba lisatud toodet uuesti muuta vajutage pliiatsi ikooni tootekaardil ostukorvis.
+                                Kui soovite juba lisatud toodet uuesti muuta vajutage pliiatsi ikooni tootekaardil ostukorvis.
                                 Kui kõik tooted on lisatud valige ostukorvile nimi ning vajutage nuppu "loo ostukorv". Siis suunatakse teid 
                                 uuele lehele, kus kuvatakse iga poe odavaimad ostukorvid.
                             </p>
                         </div>
                         <div id='kj-5'>
                             <p className='kj-tekst'>
-                                Ostukorvi lehel on igfal poel oma tulp ning saate visaalselt hindasid võrrelda. Kui mõnes poes kõiki tooteid ei leitud, kuvatakse vastav kiri tulbale.
+                                Ostukorvi lehel on igal poel oma tulp ning saate visuaalselt hindasid võrrelda. Kui mõnes poes kõiki tooteid ei leitud, kuvatakse vastav kiri tulbale.
                                 Kui mõni toode mõnes poes teile ei sobi saate valida järgmise parima toote vajutades toote pildile. Kuna hinnad ajas muutuvad, siis saab ostukorve ka värskendada vajutades "värskenda" nuppu.
                             </p>
                             <img className='kj-pilt' src="/staatiline/naide5.png" alt="Näide 5" />
                         </div>
                         <div id='kj-6'>
                             <p className='kj-tekst'>
-                                Kuna tihtipeale pakuvad poed ka personaalseid soodushindu, siis saab ostukorvi luues toote kaardile vajutades ka hinda muuta. Lisaks saab lisada hinnale kehtivuuse lõppkuupäeva.
+                                Kuna tihtipeale pakuvad poed ka personaalseid soodushindu, siis saab ostukorvi luues toote kaardile vajutades ka hinda muuta. Lisaks saab lisada hinnale kehtivuse lõppkuupäeva.
                             </p>
                             <img className='kj-pilt' src="/staatiline/naide6.png" alt="Näide 6 " />
                         </div>

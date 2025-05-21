@@ -33,7 +33,6 @@ function OstukorvTulemus() {
             const vastus = await getOstukorvTulemus(id, localStorage.getItem('AuthToken'));
             if (vastus.ok) {
                 setOstukorv(vastus.ostukorvAndmed);
-                console.log(vastus);
             } else {
                 console.log(vastus.sonum);
             }
@@ -53,8 +52,6 @@ function OstukorvTulemus() {
             }, 200)
         }
     }, [ostukorv.poed])
-
-    console.log(aktiivnePood)
 
     useEffect(() => {
         const uuedTulbad = {
@@ -83,7 +80,6 @@ function OstukorvTulemus() {
                     const vastus = await getOstukorvTulemus(id, localStorage.getItem('AuthToken'));
                     if (vastus.ok) {
                         setOstukorv(vastus.ostukorvAndmed);
-                        console.log(vastus);
                     } else {
                         console.log(vastus.sonum);
                     }

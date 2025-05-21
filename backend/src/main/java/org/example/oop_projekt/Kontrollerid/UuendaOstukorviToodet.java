@@ -26,7 +26,6 @@ public class UuendaOstukorviToodet {
     @PostMapping
     public ResponseEntity<?> uuendaToode(@RequestBody ToodeOstukorvisIdDTO toodeOstukorvisIdDTO){//Java teisendab automaatselt jsoni DTO-ks
         try {
-            System.out.println(toodeOstukorvisIdDTO);
             ostukorvTeenus.jargmineToode(
                     toodeOstukorvisIdDTO.id(),
                     toodeOstukorvisIdDTO.pood(),
