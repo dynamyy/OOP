@@ -3,7 +3,7 @@
 Rühmaliikmed: Egert Heliste (dynamyy), Tõnis Lees, Kevin Markus Korrol (kevinkorrol)
 
 Funktsionaalsused:
-- Saab koostada enda otsukorvi poetoodetest
+- Saab koostada enda ostukorvi poetoodetest
 - Programm uuendab toodete hindu ja valikut jooksvalt
 - Saab võrrelda enda otsukorvi hinda erinevates poodides
 - Kogu asja saab teha veebilehel
